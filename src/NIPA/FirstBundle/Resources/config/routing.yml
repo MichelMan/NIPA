@@ -1,0 +1,3 @@
+nipa_first_homepage:
+    path:     /hello/{name}
+    defaults: { _controller: NIPAFirstBundle:Default:index }

@@ -1,0 +1,89 @@
+<?php
+
+namespace NIPA\FirstBundle\Entity;
+
+use Doctrine\ORM\Mapping as ORM;
+
+/**
+ * NIPA\FirstBundle\Entity\Groupe
+ *
+ * @ORM\Table()
+ * @ORM\Entity(repositoryClass="NIPA\FirstBundle\Entity\GroupeRepository")
+ */
+class Groupe
+{
+    /**
+     * @var integer $id
+     *
+     * @ORM\Column(name="id", type="integer")
+     * @ORM\Id
+     * @ORM\GeneratedValue(strategy="AUTO")
+     */
+    private $id;
+
+    /**
+     * @var string $Nom
+     *
+     * @ORM\Column(name="Nom", type="string", length=25, unique=true)
+     */
+    private $Nom;
+
+    /**
+     * @ORM\ManyToMany(targetEntity="Utilisateur", mappedBy="groupe")
+     */
+    private $utilisateur;
+
+    public function __construct() {
+        $this->utilisateur = new \Doctrine\Common\Collections\ArrayCollection();
+    }
+
+    /**
+     * Get id
+     *
+     * @return integer 
+     */
+    public function getId()
+    {
+        return $this->id;
+    }
+
+    /**
+     * Set Nom
+     *
+     * @param string $nom
+     */
+    public function setNom($nom)
+    {
+        $this->Nom = $nom;
+    }
+
+    /**
+     * Get Nom
+     *
+     * @return string 
+     */
+    public function getNom()
+    {
+        return $this->Nom;
+    }
+
+    /**
+     * Add utilisateur
+     *
+     * @param NIPA\FirstBundle\Entity\Utilisateur $utilisateur
+     */
+    public function addUtilisateur(\NIPA\FirstBundle\Entity\Utilisateur $utilisateur)
+    {
+        $this->utilisateur[] = $utilisateur;
+    }
+
+    /**
+     * Get utilisateur
+     *
+     * @return Doctrine\Common\Collections\Collection 
+     */
+    public function getUtilisateur()
+    {
+        return $this->utilisateur;
+    }
+}

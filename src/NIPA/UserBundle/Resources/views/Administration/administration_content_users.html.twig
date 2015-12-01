@@ -1,0 +1,139 @@
+{% trans_default_domain 'NIPAUserBundle' %}
+
+{% block nipa_users_div %}
+ 
+    <!-- Container table filter -->
+    <div class="col-md-12">
+
+        <!-- BOUTON ADD -->  
+        <div class="btn-toolbar">
+            <button data-toggle="tooltip" title="Ajouter un utilisateur" class="btn btn-success" onclick="window.location.href='{{ path('fos_user_registration_register') }}'"><i class="glyphicon glyphicon-plus-sign"></i> Nouvel utilisateur</button>
+        </div>
+        <br>        
+
+        <!-- PANEL -->          
+        <div class="panel panel-primary">
+            <div class="panel-heading">
+                <h3 class="panel-title">Utilisateurs</h3>
+                <div class="pull-right">
+                    <span class="clickable filter" data-toggle="tooltip" title="Filtre" data-container="body">
+                        <i class="glyphicon glyphicon-filter"></i>
+                    </span>
+                </div>
+            </div>
+            <div class="panel-body">
+                <input type="text" class="form-control" id="users-table-filter" data-action="filter" data-filters="#users-table" placeholder="Filtres utilisateur" />
+            </div>
+            <table class="table table-hover" id="users-table">
+                <thead>
+                    <tr>
+                        <th>Identifiant</th>
+                        <th>Prénom</th>
+                        <th>Nom</th>
+                        <th>Email</th>
+                        <th>Administrateur</th>
+                        <th>Crée le</th>
+                        <th>Connecté le</th>
+                        <th>Supprimer</th>
+                    </tr>
+                </thead>
+                <tbody>
+                {# Liste all Users #}
+                {% for user in users %}
+                    <tr>
+                        <td><a data-toggle="tooltip" title="Modifier utilisateur" href="{{ path('fos_user_profile_edit_id', {'identifiant': user.identifiant}) }}">{{ user.identifiant }}</a></td>
+                        <td>{{ user.prenom }}</td>
+                        <td>{{ user.nom }}</td>
+                        <td>{{ user.email }}</td>
+                        <td>
+                            {% if user.admin == true %}                        
+                                <i class="glyphicon glyphicon-ok icon-ok"></i>
+                            {% endif %}
+                        </td>
+                        <td>{{ user.createdAt|date('d/m/Y') }}</td>
+                        <td>{{ user.lastLogin|date('d/m/Y') }}</td>
+                        <td>
+                            <a href="{{ path('administration_user_delete', {'identifiant': user.identifiant}) }}" class="confirmModalLink" href=""><span class="glyphicon glyphicon-remove icon-remove"></span></a>                        
+                        </td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        <!-- PAGINATION -->  
+        <nav>
+          <ul class="pagination">
+            <li class="disabled">
+              <a href="#" aria-label="Previous">
+                <span aria-hidden="true">&laquo;</span>
+                <span class="sr-only">Previous</span>
+              </a>
+            </li>
+            <li class="active">
+              <a href="#">1 <span class="sr-only">(current)</span></a>
+            </li>
+            <li><a href="#">2</a></li>
+            <li><a href="#">3</a></li>
+            <li>
+              <a href="#" aria-label="Next">
+                <span aria-hidden="true">&raquo;</span>
+                <span class="sr-only">Next</span>
+              </a>
+            </li>
+          </ul>
+        </nav>
+                
+    </div>
+    
+    <!-- MODAL DELETE -->
+    <div id="myModal" class="modal fade in">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                    <h3 id="myModalLabel">Confirmation</h3>
+                </div>
+                
+                <div class="modal-body">
+                    <p class="error-text">Etes vous sûr de vouloir supprimer l'utilisateur?</p>
+                </div>
+
+                <div class="modal-footer">
+                    <a href="#" class="btn btn-warning" id="confirmModalNo">Annuler</a>
+                    <a href="#" class="btn btn-danger" id="confirmModalYes">Supprimer</a>                  
+                </div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal-dalog -->
+    </div><!-- /.modal -->
+ 
+    
+    <script>
+
+        $(document).on("click", ".open-DeleteUser", function () {
+             var Id = $(this).data('id');
+             $(".modal-body #Id").val( Id );
+            $('#myModal').modal('show');
+        });
+
+        $(document).ready(function () {
+            var theHREF;
+
+            $(".confirmModalLink").click(function(e) {
+                e.preventDefault();
+                theHREF = $(this).attr("href");
+                $("#myModal").modal("show");
+            });
+
+            $("#confirmModalNo").click(function(e) {
+                $("#myModal").modal("hide");
+            });
+
+            $("#confirmModalYes").click(function(e) {
+                window.location.href = theHREF;
+            });
+        });
+
+    </script>
+    
+{% endblock nipa_users_div %}

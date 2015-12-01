@@ -1,0 +1,202 @@
+{% trans_default_domain 'NIPAUserBundle' %}
+
+{% block nipa_users_div %}
+ 
+    <!-- Container table filter -->
+    <div class="col-md-12">
+
+        <!-- BOUTON ADD -->  
+        <div class="btn-toolbar">
+            <a data-toggle="modal" title="Ajouter utilisateurs" class="btn btn-success" href="#ModalAddUsers"><i class="glyphicon glyphicon-plus-sign"></i> Nouvel utilisateur</a>
+        </div>
+        <br>        
+
+        <!-- PANEL -->          
+        <div class="panel panel-primary">
+            <div class="panel-heading">
+                <h3 class="panel-title">Utilisateurs groupe: {{ groupe.Nom }}</h3>
+                <div class="pull-right">
+                    <span class="clickable filter" data-toggle="tooltip" title="Filtre" data-container="body">
+                        <i class="glyphicon glyphicon-filter"></i>
+                    </span>
+                </div>
+            </div>
+            <div class="panel-body">
+                <input type="text" class="form-control" id="users-table-filter" data-action="filter" data-filters="#users-table" placeholder="Filtres utilisateur" />
+            </div>
+            <table class="table table-hover" id="users-table">
+                <thead>
+                    <tr>
+                        <th>Identifiant</th>
+                        <th>Prénom</th>
+                        <th>Nom</th>
+                        <th>Supprimer</th>
+                    </tr>
+                </thead>
+                <tbody>
+                {# Liste all Users de ce groupe #}
+                {% for user in groupe.getUtilisateursToArray() %}
+                    <tr>
+                        <td>{{ user.getIdentifiant() }}</td>
+                        <td>{{ user.getPrenom() }}</td>
+                        <td>{{ user.getNom() }}</td>
+                        <td>
+                            <a href="{{ path('groupe_delete_users', {'identifiant': user.identifiant, 'groupeId': groupe.id}) }}" class="confirmModalLink" href=""><span class="glyphicon glyphicon-remove icon-remove"></span></a>                               
+                        </td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        <!-- PAGINATION -->  
+        <nav>
+          <ul class="pagination">
+            <li class="disabled">
+              <a href="#" aria-label="Previous">
+                <span aria-hidden="true">&laquo;</span>
+                <span class="sr-only">Previous</span>
+              </a>
+            </li>
+            <li class="active">
+              <a href="#">1 <span class="sr-only">(current)</span></a>
+            </li>
+            <li><a href="#">2</a></li>
+            <li><a href="#">3</a></li>
+            <li>
+              <a href="#" aria-label="Next">
+                <span aria-hidden="true">&raquo;</span>
+                <span class="sr-only">Next</span>
+              </a>
+            </li>
+          </ul>
+        </nav>
+                
+    </div>
+    
+    <!-- MODAL DELETE -->
+    <div id="myModal" class="modal fade in">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                    <h3 id="myModalLabel">Confirmation</h3>
+                </div>
+                
+                <div class="modal-body">
+                    <p class="error-text">Etes vous sûr de vouloir supprimer l'utilisateur?</p>
+                </div>
+
+                <div class="modal-footer">
+                    <a href="#" class="btn btn-warning" id="confirmModalNo">Annuler</a>
+                    <a href="#" class="btn btn-danger" id="confirmModalYes">Supprimer</a>                  
+                </div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal-dalog -->
+    </div><!-- /.modal -->
+ 
+    
+     <!-- MODAL AJOUT USERS GROUPE -->
+    <div id="ModalAddUsers" class="modal fade in">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                    <h3 id="myModalLabel">Nouvel utilisateur </h3>
+                </div>
+                <div class="col-md-6"><br>
+                    <form action="#" method="get">
+                        <div class="input-group">
+                            <input class="form-control" id="system-search" name="q" placeholder="Search for" required>
+                            <span class="input-group-btn">
+                                <button type="submit" class="btn btn-default"><i class="glyphicon glyphicon-search"></i></button>
+                            </span>
+                        </div>
+                    </form>
+                </div>
+                
+                <form class="form-horizontal well" data-async data-target="#ModalAddUsers" action="{% if groupe.id %}{{ path('groupe_add_users', {'groupeId':groupe.id}) }}{% endif %}" {{ form_enctype(formModal) }} method="POST">                       
+                    <div class="modal-body">
+
+                        <div class="container">
+                            <div class="row">
+                                <div class="col-md-12">
+                                 <table class="table table-list-search">
+                                        <thead>
+                                            <tr>
+                                                <th></th>
+                                                <th>Identifiant</th>
+                                                <th>Nom</th>
+                                                <th>Prénom</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {% set isPresent = 0 %}
+                                            {% for child in formModal.identifiant %}
+                                                {% set index = child.vars.value %}
+
+                                                {# On liste juste les users non affiliés encore au groupe#}
+                                                {% if choices[index] not in groupe.getUtilisateursToArray() %}                                                
+                                                  <tr>
+                                                    {# <td>{{ form_widget(child) }}</td> #}
+                                                    <td><input type="checkbox"  name="idUsers[]" value="{{choices[index].identifiant}}"></input></td>
+                                                    <td>{{ choices[index].identifiant }}</td>
+                                                    <td>{{ choices[index].prenom }}</td>
+                                                    <td>{{ choices[index].nom}}</td>                                                
+                                                  </tr>
+                                                {% else %}
+                                                    {% set isPresent = isPresent + 1 %}
+                                                {% endif %}
+
+                                                {# Si tous les users sont déjà dans le groupe#}
+                                                {% if isPresent ==  formModal.identifiant|length%}  
+                                                    <p>Aucun utilisateur(s) à ajouter</p>
+                                                {% endif %}
+
+                                            {% else %}
+                                                <p>Aucun utilisateur(s)</p>
+                                            {% endfor %}
+                                        </tbody>
+                                    </table>   
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                    <div class="modal-footer">
+                        <button class="btn btn-primary" data-dismiss="modal" aria-hidden="true"> Annuler</button>
+                        <button class="btn btn-success" type="submit">Ajouter</button>
+                    </div> 
+                    {{ form_errors(formModal) }}
+                    <!-- <pre> {#{{ dump(formModal) }}#} </pre> -->
+                </form>                                                  
+            </div>
+        </div>
+    </div>
+
+    <script>
+        $(document).on("click", ".open-DeleteUser", function () {
+             var Id = $(this).data('id');
+             $(".modal-body #Id").val( Id );
+            $('#myModal').modal('show');
+        });
+
+        $(document).ready(function () {
+            var theHREF;
+
+            $(".confirmModalLink").click(function(e) {
+                e.preventDefault();
+                theHREF = $(this).attr("href");
+                $("#myModal").modal("show");
+            });
+
+            $("#confirmModalNo").click(function(e) {
+                $("#myModal").modal("hide");
+            });
+
+            $("#confirmModalYes").click(function(e) {
+                window.location.href = theHREF;
+            });
+        });
+    </script>
+{% endblock nipa_users_div %}

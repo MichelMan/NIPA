@@ -1,0 +1,65 @@
+{% extends "NIPAUserBundle::layoutNIPA.html.twig" %}
+
+{% block nipa_stylesheets %}
+    	<link rel="stylesheet" href="{{ asset('bundles/nipauserbundle/css/styleAdministration.css') }}" type="text/css" media="all" />
+        <script src="{{ asset('bundles/nipauserbundle/js/navbarAdministration.js') }}"></script>
+        <script src="{{ asset('bundles/nipauserbundle/js/panelFilter.js') }}"></script>     
+        <!-- <link href="//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/css/bootstrap-combined.min.css" rel="stylesheet" id="bootstrap-css"> -->
+{% endblock %}
+
+{% block nipa_navbar %}
+    <ul class="nav nav-pills pull-left">
+        <li class="nav-item">
+          <a class="nav-link" href="{{ path('accueil') }}"><span class="glyphicon glyphicon-home"></span> Accueil</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="{{ path('user') }}"><span class="glyphicon glyphicon-th-large"></span> Ma page</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="{{ path('projet') }}"><span class="glyphicon glyphicon-folder-open"></span> Projets</a>
+        </li>
+        <li class="nav-item active">
+          <a class="nav-link" href="{{ path('administration') }}"><span class="glyphicon glyphicon-wrench"></span> Administration<span class="sr-only">(current)</span></a>
+        </li>
+    </ul>
+{% endblock %}
+
+{% block nipa_user_content %}
+    
+    <div class="container">
+        
+        <div class="row">
+            <div class="col-md-3">
+                <center><h3><span class="glyphicon glyphicon-wrench"></span> Administration</h3></center>
+            </div>
+        </div>
+
+        <div class="row">
+             
+            <div class="col-md-3">
+                <ul class="nav nav-pills nav-stacked admin-menu">
+                    <li class="active"><a href="" data-target-id="projet"><i class="fa fa-book fa-fw"></i>Projets</a></li>
+                    <li><a href="#" data-target-id="user"><i class="fa fa-user fa-fw"></i>Utilisateurs</a></li>
+                    <li><a href="#" data-target-id="groupe"><i class="fa fa-list-alt fa-fw"></i>Groupes</a></li>
+                    <li><a href="#" data-target-id="champs"><i class="fa fa-pencil-square fa-fw"></i>Champs personnalisés</a></li>               
+                </ul>
+            </div>
+
+            <div class="col-md-9 well admin-content" id="projet">
+                {% include "NIPAUserBundle:Administration:administration_content_projets.html.twig" %}
+            </div>
+            
+            <div class="col-md-9 well admin-content" id="user">
+                {% include "NIPAUserBundle:Administration:administration_content_users.html.twig" %}
+            </div>
+
+            <div class="col-md-9 well admin-content" id="groupe">
+                {% include "NIPAUserBundle:Administration:administration_content_groupes.html.twig" %}
+            </div>
+            
+            <div class="col-md-9 well admin-content" id="champs">
+                {% include "NIPAUserBundle:Administration:administration_content_champs.html.twig" %}
+            </div>
+        </div>
+    </div>
+{% endblock nipa_user_content %}

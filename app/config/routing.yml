@@ -1,0 +1,29 @@
+nipa_projet:
+    resource: "@NIPAProjetBundle/Resources/config/routing.yml"
+    prefix:   /
+
+#NIPAUserBundle:
+#    resource: "@NIPAUserBundle/Controller/"
+#    type:     annotation
+#    prefix:   /
+
+NIPAUserBundle:
+    resource: "@NIPAUserBundle/Resources/config/routing.yml"
+    prefix:   /
+
+#login:
+#    path:   /login
+#    defaults:  { _controller: NIPAUserBundle:Security:login }
+
+#NIPA_platform_accueil:
+#    path:   /login
+#    defaults:  { _controller: NIPAUserBundle:Security:login }
+
+#login_check:
+#    path:   /login_check
+
+#logout:
+#    path:   /logout
+
+user_bundle:
+   resource: "@NIPAUserBundle/Resources/config/routing.yml"

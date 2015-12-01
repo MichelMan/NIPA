@@ -1,0 +1,43 @@
+{% extends '::base.html.twig' %}
+{% block title %}{% if user.id %}{{ 'Modification utilisateur'|trans }}{% else %}{{ 'Ajout utilisateur'|trans }}{% endif %}{% endblock %}
+
+{% block body %}
+<form action="{% if user.id %}{{ path('user_edit', {'userId':user.id}) }}{% else %}{{ path('user_add') }}{% endif %}" method="post" {{ form_enctype(form) }}>
+    <h1>{% if user.id %}{{ 'Modification utilisateur'|trans }}{% else %}{{ 'Ajout utilisateur'|trans }}{% endif %}</h1>
+    <div class='errors'>
+    {{ form_errors(form) }}
+    </div>    
+    <div>
+    {{ form_errors(form.Identifiant) }}
+    {{ form_label(form.Identifiant, 'Identifiant'|trans) }}
+    {{ form_widget(form.Identifiant) }}
+    </div>
+    <div>
+    {{ form_errors(form.Prenom) }}
+    {{ form_label(form.Prenom, 'Prénom'|trans) }}
+    {{ form_widget(form.Prenom) }}
+    </div>
+    <div>
+    {{ form_errors(form.Nom) }}
+    {{ form_label(form.Nom, 'Nom'|trans) }}
+    {{ form_widget(form.Nom) }}
+    </div>
+    <div>
+    {{ form_errors(form.Email) }}
+    {{ form_label(form.Email, 'Email'|trans) }}
+    {{ form_widget(form.Email) }}
+    </div>
+    <div>
+    {{ form_label(form.Password, 'Mot de passe:'|trans) }}
+    {{ form_widget(form.Password) }}
+    </div>
+    <div>
+    {{ form_errors(form.Admin) }}
+    {{ form_label(form.Admin, 'Administrateur'|trans) }}
+    {{ form_widget(form.Admin) }}
+    </div>
+    {{ form_rest(form) }}
+    <input type="submit" id="submit" value="{% if user.id %}{{ 'Sauvegarder'|trans }}{% else %}{{ 'Ajouter'|trans }}{% endif %}" name="submit" />
+</form>
+
+{% endblock %}

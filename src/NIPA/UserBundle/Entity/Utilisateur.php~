@@ -1,0 +1,284 @@
+<?php
+
+namespace NIPA\FirstBundle\Entity;
+
+use Doctrine\ORM\Mapping as ORM;
+
+/**
+ * NIPA\FirstBundle\Entity\Utilisateur
+ *
+ * @ORM\Table(name="utilisateur")
+ * @ORM\Entity(repositoryClass="NIPA\FirstBundle\Entity\UtilisateurRepository")
+ */
+class Utilisateur
+{
+    /**
+     * @var integer $id
+     *
+     * @ORM\Column(name="id", type="integer")
+     * @ORM\Id
+     * @ORM\GeneratedValue(strategy="AUTO")
+     */
+    private $id;
+
+    /**
+     * @var string $Identifiant
+     *
+     * @ORM\Column(name="Identifiant", type="string", length=25, unique=true)
+     */
+    private $Identifiant;
+
+    /**
+     * @var string $Prenom
+     *
+     * @ORM\Column(name="Prenom", type="string", length=50)
+     */
+    private $Prenom;
+
+    /**
+     * @var string $Nom
+     *
+     * @ORM\Column(name="Nom", type="string", length=50)
+     */
+    private $Nom;
+
+    /**
+     * @var string $Email
+     *
+     * @ORM\Column(name="Email", type="string", length=25)
+     */
+    private $Email;
+
+    /**
+     * @var boolean $Admin
+     *
+     * @ORM\Column(name="Admin", type="boolean")
+     */
+    private $Admin;
+
+    /**
+     * @var string $Password
+     *
+     * @ORM\Column(name="Password", type="string", length=255, unique=true)
+     */
+    private $Password;
+    
+    /**
+     *@var datetime $createdAt
+     *  
+     * @ORM\Column(name="created_at", type="datetime")
+     */
+    private $createdAt;
+    
+    /**
+     *@var datetime $lastConnection
+     *  
+     * @ORM\Column(name="last_connection", type="datetime", nullable=true)
+     */
+    private $lastConnection;
+   
+    /**
+     * @ORM\ManyToMany(targetEntity="Groupe", inversedBy="utilisateur")
+     * @ORM\JoinTable(name="user_groupes")
+     */
+    private $groupe;
+    
+    /*Constructeur*/
+    public function __construct()
+    {
+        $this->createdAt = new \DateTime('now');
+        $this->groupe = new \Doctrine\Common\Collections\ArrayCollection(); // Collection de Groupe(s) du User
+    }    
+       
+    /**
+     * Get id
+     *
+     * @return integer 
+     */
+    public function getId()
+    {
+        return $this->id;
+    }
+
+    /**
+     * Set Identifiant
+     *
+     * @param string $identifiant
+     */
+    public function setIdentifiant($identifiant)
+    {
+        $this->Identifiant = $identifiant;
+    }
+
+    /**
+     * Get Identifiant
+     *
+     * @return string 
+     */
+    public function getIdentifiant()
+    {
+        return $this->Identifiant;
+    }
+
+    /**
+     * Set Prenom
+     *
+     * @param string $prenom
+     */
+    public function setPrenom($prenom)
+    {
+        $this->Prenom = $prenom;
+    }
+
+    /**
+     * Get Prenom
+     *
+     * @return string 
+     */
+    public function getPrenom()
+    {
+        return $this->Prenom;
+    }
+
+    /**
+     * Set Nom
+     *
+     * @param string $nom
+     */
+    public function setNom($nom)
+    {
+        $this->Nom = $nom;
+    }
+
+    /**
+     * Get Nom
+     *
+     * @return string 
+     */
+    public function getNom()
+    {
+        return $this->Nom;
+    }
+
+    /**
+     * Set Email
+     *
+     * @param string $email
+     */
+    public function setEmail($email)
+    {
+        $this->Email = $email;
+    }
+
+    /**
+     * Get Email
+     *
+     * @return string 
+     */
+    public function getEmail()
+    {
+        return $this->Email;
+    }
+
+    /**
+     * Set Admin
+     *
+     * @param boolean $admin
+     */
+    public function setAdmin($admin)
+    {
+        $this->Admin = $admin;
+    }
+
+    /**
+     * Get Admin
+     *
+     * @return boolean 
+     */
+    public function getAdmin()
+    {
+        return $this->Admin;
+    }
+
+    /**
+     * Set Password
+     *
+     * @param string $password
+     */
+    public function setPassword($password)
+    {
+        $this->Password = $password;
+    }
+
+    /**
+     * Get Password
+     *
+     * @return string 
+     */
+    public function getPassword()
+    {
+        return $this->Password;
+    }
+    
+
+    /**
+     * Set createdAt
+     *
+     * @param datetime $createdAt
+     */
+    public function setCreatedAt($createdAt)
+    {
+        $this->createdAt = $createdAt;
+    }
+
+    /**
+     * Get createdAt
+     *
+     * @return datetime 
+     */
+    public function getCreatedAt()
+    {
+        return $this->createdAt;
+    }
+
+    /**
+     * Set lastConnection
+     *
+     * @param datetime $lastConnection
+     */
+    public function setLastConnection($lastConnection)
+    {
+        $this->lastConnection = $lastConnection;
+    }
+
+    /**
+     * Get lastConnection
+     *
+     * @return datetime 
+     */
+    public function getLastConnection()
+    {
+        return $this->lastConnection;
+    }
+   
+
+    /**
+     * Add groupe
+     *
+     * @param NIPA\FirstBundle\Entity\Groupe $groupe
+     */
+    public function addGroupe(\NIPA\FirstBundle\Entity\Groupe $groupe)
+    {
+        $this->groupe[] = $groupe;
+    }
+
+    /**
+     * Get groupe
+     *
+     * @return Doctrine\Common\Collections\Collection 
+     */
+    public function getGroupe()
+    {
+        return $this->groupe;
+    }
+}

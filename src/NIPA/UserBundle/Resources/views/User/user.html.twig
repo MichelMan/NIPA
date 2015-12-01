@@ -1,0 +1,25 @@
+{% extends "NIPAUserBundle::layoutNIPA.html.twig" %}
+
+{% block nipa_navbar %}
+    <ul class="nav nav-pills pull-left">
+        <li class="nav-item">
+          <a class="nav-link" href="{{ path('accueil') }}"><span class="glyphicon glyphicon-home"></span> Accueil</a>
+        </li>
+        <li class="nav-item active">
+          <a class="nav-link" href="{{ path('user') }}"><span class="glyphicon glyphicon-th-large"></span> Ma page<span class="sr-only">(current)</span></a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="{{ path('projet') }}"><span class="glyphicon glyphicon-folder-open"></span> Projets</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="{{ path('administration') }}"><span class="glyphicon glyphicon-wrench"></span> Administration</a>
+        </li>
+    </ul>
+{% endblock %}
+
+{% block nipa_user_content %}
+    <div class="container">    
+        <h2><span class="glyphicon glyphicon-th-large"></span> Ma page</h2>  
+         {% include "NIPAUserBundle:User:user_content.html.twig" %}
+    </div>
+{% endblock nipa_user_content %}

@@ -1,0 +1,27 @@
+{% extends '::base.html.twig' %}
+
+{% block title %}
+	{{parent() }}
+	- Accueil
+	
+{% endblock %}
+{% block stylesheets %}
+	<link rel="stylesheet" href="{{ asset('bundles/nipauserbundle/css/style.css') }}" type="text/css" media="all" />
+{% endblock %}
+		
+{% block body %}
+	<h1>Bienvenue {{ user.Nom }} {{ user.Prenom }}</h1>
+	<br>
+	<a href="{{ path('accueil') }}">Accueil</a> - <a href="{{ path('desk_show', {"deskId": 4}) }}">Bureau n°4</a> - <a href="{{ path('user_show', {"userId": 4}) }}">Utilisateur</a>
+
+        <ul>
+        {% for com in user.groupe %}
+            <li>
+                <h4>Groupe {{ com.Nom }}</h4>
+            </li>
+        {% else %}
+            <li>Aucun commentaire</li>
+        {% endfor %}
+        </ul>
+
+{% endblock %}

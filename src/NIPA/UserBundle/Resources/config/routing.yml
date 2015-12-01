@@ -1,0 +1,58 @@
+fos_user_security:
+   resource: "@FOSUserBundle/Resources/config/routing/security.xml"
+
+fos_user_profile:
+   resource: "@FOSUserBundle/Resources/config/routing/profile.xml"
+   prefix: /profile
+
+fos_user_register:
+   resource: "@FOSUserBundle/Resources/config/routing/registration.xml"
+   prefix: /register
+
+fos_user_resetting:
+   resource: "@FOSUserBundle/Resources/config/routing/resetting.xml"
+   prefix: /resetting
+
+fos_user_change_password:
+   resource: "@FOSUserBundle/Resources/config/routing/change_password.xml"
+   prefix: /profile
+
+accueil:
+    pattern:  /
+    defaults: { _controller: NIPAUserBundle:Default:index }
+
+user:
+    pattern:  /user
+    defaults: { _controller: NIPAUserBundle:User:index }
+
+groupe:
+    path: groupe/show/{groupeId}
+    defaults: { _controller: NIPAUserBundle:Groupe:show }
+
+groupe_add:
+    path: groupe/add
+    defaults: { _controller: NIPAUserBundle:Groupe:addGroupe }
+
+groupe_edit:
+    path: groupe/edit/{groupeId}
+    defaults: { _controller: NIPAUserBundle:Groupe:editGroupe }
+
+groupe_add_users:
+    path: groupe/edit/addUsers/{groupeId}
+    defaults: { _controller: NIPAUserBundle:Groupe:addUsers }
+
+groupe_delete_users:
+    path: groupe/edit/{groupeId}/deleteUsers/{identifiant}
+    defaults: { _controller: NIPAUserBundle:Groupe:deleteUsers }
+
+administration:
+    pattern:  /administration
+    defaults: { _controller: NIPAUserBundle:Administration:show }
+
+administration_user_delete:
+    path: profile/delete/{identifiant}
+    defaults: { _controller: NIPAUserBundle:Administration:deleteUser }
+
+administration_groupe_delete:
+    path: groupe/delete/{groupeId}
+    defaults: { _controller: NIPAUserBundle:Administration:deleteGroupe }

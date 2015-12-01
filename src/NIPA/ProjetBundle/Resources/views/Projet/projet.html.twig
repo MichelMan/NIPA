@@ -1,0 +1,48 @@
+{% extends "NIPAUserBundle::layoutNIPA.html.twig" %}
+
+{% block nipa_stylesheets %}
+    	<link rel="stylesheet" href="{{ asset('bundles/nipaprojetbundle/css/styleProjet.css') }}" type="text/css" media="all" />
+        <script src="{{ asset('bundles/nipauserbundle/js/navbarAdministration.js') }}"></script>
+        <script src="{{ asset('bundles/nipauserbundle/js/panelFilter.js') }}"></script>     
+        <script src="{{ asset('bundles/nipaprojetbundle/js/treeJS.js') }}"></script>     
+{% endblock %}
+
+{% block nipa_navbar %}
+    <ul class="nav nav-pills pull-left">
+        <li class="nav-item">
+          <a class="nav-link" href="{{ path('accueil') }}"><span class="glyphicon glyphicon-home"></span> Accueil</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="{{ path('user') }}"><span class="glyphicon glyphicon-th-large"></span> Ma page</a>
+        </li>
+        <li class="nav-item active">
+          <a class="nav-link" href="{{ path('projet') }}"><span class="glyphicon glyphicon-folder-open"></span> Projets<span class="sr-only">(current)</span></a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="{{ path('administration') }}"><span class="glyphicon glyphicon-wrench"></span> Administration</a>
+        </li>
+    </ul>
+{% endblock %}
+
+{% block nipa_user_content %}
+    <div class="container">    
+         
+        <div class="row">
+            <div class="col-md-4">
+                <center><h4><span class="glyphicon glyphicon-folder-open"></span> Projets >> Liste</h4></center>
+            </div>
+            <div class="col-md-8">
+                <ul class="nav nav-tabs nav-justified admin-menu">
+                    <li class="active"><a href="" data-target-id="projet"><i class="fa fa-list-alt fa-fw"></i>Liste</a></li>
+                    <li><a href="#" data-target-id="user"><i class="fa fa-user fa-fw"></i>Utilisateurs</a></li>
+                    <li><a href="#" data-target-id="groupe"><i class="fa fa-list-alt fa-fw"></i>Groupes</a></li>
+                    <li><a href="#" data-target-id="champs"><i class="fa fa-pencil-square fa-fw"></i>Champs personnalisés</a></li>               
+                </ul>
+            </div>
+        </div>   
+        
+        {% include "NIPAProjetBundle:Projet:projet_content.html.twig" %}
+
+    </div>
+                
+{% endblock nipa_user_content %}

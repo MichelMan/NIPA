@@ -1,0 +1,3 @@
+projet:
+    path:     /projet
+    defaults: { _controller: NIPAProjetBundle:Projet:index }

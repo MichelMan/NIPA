@@ -1,0 +1,70 @@
+{% extends "NIPAUserBundle::layoutNIPA.html.twig" %}
+
+
+{% block nipa_stylesheets %}
+    	<link rel="stylesheet" href="{{ asset('bundles/nipauserbundle/css/styleAdministration.css') }}" type="text/css" media="all" />
+        <script src="{{ asset('bundles/nipauserbundle/js/navbarAdministration.js') }}"></script>
+        <script src="{{ asset('bundles/nipauserbundle/js/panelFilter.js') }}"></script>   
+        <script src="{{ asset('bundles/nipauserbundle/js/tableSearch.js') }}"></script>     
+        <!-- <link href="//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/css/bootstrap-combined.min.css" rel="stylesheet" id="bootstrap-css"> -->
+{% endblock %}
+
+{% block nipa_navbar %}
+    <ul class="nav nav-pills pull-left">
+        <li class="nav-item">
+          <a class="nav-link" href="{{ path('accueil') }}"><span class="glyphicon glyphicon-home"></span> Accueil<span class="sr-only">(current)</span></a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="{{ path('user') }}"><span class="glyphicon glyphicon-th-large"></span> Ma page</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="{{ path('projet') }}"><span class="glyphicon glyphicon-folder-open"></span> Projets</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="{{ path('administration') }}"><span class="glyphicon glyphicon-wrench"></span> Administration</a>
+        </li>
+    </ul>
+{% endblock %}
+
+{% block nipa_user_content %}
+    
+        <div class="container">    
+            
+            <div class="row">
+                <div class="col-md-4">
+                    <center><h4><span class="glyphicon glyphicon-list-alt"></span> Groupes >> {% if groupe.id %} {{ groupe.Nom }} {% else %} Nouveau groupe {% endif %}</h4></center>
+                </div>
+                {#Si modification groupe via Admnistration #}
+                {% if groupe.id %} 
+                    <div class="col-md-8">
+                        <ul class="nav nav-tabs nav-justified admin-menu">
+                            <li class="active"><a href="#" data-target-id="general"><i class="fa fa-list-alt fa-fw"></i> Général</a></li>
+                            <li><a href="#" data-target-id="utilisateurs"><i class="fa fa-user fa-fw"></i> Utilisateurs</a></li>
+                            <li><a href="#" data-target-id="projets"><i class="fa fa-pencil-square fa-fw"></i> Projets</a></li>               
+                        </ul>
+                    </div>
+                {% else %} {#Si création groupe simple #}
+                    <div class="col-md-8">
+                        <ul class="nav nav-tabs nav-justified admin-menu">
+                            <li class="active"><a href="#" data-target-id="general"><i class="fa fa-list-alt fa-fw"></i> Général</a></li>
+                        </ul>
+                    </div>
+                {% endif %}
+            </div>
+            
+            <div class="row">             
+                <div class="col-md-12 well admin-content" id="general">
+                    {% include "NIPAUserBundle:Groupe:add_content.html.twig" %} 
+                </div>
+
+                <div class="col-md-12 well admin-content" id="utilisateurs">
+                    {% include "NIPAUserBundle:Groupe:add_users_content.html.twig" %}
+                </div>
+
+                <div class="col-md-12 well admin-content" id="projets">
+                    {% include "NIPAUserBundle:Groupe:add_projets_content.html.twig" %}
+                </div>          
+            </div>
+        </div>
+       
+{% endblock nipa_user_content %}
