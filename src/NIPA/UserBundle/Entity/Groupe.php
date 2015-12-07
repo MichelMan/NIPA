@@ -97,7 +97,8 @@ class Groupe
      */
     public function removeUtilisateurs(\NIPA\UserBundle\Entity\Utilisateur $utilisateur)
     {
-        $this->getUtilisateur()->removeElement($utilisateur);
+        $this->getUtilisateur()->removeElement($utilisateur);        
+        // $this->utilisateur->removeElement($utilisateur);
     }    
     
     /**
@@ -117,9 +118,7 @@ class Groupe
      */
     public function getUtilisateur()
     {
-        //return $this->utilisateur->toArray();
-        return $this->utilisateur;
-                
+        return $this->utilisateur;                
     }
     
     public function getUtilisateursToArray()

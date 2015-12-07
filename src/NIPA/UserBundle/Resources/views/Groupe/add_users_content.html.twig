@@ -41,7 +41,7 @@
                         <td>{{ user.getPrenom() }}</td>
                         <td>{{ user.getNom() }}</td>
                         <td>
-                            <a href="{{ path('groupe_delete_users', {'identifiant': user.identifiant, 'groupeId': groupe.id}) }}" class="confirmModalLink" href=""><span class="glyphicon glyphicon-remove icon-remove"></span></a>                               
+                            <a href="{{ path('groupe_delete_users', {'identifiant': user.identifiant, 'groupeId': groupe.id}) }}" class="confirmModalLink"><span class="glyphicon glyphicon-remove icon-remove"></span></a>                               
                         </td>
                     </tr>
                 {% endfor %}
@@ -175,12 +175,12 @@
     </div>
 
     <script>
-        $(document).on("click", ".open-DeleteUser", function () {
+   /*     $(document).on("click", ".open-DeleteUser", function () {
              var Id = $(this).data('id');
              $(".modal-body #Id").val( Id );
             $('#myModal').modal('show');
         });
-
+    */    
         $(document).ready(function () {
             var theHREF;
 

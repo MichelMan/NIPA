@@ -11,8 +11,8 @@ use NIPA\UserBundle\Entity\Utilisateur;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RedirectResponse;
-use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 
@@ -204,12 +204,12 @@ class GroupeController extends Controller
     {
         /********************************************************************/
         
-        $request = $this->get('request');
+        $groupe = $this->get('nipa_groupe.groupe_manager')->loadGroupe($groupeId);
 
        /******1er formulaire de BASE********/
-  
+                
         // On vérifie que l'ID du groupe existe
-        if (!$groupe = $this->get('nipa_groupe.groupe_manager')->loadGroupe($groupeId)) {
+        if (!$groupe) {
             throw new NotFoundHttpException(
                 $this->get('translator')->trans('This groupe does not exist.')
             );
@@ -226,7 +226,7 @@ class GroupeController extends Controller
         $formModal = $this->get('form.factory')->create(new SelectUserModalType(), $users);
      
         $options = $formModal->get('identifiant')->getConfig()->getOptions();
-        $choices = $options['choice_list']->getChoices();       
+        $choices = $options['choice_list']->getChoices();          
         /************************************/
 
        /********************************************************************/
@@ -235,7 +235,7 @@ class GroupeController extends Controller
         // On efface un utilisateur d'un groupe
         $user = $userManager->findUserBy(array('Identifiant' => $identifiant)); // on accède aux service et on récupère les méthodes dans UserManager
         
-        $em = $this->getDoctrine()->getEntityManager();
+        $em = $this->getDoctrine()->getManager();
 
         $groupe->removeUtilisateurs($user);
 
@@ -243,9 +243,7 @@ class GroupeController extends Controller
         
         $this->get('session')->getFlashBag()->add('success','Utilisateur '.$user->getNom().' '.$user->getPrenom().' effacé');
         
-        return $this->render('NIPAUserBundle:Groupe:add.html.twig',array('form' => $form->createView(), 'formModal' => $formModal->createView(), 'groupe' => $groupe,  'choices' => $choices)); // On change le template par défaut et on réutilise celui de add qui est le même
-     
+        return $this->render('NIPAUserBundle:Groupe:add.html.twig',array('form' => $form->createView(), 'formModal' => $formModal->createView(), 'groupe' => $groupe,  'choices' => $choices)); // On change le template par défaut et on réutilise celui de add qui est le même 
         
-    }         
-    
+    }            
 }

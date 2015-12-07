@@ -1,6 +1,6 @@
 {% extends "NIPAUserBundle::layoutNIPA.html.twig" %}
 
-{% block nipa_stylesheets %}     
+{% block nipa_stylesheets %}
         <!-- load the theme CSS file of jstree -->
         <link rel="stylesheet" href="{{ asset('bundles/nipaprojetbundle/js/dist/themes/default/style.min.css') }}" />
         <!-- include the minified jstree source -->
@@ -23,10 +23,10 @@
         <li class="nav-item">
           <a class="nav-link" href="{{ path('portefeuille') }}"><span class="glyphicon glyphicon-folder-open"></span> Portefeuilles<span class="sr-only">(current)</span></a>
         </li>        
-        <li class="nav-item">
+        <li class="nav-item active">
           <a class="nav-link" href="{{ path('demande') }}"><span class="glyphicon glyphicon-folder-open"></span> Demandes<span class="sr-only">(current)</span></a>
         </li>   
-        <li class="nav-item active">
+        <li class="nav-item">
           <a class="nav-link" href="{{ path('projet') }}"><span class="glyphicon glyphicon-folder-open"></span> Projets<span class="sr-only">(current)</span></a>
         </li>        
         <li class="nav-item">
@@ -40,7 +40,7 @@
          
         <div class="row">
             <div class="col-md-3">
-                <center><h4><span class="glyphicon glyphicon-folder-open"></span> Projets >> Liste</h4></center>
+                <center><h4><span class="glyphicon glyphicon-folder-open"></span> Demandes >> Liste</h4></center>
             </div>
             <div class="col-md-9">
                 <ul class="nav nav-tabs nav-justified admin-menu">
@@ -52,7 +52,7 @@
             </div>
         </div>   
         
-        {% include "NIPAProjetBundle:Projet:projet_content.html.twig" %}
+        {% include "NIPAProjetBundle:Demande:demande_content.html.twig" %}
 
     </div>
                 

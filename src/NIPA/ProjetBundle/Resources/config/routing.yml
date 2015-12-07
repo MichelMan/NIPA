@@ -1,3 +1,11 @@
+portefeuille:
+    path:     /portefeuille
+    defaults: { _controller: NIPAProjetBundle:Portefeuille:index }
+
 projet:
     path:     /projet
     defaults: { _controller: NIPAProjetBundle:Projet:index }
+
+demande:
+    path:     /demande
+    defaults: { _controller: NIPAProjetBundle:Demande:index }

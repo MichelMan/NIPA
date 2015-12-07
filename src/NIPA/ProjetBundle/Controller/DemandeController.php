@@ -10,13 +10,13 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 
-class ProjetController extends Controller
+class DemandeController extends Controller
 {
 	
     public function indexAction()
     {
         //return array();
-        return $this->render('NIPAProjetBundle:Projet:projet.html.twig', array());
+        return $this->render('NIPAProjetBundle:Demande:demande.html.twig', array());
     } 
 
 }
