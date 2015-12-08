@@ -24,6 +24,7 @@
             <div class="panel-body">
                 <input type="text" class="form-control" id="groupes-table-filter" data-action="filter" data-filters="#groupes-table" placeholder="Filtres groupe" />
             </div>
+            <br>
             <table class="table table-hover" id="groupes-table">
                 <thead>
                     <tr>
@@ -47,31 +48,7 @@
                 </tbody>
             </table>
         </div>
-        
-        <!-- PAGINATION -->  
-        <nav>
-          <ul class="pagination">
-            <li class="disabled">
-              <a href="#" aria-label="Previous">
-                <span aria-hidden="true">&laquo;</span>
-                <span class="sr-only">Previous</span>
-              </a>
-            </li>
-            <li class="active">
-              <a href="#">1 <span class="sr-only">(current)</span></a>
-            </li>
-            <li><a href="#">2</a></li>
-            <li><a href="#">3</a></li>
-            <li>
-              <a href="#" aria-label="Next">
-                <span aria-hidden="true">&raquo;</span>
-                <span class="sr-only">Next</span>
-              </a>
-            </li>
-          </ul>
-        </nav>
-    </div>
-                   
+    
     <!-- MODAL DELETE -->
     <div id="myModalGroupe" class="modal fade in">
         <div class="modal-dialog">
@@ -95,7 +72,11 @@
  
     
     <script>
-
+        
+        $(document).ready(function() {
+            $('#groupes-table').DataTable();
+        } );
+        
         $(document).ready(function () {
             var theHREF;
 

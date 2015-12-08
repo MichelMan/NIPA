@@ -1,0 +1,220 @@
+{% trans_default_domain 'NIPAUserBundle' %}
+
+{% block nipa_users_div %}
+    
+<form action="{% if groupe.permission %}{{ path('groupe_permission_edit', {'groupeId':groupe.id}) }}{% else %}{{ path('groupe_permission_add', {'groupeId':groupe.id}) }}{% endif %}" method="post" {{ form_enctype(form) }}>
+    <h3>{% if groupe.permission %}<span class='glyphicon glyphicon-lock'></span> {{ 'Modifier permissions'|trans }}{% else %}<span class='glyphicon glyphicon-lock'></span> {{ 'Affecter permissions'|trans }}{% endif %}</h3>
+        
+    <div class="container">
+
+        <div id="rates">
+            <div class="row head">
+                    <div class="col-xs-3 col-sm-6"></div>
+                    <div class="col-xs-3 col-sm-2">
+                            <span>CMS</span>
+                    </div>
+                    <div class="col-xs-3 col-sm-2">
+                            <span>Lecture</span>
+                    </div>
+                    <div class="col-xs-3 col-sm-2">
+                            <span>???</span>
+                    </div>                    
+            </div>
+            <div class="row">
+                <div class="col-xs-3 col-sm-6">
+                        <div class="item">Portefeuilles</div>
+                </div>
+                <div class="col-xs-3 col-sm-2">
+                    <div class="item"><br>
+                        <span class="button-checkbox">
+                            <button type="button" class="btn btn-lg" data-color="success"></button>
+                            <div id="foo" style="visibility:hiddDen;">
+                                {{ form_errors(formPermission.CMSPortefeuille) }}
+                                {{ form_label(formPermission.CMSPortefeuille, 'CMSPortefeuille'|trans) }}
+                                {{ form_widget(formPermission.CMSPortefeuille) }}
+                            </div>
+                        </span>
+                    </div>
+                </div>
+                <div class="col-xs-3 col-sm-2">
+                    <div class="item"><br>
+                        <span class="button-checkbox">
+                            <button type="button" class="btn btn-lg" data-color="success"></button>
+                            <div id="foo" style="visibility:hiddDen;">
+                                {{ form_errors(formPermission.LPortefeuille) }}
+                                {{ form_label(formPermission.LPortefeuille, 'LPortefeuille'|trans) }}
+                                {{ form_widget(formPermission.LPortefeuille) }}
+                            </div>
+                        </span>
+                    </div>
+                </div>
+                <div class="col-xs-3 col-sm-2">
+                    <div class="item"><br>
+                        <span class="button-checkbox">
+                            <button type="button" class="btn btn-lg" data-color="success"></button>
+                            <div id="foo" style="visibility:hiddDen;">
+
+                            </div>
+                        </span>
+                    </div>
+                </div>                            
+            </div>
+            <div class="row">
+                <div class="col-xs-3 col-sm-6">
+                        <div class="item">Demandes</div>
+                </div>
+                <div class="col-xs-3 col-sm-2">
+                    <div class="item"><br>
+                        <span class="button-checkbox">
+                            <button type="button" class="btn btn-lg" data-color="success"></button>
+                            <div id="foo" style="visibility:hidDden;">
+                                {{ form_errors(formPermission.CMSDemande) }}
+                                {{ form_label(formPermission.CMSDemande, 'CMSDemande'|trans) }}
+                                {{ form_widget(formPermission.CMSDemande) }}
+                            </div>
+                        </span>
+                    </div>
+                </div>
+                <div class="col-xs-3 col-sm-2">
+                    <div class="item"><br>
+                        <span class="button-checkbox">
+                            <button type="button" class="btn btn-lg" data-color="success"></button>
+                            <div id="foo" style="visibility:hidDden;">
+                                {{ form_errors(formPermission.LDemande) }}
+                                {{ form_label(formPermission.LDemande, 'LDemande'|trans) }}
+                                {{ form_widget(formPermission.LDemande) }}
+                            </div>
+                        </span>
+                    </div>
+                </div>
+                <div class="col-xs-3 col-sm-2">
+                    <div class="item"><br>
+                        <span class="button-checkbox">
+                            <button type="button" class="btn btn-lg" data-color="success"></button>
+                            <div id="foo" style="visibility:hiddDen;">
+
+                            </div>
+                        </span>
+                    </div>
+                </div>                               
+            </div>
+            <div class="row">
+                <div class="col-xs-3 col-sm-6">
+                        <div class="item">Projets</div>
+                </div>
+                <div class="col-xs-3 col-sm-2">
+                    <div class="item"><br>
+                        <span class="button-checkbox">
+                            <button type="button" class="btn btn-lg" data-color="success"></button>
+                            <div id="foo" style="visibility:hiDdden;">
+                                {{ form_errors(formPermission.CMSProjet) }}
+                                {{ form_label(formPermission.CMSProjet, 'CMSProjet'|trans) }}
+                                {{ form_widget(formPermission.CMSProjet) }}
+                            </div>
+                        </span>
+                    </div>
+                </div>
+                <div class="col-xs-3 col-sm-2">
+                    <div class="item"><br>
+                        <span class="button-checkbox">
+                            <button type="button" class="btn btn-lg" data-color="success"></button>
+                            <div id="foo" style="visibility:hDidden;">
+                                {{ form_errors(formPermission.LProjet) }}
+                                {{ form_label(formPermission.LProjet, 'LProjet'|trans) }}
+                                {{ form_widget(formPermission.LProjet) }}
+                            </div>
+                        </span>
+                    </div>
+                </div>
+                <div class="col-xs-3 col-sm-2">
+                    <div class="item"><br>
+                        <span class="button-checkbox">
+                            <button type="button" class="btn btn-lg" data-color="success"></button>
+                            <div id="foo" style="visibility:hiddDen;">
+
+                            </div>
+                        </span>
+                    </div>
+                </div>                               
+            </div>        
+        </div>
+
+    </div>
+    
+    {{ form_rest(form) }}
+    <br>
+    <button class="btn btn-success" type="submit" style="float: right;">{% if groupe.permission %}{{ 'Mise à jour'|trans }}{% else %}{{ 'Affectation'|trans }}{% endif %}</button>
+
+</form>
+
+<script>
+
+    $(function () {
+        $('.button-checkbox').each(function () {
+
+            // Settings
+            var $widget = $(this),
+                $button = $widget.find('button'),
+                $checkbox = $widget.find('input:checkbox'),
+                color = $button.data('color'),
+                settings = {
+                    on: {
+                        icon: 'glyphicon glyphicon-check'
+                    },
+                    off: {
+                        icon: 'glyphicon glyphicon-unchecked'
+                    }
+                };
+
+            // Event Handlers
+            $button.on('click', function () {
+                $checkbox.prop('checked', !$checkbox.is(':checked'));
+                $checkbox.triggerHandler('change');
+                updateDisplay();
+            });
+            $checkbox.on('change', function () {
+                updateDisplay();
+            });
+
+            // Actions
+            function updateDisplay() {
+                var isChecked = $checkbox.is(':checked');
+
+                // Set the button's state
+                $button.data('state', (isChecked) ? "on" : "off");
+
+                // Set the button's icon
+                $button.find('.state-icon')
+                    .removeClass()
+                    .addClass('state-icon ' + settings[$button.data('state')].icon);
+
+                // Update the button's color
+                if (isChecked) {
+                    $button
+                        .removeClass('btn-default')
+                        .addClass('btn-' + color + ' active');
+                }
+                else {
+                    $button
+                        .removeClass('btn-' + color + ' active')
+                        .addClass('btn-default');
+                }
+            }
+
+            // Initialization
+            function init() {
+
+                updateDisplay();
+
+                // Inject the icon if applicable
+                if ($button.find('.state-icon').length == 0) {
+                    $button.prepend('<i class="state-icon ' + settings[$button.data('state')].icon + '"></i> ');
+                }
+            }
+            init();
+        });
+    });
+
+</script>
+    
+{% endblock nipa_users_div %}

@@ -4,9 +4,11 @@ namespace NIPA\UserBundle\Controller;
 
 use NIPA\UserBundle\Form\Type\GroupeFormType;
 use NIPA\UserBundle\Form\Type\SelectUserModalType;
+use NIPA\UserBundle\Form\Type\PermissionFormType;
 
 use NIPA\UserBundle\Entity\Groupe;
 use NIPA\UserBundle\Entity\Utilisateur;
+use NIPA\UserBundle\Entity\Permission;
 
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
@@ -49,7 +51,23 @@ class GroupeController extends Controller
         $options = $formModal->get('identifiant')->getConfig()->getOptions();
         $choices = $options['choice_list']->getChoices();       
         /************************************/       
-       
+ 
+        /******3e formulaire en ARGUMENT*****/       
+        if($groupe->getPermission() == null)
+        {
+            $permission = new Permission();
+            // On bind le groupe récupéré depuis la BDD au formulaire pour modification
+            $formPermission = $this->get('form.factory')->create(new PermissionFormType(), $permission);
+        }
+        else
+        {
+            $permission = $groupe->getPermission();
+            // On bind le groupe récupéré depuis la BDD au formulaire pour modification
+            $formPermission = $this->get('form.factory')->create(new PermissionFormType(), $permission);
+        }
+        /************************************/       
+        
+        
        if ('POST' == $request->getMethod()) { // Si on a posté le formulaire
            //$form->bindRequest($request); // On bind les données du form DEPRECATED
            $form->handleRequest($request);
@@ -72,7 +90,7 @@ class GroupeController extends Controller
            }
        }
        
-       return $this->render('NIPAUserBundle:Groupe:add.html.twig', array('form' => $form->createView(), 'formModal' => $formModal->createView(), 'groupe' => $groupe,  'choices' => $choices)); // On passe à Twig l'objet form et notre objet Groupe
+       return $this->render('NIPAUserBundle:Groupe:add.html.twig', array('form' => $form->createView(), 'formModal' => $formModal->createView(), 'formPermission' => $formPermission->createView(), 'groupe' => $groupe,  'choices' => $choices)); // On passe à Twig l'objet form et notre objet Groupe
    }
    
     /**
@@ -106,6 +124,21 @@ class GroupeController extends Controller
         $choices = $options['choice_list']->getChoices();       
         /************************************/
 
+        /******3e formulaire en ARGUMENT*****/       
+        if($groupe->getPermission() == null)
+        {
+            $permission = new Permission();
+            // On bind le groupe récupéré depuis la BDD au formulaire pour modification
+            $formPermission = $this->get('form.factory')->create(new PermissionFormType(), $permission);
+        }
+        else
+        {
+            $permission = $groupe->getPermission();
+            // On bind le groupe récupéré depuis la BDD au formulaire pour modification
+            $formPermission = $this->get('form.factory')->create(new PermissionFormType(), $permission);
+        }
+        /************************************/       
+        
         // Si le groupe soumet le formulaire
         //if ($request->getMethod() == 'POST') {
         if ('POST' == $request->getMethod()) {
@@ -131,7 +164,7 @@ class GroupeController extends Controller
             }                   
         }
 
-        return $this->render('NIPAUserBundle:Groupe:add.html.twig',array('form' => $form->createView(), 'formModal' => $formModal->createView(), 'groupe' => $groupe,  'choices' => $choices)); // On change le template par défaut et on réutilise celui de add qui est le même
+        return $this->render('NIPAUserBundle:Groupe:add.html.twig', array('form' => $form->createView(), 'formModal' => $formModal->createView(), 'formPermission' => $formPermission->createView(), 'groupe' => $groupe,  'choices' => $choices)); // On passe à Twig l'objet form et notre objet Groupe
     }   
     
     
@@ -155,7 +188,22 @@ class GroupeController extends Controller
      
         $options = $formModal->get('identifiant')->getConfig()->getOptions();
         $choices = $options['choice_list']->getChoices();       
-        /************************************/        
+        /************************************/     
+        
+        /******3e formulaire en ARGUMENT*****/       
+        if($groupe->getPermission() == null)
+        {
+            $permission = new Permission();
+            // On bind le groupe récupéré depuis la BDD au formulaire pour modification
+            $formPermission = $this->get('form.factory')->create(new PermissionFormType(), $permission);
+        }
+        else
+        {
+            $permission = $groupe->getPermission();
+            // On bind le groupe récupéré depuis la BDD au formulaire pour modification
+            $formPermission = $this->get('form.factory')->create(new PermissionFormType(), $permission);
+        }
+        /************************************/              
         
         // Si le groupe soumet le formulaire
         //if ($request->getMethod() == 'POST') {
@@ -197,7 +245,7 @@ class GroupeController extends Controller
             //}
         }
 
-        return $this->render('NIPAUserBundle:Groupe:add.html.twig',array('formModal' => $formModal->createView(), 'groupe' => $groupe,  'choices' => $choices)); // On change le template par défaut et on réutilise celui de add qui est le même
+         return $this->render('NIPAUserBundle:Groupe:add.html.twig', array('form' => $form->createView(), 'formModal' => $formModal->createView(), 'formPermission' => $formPermission->createView(), 'groupe' => $groupe,  'choices' => $choices)); // On passe à Twig l'objet form et notre objet Groupe
     }
     
     public function deleteUsersAction($identifiant, $groupeId)
@@ -228,7 +276,22 @@ class GroupeController extends Controller
         $options = $formModal->get('identifiant')->getConfig()->getOptions();
         $choices = $options['choice_list']->getChoices();          
         /************************************/
-
+        
+        /******3e formulaire en ARGUMENT*****/       
+        if($groupe->getPermission() == null)
+        {
+            $permission = new Permission();
+            // On bind le groupe récupéré depuis la BDD au formulaire pour modification
+            $formPermission = $this->get('form.factory')->create(new PermissionFormType(), $permission);
+        }
+        else
+        {
+            $permission = $groupe->getPermission();
+            // On bind le groupe récupéré depuis la BDD au formulaire pour modification
+            $formPermission = $this->get('form.factory')->create(new PermissionFormType(), $permission);
+        }
+        /************************************/      
+        
        /********************************************************************/
        
        
@@ -243,7 +306,148 @@ class GroupeController extends Controller
         
         $this->get('session')->getFlashBag()->add('success','Utilisateur '.$user->getNom().' '.$user->getPrenom().' effacé');
         
-        return $this->render('NIPAUserBundle:Groupe:add.html.twig',array('form' => $form->createView(), 'formModal' => $formModal->createView(), 'groupe' => $groupe,  'choices' => $choices)); // On change le template par défaut et on réutilise celui de add qui est le même 
+        return $this->render('NIPAUserBundle:Groupe:add.html.twig', array('form' => $form->createView(), 'formModal' => $formModal->createView(), 'formPermission' => $formPermission->createView(), 'groupe' => $groupe,  'choices' => $choices)); // On passe à Twig l'objet form et notre objet Groupe
         
-    }            
+    }
+    
+    
+    /**
+    *  ADD Permission to a Groupe
+    * 
+    */
+   public function addPermissionGroupeAction($groupeId)
+   {
+        $request = $this->get('request'); // On récupère l'objet request via le service container
+        $groupe = $this->get('nipa_groupe.groupe_manager')->loadGroupe($groupeId);
+
+        $form = $this->get('form.factory')->create(new GroupeFormType(), $groupe); // On bind l'objet Groupe à notre formulaire GroupeFormType
+
+        /******2e formulaire en ARGUMENT*****/
+        $userManager = $this->get('fos_user.user_manager');
+        $users = $userManager->findUsers(); // on accède aux service et on récupère les méthodes dans  UserManager
+        
+        // On bind le groupe récupéré depuis la BDD au formulaire pour modification
+        $formModal = $this->get('form.factory')->create(new SelectUserModalType(), $users);
+     
+        $options = $formModal->get('identifiant')->getConfig()->getOptions();
+        $choices = $options['choice_list']->getChoices();       
+        /************************************/       
+        
+        /******3e formulaire en ARGUMENT*****/       
+        if($groupe->getPermission() == null)
+        {
+            $permission = new Permission();
+            // On bind le groupe récupéré depuis la BDD au formulaire pour modification
+            $formPermission = $this->get('form.factory')->create(new PermissionFormType(), $permission);
+        }
+        else
+        {
+            $permission = $groupe->getPermission();
+            // On bind le groupe récupéré depuis la BDD au formulaire pour modification
+            $formPermission = $this->get('form.factory')->create(new PermissionFormType(), $permission);
+        }
+        /************************************/      
+        
+       if ('POST' == $request->getMethod()) { // Si on a posté le formulaire
+           //$form->bindRequest($request); // On bind les données du form DEPRECATED
+           $formPermission->submit($request->request->get($formPermission->getName()));                       
+            //$formPermission->handleRequest($request);
+           //if ($formPermission->isValid()) { // Si le formulaire est valide
+
+                // On lie les permissions au groupe
+                $groupe->setPermission($permission);
+
+                // On récupère l'EntityManager
+                $em = $this->getDoctrine()->getManager();
+
+                // On « persiste » l'entité
+                $em->persist($groupe);
+                
+                // On déclenche l'enregistrement
+                $em->flush();
+                
+                $this->get('session')->getFlashBag()->set('notice',
+                $this->get('translator')->trans('Permissions au groupe ajouté')
+                );
+                
+               // On redirige vers la page de modification du groupe
+               return new RedirectResponse($this->generateUrl('groupe_edit', array(
+                   'groupeId' => $groupe->getId()
+               )));
+           //}
+       }
+       
+       return $this->render('NIPAUserBundle:Groupe:add.html.twig', array('form' => $form->createView(), 'formModal' => $formModal->createView(), 'formPermission' => $formPermission->createView(), 'groupe' => $groupe,  'choices' => $choices)); // On passe à Twig l'objet form et notre objet Groupe
+   }
+    
+   /**
+    *  EDIT Permission to a Groupe
+    * 
+    */
+   public function editPermissionGroupeAction($groupeId)
+   {
+        $request = $this->get('request'); // On récupère l'objet request via le service container
+        $groupe = $this->get('nipa_groupe.groupe_manager')->loadGroupe($groupeId);
+
+        $form = $this->get('form.factory')->create(new GroupeFormType(), $groupe); // On bind l'objet Groupe à notre formulaire GroupeFormType
+
+        /******2e formulaire en ARGUMENT*****/
+        $userManager = $this->get('fos_user.user_manager');
+        $users = $userManager->findUsers(); // on accède aux service et on récupère les méthodes dans  UserManager
+        
+        // On bind le groupe récupéré depuis la BDD au formulaire pour modification
+        $formModal = $this->get('form.factory')->create(new SelectUserModalType(), $users);
+     
+        $options = $formModal->get('identifiant')->getConfig()->getOptions();
+        $choices = $options['choice_list']->getChoices();       
+        /************************************/       
+        
+        /******3e formulaire en ARGUMENT*****/       
+        if($groupe->getPermission() == null)
+        {
+            $permission = new Permission();
+            // On bind le groupe récupéré depuis la BDD au formulaire pour modification
+            $formPermission = $this->get('form.factory')->create(new PermissionFormType(), $permission);
+        }
+        else
+        {
+            $permission = $groupe->getPermission();
+            // On bind le groupe récupéré depuis la BDD au formulaire pour modification
+            $formPermission = $this->get('form.factory')->create(new PermissionFormType(), $permission);
+        }
+        /************************************/      
+        
+       if ('POST' == $request->getMethod()) { // Si on a posté le formulaire
+           //$form->bindRequest($request); // On bind les données du form DEPRECATED
+           $formPermission->submit($request->request->get($formPermission->getName()));                       
+            //$formPermission->handleRequest($request);
+           //if ($formPermission->isValid()) { // Si le formulaire est valide
+
+                // On lie les permissions au groupe
+                $groupe->setPermission($permission);
+
+                // On récupère l'EntityManager
+                $em = $this->getDoctrine()->getManager();
+
+                // On « persiste » l'entité
+                $em->persist($groupe);
+                
+                // On déclenche l'enregistrement
+                $em->flush();
+                
+                $this->get('session')->getFlashBag()->set('notice',
+                $this->get('translator')->trans('Permissions au groupe modifié')
+                );
+                
+               // On redirige vers la page de modification du groupe
+               return new RedirectResponse($this->generateUrl('groupe_edit', array(
+                   'groupeId' => $groupe->getId()
+               )));
+           //}
+       }
+       
+       return $this->render('NIPAUserBundle:Groupe:add.html.twig', array('form' => $form->createView(), 'formModal' => $formModal->createView(), 'formPermission' => $formPermission->createView(), 'groupe' => $groupe,  'choices' => $choices)); // On passe à Twig l'objet form et notre objet Groupe
+   }
+    
+   
 }

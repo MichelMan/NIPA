@@ -2,8 +2,12 @@
 
 {% block nipa_stylesheets %}
     	<link rel="stylesheet" href="{{ asset('bundles/nipauserbundle/css/styleAdministration.css') }}" type="text/css" media="all" />
+        <link rel="stylesheet" href="{{ asset('bundles/nipauserbundle/css/jquery.dataTables.min.css') }}" type="text/css" media="all" />
+
         <script src="{{ asset('bundles/nipauserbundle/js/navbarAdministration.js') }}"></script>
-        <script src="{{ asset('bundles/nipauserbundle/js/panelFilter.js') }}"></script>     
+        <script src="{{ asset('bundles/nipauserbundle/js/panelFilter.js') }}"></script>
+        <script src="{{ asset('bundles/nipauserbundle/js/jquery.dataTables.min.js') }}"></script>
+        <script src="{{ asset('bundles/nipauserbundle/js/dataTables.bootstrap.min.js') }}"></script>
         <!-- <link href="//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/css/bootstrap-combined.min.css" rel="stylesheet" id="bootstrap-css"> -->
 {% endblock %}
 
@@ -16,10 +20,16 @@
           <a class="nav-link" href="{{ path('user') }}"><span class="glyphicon glyphicon-th-large"></span> Ma page</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" href="{{ path('projet') }}"><span class="glyphicon glyphicon-folder-open"></span> Projets</a>
-        </li>
+          <a class="nav-link" href="{{ path('portefeuille') }}"><span class="glyphicon glyphicon-folder-open"></span> Portefeuilles<span class="sr-only">(current)</span></a>
+        </li>        
+        <li class="nav-item">
+          <a class="nav-link" href="{{ path('demande') }}"><span class="glyphicon glyphicon-folder-open"></span> Demandes<span class="sr-only">(current)</span></a>
+        </li>   
+        <li class="nav-item">
+          <a class="nav-link" href="{{ path('projet') }}"><span class="glyphicon glyphicon-folder-open"></span> Projets<span class="sr-only">(current)</span></a>
+        </li>        
         <li class="nav-item active">
-          <a class="nav-link" href="{{ path('administration') }}"><span class="glyphicon glyphicon-wrench"></span> Administration<span class="sr-only">(current)</span></a>
+          <a class="nav-link" href="{{ path('administration') }}"><span class="glyphicon glyphicon-wrench"></span> Administration</a>
         </li>
     </ul>
 {% endblock %}
@@ -62,4 +72,5 @@
             </div>
         </div>
     </div>
+                
 {% endblock nipa_user_content %}

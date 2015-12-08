@@ -34,10 +34,27 @@ class Groupe
      */
     private $utilisateur;
 
+    /**
+     * @ORM\OneToOne(targetEntity="NIPA\UserBundle\Entity\Permission", cascade={"persist"})
+     */
+    private $permission;        
+    
+    
     public function __construct() {
         $this->utilisateur = new ArrayCollection();
     }
+   
+    
+    public function setPermission(Permission $permission)
+    {
+      $this->permission = $permission;
+    }
 
+    public function getPermission()
+    {
+      return $this->permission;
+    }    
+    
     /**
      * Get id
      *

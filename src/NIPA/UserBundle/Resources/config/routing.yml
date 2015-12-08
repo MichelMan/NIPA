@@ -56,3 +56,11 @@ administration_user_delete:
 administration_groupe_delete:
     path: groupe/delete/{groupeId}
     defaults: { _controller: NIPAUserBundle:Administration:deleteGroupe }
+
+groupe_permission_add:
+    path: groupe/permission/add/{groupeId}
+    defaults: { _controller: NIPAUserBundle:Groupe:addPermissionGroupe }
+
+groupe_permission_edit:
+    path: groupe/permission/edit/{groupeId}
+    defaults: { _controller: NIPAUserBundle:Groupe:editPermissionGroupe }
