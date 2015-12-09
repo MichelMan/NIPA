@@ -11,28 +11,32 @@
         <!-- <link href="//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/css/bootstrap-combined.min.css" rel="stylesheet" id="bootstrap-css"> -->
 {% endblock %}
 
-{% block nipa_navbar %}
-    <ul class="nav nav-pills pull-left">
-        <li class="nav-item">
-          <a class="nav-link" href="{{ path('accueil') }}"><span class="glyphicon glyphicon-home"></span> Accueil</a>
+{% block nipa_navbar %}   
+    <ul class="nav navbar-nav">                   
+        <li class="">
+            <a class="nav-link" href="{{ path('accueil') }}"><span class="glyphicon glyphicon-home"></span> Accueil</a>
         </li>
-        <li class="nav-item">
-          <a class="nav-link" href="{{ path('user') }}"><span class="glyphicon glyphicon-th-large"></span> Ma page</a>
+        <li class="">
+            <a class="nav-link" href="{{ path('user') }}"><span class="glyphicon glyphicon-th-large"></span> Ma page</a>
         </li>
-        <li class="nav-item">
-          <a class="nav-link" href="{{ path('portefeuille') }}"><span class="glyphicon glyphicon-folder-open"></span> Portefeuilles<span class="sr-only">(current)</span></a>
+        <li class="">
+            <a class="nav-link" href="{{ path('portefeuille') }}"><span class="glyphicon glyphicon-folder-open"></span> Portefeuille<span class="sr-only">(current)</span></a>
         </li>        
-        <li class="nav-item">
-          <a class="nav-link" href="{{ path('demande') }}"><span class="glyphicon glyphicon-folder-open"></span> Demandes<span class="sr-only">(current)</span></a>
+        <li class="">
+            <a class="nav-link" href="{{ path('demande') }}"><span class="glyphicon glyphicon-folder-open"></span> Demande<span class="sr-only">(current)</span></a>
         </li>   
-        <li class="nav-item">
-          <a class="nav-link" href="{{ path('projet') }}"><span class="glyphicon glyphicon-folder-open"></span> Projets<span class="sr-only">(current)</span></a>
-        </li>        
-        <li class="nav-item active">
-          <a class="nav-link" href="{{ path('administration') }}"><span class="glyphicon glyphicon-wrench"></span> Administration</a>
-        </li>
+        <li class="">
+            <a class="nav-link" href="{{ path('projet') }}"><span class="glyphicon glyphicon-folder-open"></span> Projet<span class="sr-only">(current)</span></a>
+        </li>                   
     </ul>
+                    
 {% endblock %}
+
+{% block nipa_navbar_admin %}
+    <li class="active">
+        <a class="nav-link" href="{{ path('administration') }}"><span class="glyphicon glyphicon-wrench"></span> Administration</a>
+    </li>      
+{% endblock %}  
 
 {% block nipa_user_content %}
     
@@ -49,16 +53,18 @@
             <div class="col-md-3">
                 <ul class="nav nav-pills nav-stacked admin-menu">
                     <li class="active"><a href="" data-target-id="projet"><i class="fa fa-book fa-fw"></i>Projets</a></li>
+                    <li><a href="#" data-target-id="champs"><i class="fa fa-pencil-square fa-fw"></i>Champs personnalisés</a></li>                                   
                     <li><a href="#" data-target-id="user"><i class="fa fa-user fa-fw"></i>Utilisateurs</a></li>
                     <li><a href="#" data-target-id="groupe"><i class="fa fa-list-alt fa-fw"></i>Groupes</a></li>
-                    <li><a href="#" data-target-id="champs"><i class="fa fa-pencil-square fa-fw"></i>Champs personnalisés</a></li>               
                 </ul>
             </div>
 
             <div class="col-md-9 well admin-content" id="projet">
                 {% include "NIPAUserBundle:Administration:administration_content_projets.html.twig" %}
             </div>
-            
+            <div class="col-md-9 well admin-content" id="champs">
+                {% include "NIPAUserBundle:Administration:administration_content_champs.html.twig" %}
+            </div>            
             <div class="col-md-9 well admin-content" id="user">
                 {% include "NIPAUserBundle:Administration:administration_content_users.html.twig" %}
             </div>
@@ -67,9 +73,7 @@
                 {% include "NIPAUserBundle:Administration:administration_content_groupes.html.twig" %}
             </div>
             
-            <div class="col-md-9 well admin-content" id="champs">
-                {% include "NIPAUserBundle:Administration:administration_content_champs.html.twig" %}
-            </div>
+
         </div>
     </div>
                 

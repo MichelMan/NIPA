@@ -13,26 +13,29 @@
 {% endblock %}
 
 {% block nipa_navbar %}
-    <ul class="nav nav-pills pull-left">
-        <li class="nav-item">
-          <a class="nav-link" href="{{ path('accueil') }}"><span class="glyphicon glyphicon-home"></span> Accueil</a>
+    <ul class="nav navbar-nav">                   
+        <li class="">
+            <a class="nav-link" href="{{ path('accueil') }}"><span class="glyphicon glyphicon-home"></span> Accueil</a>
         </li>
-        <li class="nav-item">
-          <a class="nav-link" href="{{ path('user') }}"><span class="glyphicon glyphicon-th-large"></span> Ma page</a>
+        <li class="">
+            <a class="nav-link" href="{{ path('user') }}"><span class="glyphicon glyphicon-th-large"></span> Ma page</a>
         </li>
-        <li class="nav-item active">
-          <a class="nav-link" href="{{ path('portefeuille') }}"><span class="glyphicon glyphicon-folder-open"></span> Portefeuilles<span class="sr-only">(current)</span></a>
+        <li class="active">
+            <a class="nav-link" href="{{ path('portefeuille') }}"><span class="glyphicon glyphicon-folder-open"></span> Portefeuille<span class="sr-only">(current)</span></a>
         </li>        
-        <li class="nav-item">
-          <a class="nav-link" href="{{ path('demande') }}"><span class="glyphicon glyphicon-folder-open"></span> Demandes<span class="sr-only">(current)</span></a>
+        <li class="">
+            <a class="nav-link" href="{{ path('demande') }}"><span class="glyphicon glyphicon-folder-open"></span> Demande<span class="sr-only">(current)</span></a>
         </li>   
-        <li class="nav-item">
-          <a class="nav-link" href="{{ path('projet') }}"><span class="glyphicon glyphicon-folder-open"></span> Projets<span class="sr-only">(current)</span></a>
-        </li>        
-        <li class="nav-item">
-          <a class="nav-link" href="{{ path('administration') }}"><span class="glyphicon glyphicon-wrench"></span> Administration</a>
-        </li>
-    </ul>
+        <li class="">
+            <a class="nav-link" href="{{ path('projet') }}"><span class="glyphicon glyphicon-folder-open"></span> Projet<span class="sr-only">(current)</span></a>
+        </li>                  
+    </ul> 
+{% endblock %}
+
+{% block nipa_navbar_admin %}
+    <li class="">
+        <a class="nav-link" href="{{ path('administration') }}"><span class="glyphicon glyphicon-wrench"></span> Administration</a>
+    </li>      
 {% endblock %}
 
 {% block nipa_user_content %}
@@ -50,10 +53,18 @@
                     <li><a href="#" data-target-id="champs"><i class="fa fa-pencil-square fa-fw"></i>Champs personnalisés</a></li>               
                 </ul>
             </div>
-        </div>   
-        
+        </div>       
         {% include "NIPAProjetBundle:Portefeuille:portefeuille_content.html.twig" %}
+        <div class="row">             
+            <div class="col-md-12 well admin-content" id="user">
+            </div>
 
+            <div class="col-md-12 well admin-content" id="groupe">
+            </div>
+
+            <div class="col-md-12 well admin-content" id="champs">
+            </div>          
+        </div>
     </div>
                 
 {% endblock nipa_user_content %}

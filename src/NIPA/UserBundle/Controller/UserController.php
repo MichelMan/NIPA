@@ -25,7 +25,7 @@ class UserController extends Controller
     public function indexAction()
     {
         //return array();
-		return $this->render('NIPAUserBundle:User:user.html.twig', array());
+	return $this->render('NIPAUserBundle:User:user.html.twig', array());
     }
     
     /**

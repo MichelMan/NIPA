@@ -20,7 +20,7 @@ class DefaultController extends Controller
     public function indexAction()
     {
         //return array();
-		return $this->render('NIPAUserBundle:Default:accueil.html.twig', array());
+        return $this->render('NIPAUserBundle:Default:accueil.html.twig', array());
     }
     
     /**

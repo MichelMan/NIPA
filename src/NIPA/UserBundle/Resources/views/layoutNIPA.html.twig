@@ -22,45 +22,119 @@
         
         <!-- HTML5 Shim and Respond.js add IE8 support of HTML5 elements and media queries -->
         {% include 'BraincraftedBootstrapBundle::ie8-support.html.twig' %}   
+
+        <style>
+            .navbar-login{
+                width: 305px;
+                padding: 10px;
+                padding-bottom: 0px;
+            }
+
+            .navbar-login-session{
+                padding: 10px;
+                padding-bottom: 0px;
+                padding-top: 0px;
+            }
+
+            .icon-size{
+                font-size: 87px;
+            }            
+        </style>
+    
     </head>
     <body>
         
-        <nav class="navbar navbar-inverse navbar-static-top">
-            <a class="navbar-brand" href="{{ path('accueil') }}"> Nipa MOA DSO</a>
-            
-            {% if is_granted("IS_AUTHENTICATED_REMEMBERED") %}
-                {% block nipa_navbar %}
-                {% endblock %}             
-            {% endif %}  
-            
-            <ul class="nav nav-pills pull-right">
-                <li class="dropdown">
-                <a href="#" class="dropdown-toggle" data-toggle="dropdown"><span class="glyphicon glyphicon-user"></span> Profil utilisateur<span class="caret"></span></a>
-                <ul class="dropdown-menu" role="menu">
-                    <li> 
-                        {% if is_granted("IS_AUTHENTICATED_REMEMBERED") %}
-                            <a href="{{ path('fos_user_profile_show') }}"><span class="glyphicon glyphicon-check"></span> {{ 'layout.logged_in_as'|trans({'%username%': app.user.username}, 'FOSUserBundle') }} </a>
-                        {% else %}
-                            <a href="{{ path('fos_user_registration_register') }}"><span class="glyphicon glyphicon-list-alt"></span> S'enregistrer </a>
-                        {% endif %}                 
-                    </li>
+    <nav class="navbar navbar-static-top">
+        
+        <div class="navbar navbar-default navbar-fixed-top" role="navigation">
+            <div class="container"> 
+                <div class="navbar-header">
+                    <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span> 
+                    </button>
+                    <a class="navbar-brand" href="{{ path('accueil') }}"> Nipa MOA DSO</a>
+                </div>
+                <div class="collapse navbar-collapse">
+                    
                     {% if is_granted("IS_AUTHENTICATED_REMEMBERED") %}
-                        <li class="divider"></li>
-                        <li><a href="{{ path('fos_user_profile_edit') }}"><span class="glyphicon glyphicon-pencil"></span> Mon compte</a></li>
-                        <li><a href="{{ path('fos_user_change_password') }}"><span class="glyphicon glyphicon-lock"></span> Changer de mot de passe</a></li>
-                    {% endif %}                 
-                </ul>
-                </li>
-
-                <li>
-                    {% if is_granted("IS_AUTHENTICATED_REMEMBERED") %}
-                        <a href="{{ path('fos_user_security_logout') }}"><span class="glyphicon glyphicon-log-out"></span> {{ 'layout.logout'|trans({}, 'FOSUserBundle') }}</a>
-                    {% else %}
-                        <a href="{{ path('fos_user_security_login') }}"><span class="glyphicon glyphicon-log-in"></span> {{ 'layout.login'|trans({}, 'FOSUserBundle') }}</a>
-                    {% endif %}                 
-                </li>         	        
-            </ul>
-        </nav>
+                        {% block nipa_navbar %}
+                        {% endblock %}             
+                    {% endif %}                  
+ 
+                    
+                    <ul class="nav navbar-nav navbar-right">
+                        
+                        {% if (is_granted("IS_AUTHENTICATED_REMEMBERED") and (app.user.admin == 1)) %}
+                            {% block nipa_navbar_admin %}
+                            {% endblock %}             
+                        {% endif %}       
+                        
+                        <li class="dropdown">
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown"><span class="glyphicon glyphicon-user"></span> Profil utilisateur<span class="caret"></span></a>
+                            <ul class="dropdown-menu">
+                    
+                                <li>
+                                    {% if is_granted("IS_AUTHENTICATED_REMEMBERED") == false %}
+                                        <a href="{{ path('fos_user_registration_register') }}"><span class="glyphicon glyphicon-list-alt"></span> S'enregistrer </a>
+                                    {% else %}                                     
+                                    <div class="navbar-login">
+                                        <div class="row">
+                                            <div class="col-lg-4">
+                                                <p class="text-center">
+                                                    <span class="glyphicon glyphicon-user icon-size"></span>
+                                                </p>
+                                            </div>
+                                            <div class="col-lg-8">
+                                                <p class="text-left"><strong>{{app.user.nom}} {{app.user.prenom}}</strong></p>
+                                                <p class="text-left small">{{app.user.email}}</p>
+                                                <p class="text-left">
+                                                    <a href="{{ path('fos_user_profile_edit') }}" class="btn btn-primary btn-block"><span class="glyphicon glyphicon-pencil"></span> Mon compte</a>
+                                                </p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    {% endif %}                    
+                                </li>
+                                <li class="divider"></li>
+                                
+                                {% if is_granted("IS_AUTHENTICATED_REMEMBERED") %}
+                                    <li>
+                                        <div class="navbar-login navbar-login-session">
+                                            <div class="row">
+                                                <div class="col-lg-12">
+                                                    <p>
+                                                        <a href="{{ path('fos_user_security_logout') }}" class="btn btn-danger btn-block"><span class="glyphicon glyphicon-log-out"></span> {{ 'layout.logout'|trans({}, 'FOSUserBundle') }}</a>
+                                                    </p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </li>                    
+                                {% else %}
+                                    <li>
+                                        <div class="navbar-login navbar-login-session">
+                                            <div class="row">
+                                                <div class="col-lg-12">
+                                                    <p>
+                                                        <a href="{{ path('fos_user_security_login') }}" class="btn btn-success btn-block"><span class="glyphicon glyphicon-log-in"></span> {{ 'layout.login'|trans({}, 'FOSUserBundle') }}</a>
+                                                    </p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </li>                                  
+                                {% endif %}                                     
+             
+                            </ul>
+                        </li>
+                    </ul>
+                    
+                </div>
+            </div>
+        </div> 
+                                
+    </nav>    
+            
 
         {% if app.request.hasPreviousSession %}
             {% for type, messages in app.session.flashbag.all() %}

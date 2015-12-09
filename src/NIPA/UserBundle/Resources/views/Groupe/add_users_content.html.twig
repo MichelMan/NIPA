@@ -37,7 +37,7 @@
                 {# Liste all Users de ce groupe #}
                 {% for user in groupe.getUtilisateursToArray() %}
                     <tr>
-                        <td>{{ user.getIdentifiant() }}</td>
+                        <td><a data-toggle="tooltip" title="Modifier utilisateur" href="{{ path('fos_user_profile_edit_id', {'identifiant': user.getIdentifiant}) }}">{{ user.getIdentifiant }}</a></td>
                         <td>{{ user.getPrenom() }}</td>
                         <td>{{ user.getNom() }}</td>
                         <td>

@@ -9,6 +9,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 
 
 class AdministrationController extends Controller
@@ -17,6 +18,12 @@ class AdministrationController extends Controller
 
     public function showAction()
     {
+        $user = $this->getUser();
+        
+        if ($user->getAdmin() == false) { // On test si user Admin pour avoir accès à la section Administration
+            throw new AccessDeniedException("Section autorisée uniquement pour les administrateurs!");
+        }
+        
         //return array() List ALL Users;
         $userManager = $this->get('fos_user.user_manager');
         $users = $userManager->findUsers(); // on accède aux service et on récupère les méthodes dans  UserManager

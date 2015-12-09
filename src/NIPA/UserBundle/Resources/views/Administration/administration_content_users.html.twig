@@ -24,6 +24,7 @@
             <div class="panel-body">
                 <input type="text" class="form-control" id="users-table-filter" data-action="filter" data-filters="#users-table" placeholder="Filtres utilisateur" />
             </div>
+            <br>
             <table class="table table-hover" id="users-table">
                 <thead>
                     <tr>
@@ -109,7 +110,11 @@
  
     
     <script>
-
+        
+        $(document).ready(function() {
+            $('#users-table').DataTable();
+        } );
+        
         $(document).on("click", ".open-DeleteUser", function () {
              var Id = $(this).data('id');
              $(".modal-body #Id").val( Id );
