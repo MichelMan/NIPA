@@ -32,7 +32,7 @@ class PortefeuilleController extends Controller
         }
         
         if ($droit == 0) {
-            throw new AccessDeniedException("Vous n'avez pas les accès requis pour cette section!");
+            return $this->render('NIPAUserBundle:Default:accueil.html.twig', array('droit' => $droit));
         }
         
         //return array();

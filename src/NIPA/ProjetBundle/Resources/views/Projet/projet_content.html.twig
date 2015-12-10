@@ -2,65 +2,57 @@
 		
 {% block body %}
      
-    <div class="row"> 
+        <div id="jstree">                
+          <ul id="treeProjet">
+              <li class="jstree-open"><a href="#">Portfeuilles</a>
+                  <ul>   
 
-        <div class="col-md-3">
-              <div id="jstree">                
-                <ul id="treeProjet">
-                    <li class="jstree-open"><a href="#">Portfeuilles</a>
-                        <ul>   
-                            
-                            <li class="jstree-open"><a href="#">IPP 2015</a>
-                                <ul>
-                                    
-                                    <li class="jstree-open"><a href="#">Demandes</a>
-                                        <ul>
-                                            <li class="jstree-open"><a href="#">MC-0001</a></li>
-                                            <li class="jstree-open"><a href="#">MC-0002</a>
-                                                <ul>
-                                                    <li class="jstree-open"><a href="#" class="jstree-clicked">Projet: MC-0002-1</a></li>
-                                                    <li class="jstree-open"><a href="#">Projet: MC-0002-2</a></li>
-                                                </ul>
-                                            </li>
-                                            <li class="jstree-open">MC-0003</li>
-                                        </ul>
-                                    </li>
-                                    
-                                </ul>
-                            </li>
-                            
-                            <li class="jstree-open"><a href="#">IPP 2016</a>
-                                <ul>
-                                    
-                                    <li class="jstree-open"><a href="#">Demandes</a>
-                                        <ul>
-                                            <li class="jstree-open"><a href="#">MC-0001</a></li>
-                                            <li class="jstree-open"><a href="#">MC-0002</a>
-                                                <ul>
-                                                    <li class="jstree-open"><a href="#" >Projet: MC-0002-1</a></li>
-                                                    <li class="jstree-open"><a href="#">Projet: MC-0002-2</a></li>
-                                                </ul>
-                                            </li>
-                                            <li class="jstree-open">MC-0003</li>
-                                        </ul>
-                                    </li>
-                                    
-                                </ul>
-                            </li>
-                            
-                         </ul>   
-                    </li>
-                </ul>               
-                
-              </div>
-            
-              <button>demo button</button>
+                      <li class="jstree-open"><a href="#">IPP 2015</a>
+                          <ul>
+
+                              <li class="jstree-open"><a href="#">Demandes</a>
+                                  <ul>
+                                      <li class="jstree-open"><a href="#">MC-0001</a></li>
+                                      <li class="jstree-open"><a href="#">MC-0002</a>
+                                          <ul>
+                                              <li class="jstree-open"><a href="#" class="jstree-clicked">Projet: MC-0002-1</a></li>
+                                              <li class="jstree-open"><a href="#">Projet: MC-0002-2</a></li>
+                                          </ul>
+                                      </li>
+                                      <li class="jstree-open">MC-0003</li>
+                                  </ul>
+                              </li>
+
+                          </ul>
+                      </li>
+
+                      <li class="jstree-open"><a href="#">IPP 2016</a>
+                          <ul>
+
+                              <li class="jstree-open"><a href="#">Demandes</a>
+                                  <ul>
+                                      <li class="jstree-open"><a href="#">MC-0001</a></li>
+                                      <li class="jstree-open"><a href="#">MC-0002</a>
+                                          <ul>
+                                              <li class="jstree-open"><a href="#" >Projet: MC-0002-1</a></li>
+                                              <li class="jstree-open"><a href="#">Projet: MC-0002-2</a></li>
+                                          </ul>
+                                      </li>
+                                      <li class="jstree-open">MC-0003</li>
+                                  </ul>
+                              </li>
+
+                          </ul>
+                      </li>
+
+                   </ul>   
+              </li>
+          </ul>               
+
         </div>
 
-        <div class="col-md-9 well admin-content">
-        </div>
+        <button>demo button</button>
 
-    </div>
     
     <script>
         //$('#treeProjet').treed({openedClass : 'glyphicon-folder-open', closedClass : 'glyphicon-folder-close'});    

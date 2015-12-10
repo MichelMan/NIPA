@@ -10,6 +10,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
+use Symfony\Component\HttpFoundation\Request;
 
 
 class AdministrationController extends Controller
@@ -18,6 +19,10 @@ class AdministrationController extends Controller
 
     public function showAction()
     {
+        
+        $request = Request::createFromGlobals();
+        $droit = $request->query->get('droit');
+       
         $user = $this->getUser();
         
         if ($user->getAdmin() == false) { // On test si user Admin pour avoir accès à la section Administration
@@ -31,7 +36,7 @@ class AdministrationController extends Controller
         //return array() List ALL Groupes;
         $groupes = $this->get('nipa_groupe.groupe_manager')->loadAllGroupe();
         
-      return $this->render('NIPAUserBundle:Administration:administration.html.twig', array('users' => $users, 'groupes' => $groupes));       
+      return $this->render('NIPAUserBundle:Administration:administration.html.twig', array('users' => $users, 'groupes' => $groupes, 'droit' => $droit));       
     }
     
    public function deleteUserAction($identifiant)

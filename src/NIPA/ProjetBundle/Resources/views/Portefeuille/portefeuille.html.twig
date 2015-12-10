@@ -40,29 +40,32 @@
 
 {% block nipa_user_content %}
     <div class="container">    
-         
+        <br> 
         <div class="row">
             <div class="col-md-3">
-                <center><h4><span class="glyphicon glyphicon-folder-open"></span> Portfeuilles >> Liste</h4></center>
+                <center><h4><span class="glyphicon glyphicon-folder-open"></span> Portfeuilles >> Liste</h4></center>            
             </div>
             <div class="col-md-9">
                 <ul class="nav nav-tabs nav-justified admin-menu">
-                    <li class="active"><a href="" data-target-id="projet"><i class="fa fa-list-alt fa-fw"></i>Liste</a></li>
-                    <li><a href="#" data-target-id="user"><i class="fa fa-user fa-fw"></i>Utilisateurs</a></li>
-                    <li><a href="#" data-target-id="groupe"><i class="fa fa-list-alt fa-fw"></i>Groupes</a></li>
-                    <li><a href="#" data-target-id="champs"><i class="fa fa-pencil-square fa-fw"></i>Champs personnalisés</a></li>               
+                    <li class="active"><a href="" data-target-id="infos"><i class="fa fa-dashboard fa-fw"></i> Informations générales</a></li>
+                    <li><a href="#" data-target-id="budget"><i class="fa fa-dollar fa-fw"></i> Budget</a></li>
+                    <li><a href="#" data-target-id="synthese"><i class="fa fa-list-alt fa-fw"></i> Synthèse</a></li>
                 </ul>
             </div>
-        </div>       
-        {% include "NIPAProjetBundle:Portefeuille:portefeuille_content.html.twig" %}
-        <div class="row">             
-            <div class="col-md-12 well admin-content" id="user">
+        </div>
+        <br>        
+        <div class="row">
+             <div class="col-md-3">
+                {% include "NIPAProjetBundle:Portefeuille:portefeuille_content.html.twig" %}
+            </div>       
+            
+            <div class="col-md-9 well admin-content" id="infos">
             </div>
 
-            <div class="col-md-12 well admin-content" id="groupe">
+            <div class="col-md-9 well admin-content" id="budget">
             </div>
 
-            <div class="col-md-12 well admin-content" id="champs">
+            <div class="col-md-9 well admin-content" id="synthese">
             </div>          
         </div>
     </div>

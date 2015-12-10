@@ -31,7 +31,10 @@ class DemandeController extends Controller
         }
         
         if ($droit == 0) {
-            throw new AccessDeniedException("Vous n'avez pas les accès requis pour cette section!");
+            //return $this->render($this->getRequest()->server->get('HTTP_REFERER'), array('droit' => $droit));
+            $droit = "denied";
+            $referer = $this->getRequest()->server->get('HTTP_REFERER');
+            return $this->redirect($referer."?droit=".$droit);  
         }
         
         //return array();

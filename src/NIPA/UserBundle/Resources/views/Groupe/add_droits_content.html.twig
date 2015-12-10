@@ -5,148 +5,107 @@
 <form action="{% if groupe.permission %}{{ path('groupe_permission_edit', {'groupeId':groupe.id}) }}{% else %}{{ path('groupe_permission_add', {'groupeId':groupe.id}) }}{% endif %}" method="post" {{ form_enctype(form) }}>
     <h3>{% if groupe.permission %}<span class='glyphicon glyphicon-lock'></span> {{ 'Modifier permissions'|trans }}{% else %}<span class='glyphicon glyphicon-lock'></span> {{ 'Affecter permissions'|trans }}{% endif %}</h3>
         
-    <div class="container">
-
-        <div id="rates">
-            <div class="row head">
-                    <div class="col-xs-3 col-sm-6"></div>
-                    <div class="col-xs-3 col-sm-2">
-                            <span>CMS</span>
-                    </div>
-                    <div class="col-xs-3 col-sm-2">
-                            <span>Lecture</span>
-                    </div>
-                    <div class="col-xs-3 col-sm-2">
-                            <span>???</span>
-                    </div>                    
-            </div>
-            <div class="row">
-                <div class="col-xs-3 col-sm-6">
-                        <div class="item">Portefeuilles</div>
-                </div>
-                <div class="col-xs-3 col-sm-2">
-                    <div class="item"><br>
-                        <span class="button-checkbox">
-                            <button type="button" class="btn btn-lg" data-color="success"></button>
-                            <div id="foo" style="visibility:hiddDen;">
-                                {{ form_errors(formPermission.CMSPortefeuille) }}
-                                {{ form_label(formPermission.CMSPortefeuille, 'CMSPortefeuille'|trans) }}
-                                {{ form_widget(formPermission.CMSPortefeuille) }}
-                            </div>
-                        </span>
-                    </div>
-                </div>
-                <div class="col-xs-3 col-sm-2">
-                    <div class="item"><br>
-                        <span class="button-checkbox">
-                            <button type="button" class="btn btn-lg" data-color="success"></button>
-                            <div id="foo" style="visibility:hiddDen;">
-                                {{ form_errors(formPermission.LPortefeuille) }}
-                                {{ form_label(formPermission.LPortefeuille, 'LPortefeuille'|trans) }}
-                                {{ form_widget(formPermission.LPortefeuille) }}
-                            </div>
-                        </span>
-                    </div>
-                </div>
-                <div class="col-xs-3 col-sm-2">
-                    <div class="item"><br>
-                        <span class="button-checkbox">
-                            <button type="button" class="btn btn-lg" data-color="success"></button>
-                            <div id="foo" style="visibility:hiddDen;">
-
-                            </div>
-                        </span>
-                    </div>
-                </div>                            
-            </div>
-            <div class="row">
-                <div class="col-xs-3 col-sm-6">
-                        <div class="item">Demandes</div>
-                </div>
-                <div class="col-xs-3 col-sm-2">
-                    <div class="item"><br>
-                        <span class="button-checkbox">
-                            <button type="button" class="btn btn-lg" data-color="success"></button>
-                            <div id="foo" style="visibility:hidDden;">
-                                {{ form_errors(formPermission.CMSDemande) }}
-                                {{ form_label(formPermission.CMSDemande, 'CMSDemande'|trans) }}
-                                {{ form_widget(formPermission.CMSDemande) }}
-                            </div>
-                        </span>
-                    </div>
-                </div>
-                <div class="col-xs-3 col-sm-2">
-                    <div class="item"><br>
-                        <span class="button-checkbox">
-                            <button type="button" class="btn btn-lg" data-color="success"></button>
-                            <div id="foo" style="visibility:hidDden;">
-                                {{ form_errors(formPermission.LDemande) }}
-                                {{ form_label(formPermission.LDemande, 'LDemande'|trans) }}
-                                {{ form_widget(formPermission.LDemande) }}
-                            </div>
-                        </span>
-                    </div>
-                </div>
-                <div class="col-xs-3 col-sm-2">
-                    <div class="item"><br>
-                        <span class="button-checkbox">
-                            <button type="button" class="btn btn-lg" data-color="success"></button>
-                            <div id="foo" style="visibility:hiddDen;">
-
-                            </div>
-                        </span>
-                    </div>
-                </div>                               
-            </div>
-            <div class="row">
-                <div class="col-xs-3 col-sm-6">
-                        <div class="item">Projets</div>
-                </div>
-                <div class="col-xs-3 col-sm-2">
-                    <div class="item"><br>
-                        <span class="button-checkbox">
-                            <button type="button" class="btn btn-lg" data-color="success"></button>
-                            <div id="foo" style="visibility:hiDdden;">
-                                {{ form_errors(formPermission.CMSProjet) }}
-                                {{ form_label(formPermission.CMSProjet, 'CMSProjet'|trans) }}
-                                {{ form_widget(formPermission.CMSProjet) }}
-                            </div>
-                        </span>
-                    </div>
-                </div>
-                <div class="col-xs-3 col-sm-2">
-                    <div class="item"><br>
-                        <span class="button-checkbox">
-                            <button type="button" class="btn btn-lg" data-color="success"></button>
-                            <div id="foo" style="visibility:hDidden;">
-                                {{ form_errors(formPermission.LProjet) }}
-                                {{ form_label(formPermission.LProjet, 'LProjet'|trans) }}
-                                {{ form_widget(formPermission.LProjet) }}
-                            </div>
-                        </span>
-                    </div>
-                </div>
-                <div class="col-xs-3 col-sm-2">
-                    <div class="item"><br>
-                        <span class="button-checkbox">
-                            <button type="button" class="btn btn-lg" data-color="success"></button>
-                            <div id="foo" style="visibility:hiddDen;">
-
-                            </div>
-                        </span>
-                    </div>
-                </div>                               
-            </div>        
-        </div>
-
-    </div>
+<br>
     
+<div class="container">
+    <div class="row col-md-10 col-md-offset-1 custyle">
+        
+        <!-- PANEL -->          
+        <div class="panel panel-primary">
+            <div class="panel-heading">
+                <h3 class="panel-title">Synthèse des permissions</h3>
+            </div>        
+
+            <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th class="text-center">Section</th>
+                    <th class="text-center">Création/Modification/Suppression</th>
+                    <th class="text-center">Lecture</th>
+                </tr>
+            </thead>
+                    <tr>
+                        <td class="text-primary text-center"><br><h4><span class="glyphicon glyphicon-folder-open"></span> Portefeuille</h4></td>
+                        <td class="text-center"><br>
+                            <span class="button-checkbox">
+                                <button type="button" class="btn btn-md" data-color="success"></button>
+                                <div id="foo" style="visibility:hidden;">
+                                    {{ form_errors(formPermission.CMSPortefeuille) }}
+                                    {{ form_label(formPermission.CMSPortefeuille, 'CMSPortefeuille'|trans) }}
+                                    {{ form_widget(formPermission.CMSPortefeuille) }}
+                                </div>
+                            </span>                        
+                        </td>
+                        <td class="text-center"><br>
+                            <span class="button-checkbox">
+                                <button type="button" class="btn btn-md" data-color="success"></button>
+                                <div id="foo" style="visibility:hidden;">
+                                    {{ form_errors(formPermission.LPortefeuille) }}
+                                    {{ form_label(formPermission.LPortefeuille, 'LPortefeuille'|trans) }}
+                                    {{ form_widget(formPermission.LPortefeuille) }}
+                                </div>
+                            </span>                                 
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="text-primary text-center"><br><h4><span class="glyphicon glyphicon-folder-open"></span> Demande</h4></td>
+                        <td class="text-center"><br>
+                            <span class="button-checkbox">
+                                <button type="button" class="btn btn-md" data-color="success"></button>
+                                <div id="foo" style="visibility:hidden;">
+                                    {{ form_errors(formPermission.CMSDemande) }}
+                                    {{ form_label(formPermission.CMSDemande, 'CMSDemande'|trans) }}
+                                    {{ form_widget(formPermission.CMSDemande) }}
+                                </div>
+                            </span>                        
+                        </td>
+                        <td class="text-center"><br>
+                            <span class="button-checkbox">
+                                <button type="button" class="btn btn-md" data-color="success"></button>
+                                <div id="foo" style="visibility:hidden;">
+                                    {{ form_errors(formPermission.LDemande) }}
+                                    {{ form_label(formPermission.LDemande, 'LDemande'|trans) }}
+                                    {{ form_widget(formPermission.LDemande) }}
+                                </div>
+                            </span>                        
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="text-primary text-center"><br><h4><span class="glyphicon glyphicon-folder-open"></span> Projet</h4></td>
+                        <td class="text-center"><br>
+                            <span class="button-checkbox">
+                                <button type="button" class="btn btn-md" data-color="success"></button>
+                                <div id="foo" style="visibility:hidden;">
+                                    {{ form_errors(formPermission.CMSProjet) }}
+                                    {{ form_label(formPermission.CMSProjet, 'CMSProjet'|trans) }}
+                                    {{ form_widget(formPermission.CMSProjet) }}
+                                </div>
+                            </span>                        
+                        </td>
+                        <td class="text-center"><br>
+                            <span class="button-checkbox">
+                                <button type="button" class="btn btn-md" data-color="success"></button>
+                                <div id="foo" style="visibility:hidden;">
+                                    {{ form_errors(formPermission.LProjet) }}
+                                    {{ form_label(formPermission.LProjet, 'LProjet'|trans) }}
+                                    {{ form_widget(formPermission.LProjet) }}
+                                </div>
+                            </span>                        
+                        </td>
+                    </tr>
+            </table>
+        </div>
+    </div>
+</div>                                
+                                                        
     {{ form_rest(form) }}
-    <br>
-    <button class="btn btn-success" type="submit" style="float: right;">{% if groupe.permission %}{{ 'Mise à jour'|trans }}{% else %}{{ 'Affectation'|trans }}{% endif %}</button>
+    
+    <br><button class="btn btn-success" type="submit" style="float: right;">{% if groupe.permission %}{{ 'Mise à jour'|trans }}{% else %}{{ 'Affectation'|trans }}{% endif %}</button>
 
 </form>
 
+ 
+    
 <script>
 
     $(function () {
@@ -191,13 +150,13 @@
                 // Update the button's color
                 if (isChecked) {
                     $button
-                        .removeClass('btn-default')
+                        .removeClass('btn-danger')
                         .addClass('btn-' + color + ' active');
                 }
                 else {
                     $button
                         .removeClass('btn-' + color + ' active')
-                        .addClass('btn-default');
+                        .addClass('btn-danger');
                 }
             }
 

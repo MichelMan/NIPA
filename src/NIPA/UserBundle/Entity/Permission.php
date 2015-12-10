@@ -7,7 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * Permission
  *
- * @ORM\Table(name="permission")
+ * @ORM\Table(name="groupe_permission")
  * @ORM\Entity(repositoryClass="NIPA\UserBundle\Entity\PermissionRepository")
  */
 class Permission

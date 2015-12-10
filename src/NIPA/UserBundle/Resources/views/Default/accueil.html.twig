@@ -2,6 +2,12 @@
 
 {% block nipa_stylesheets %}
     	<link rel="stylesheet" href="{{ asset('bundles/nipauserbundle/css/styleAccueil.css') }}" type="text/css" media="all" /> 
+        
+        <!-- include the alert js source -->
+        <script src="{{ asset('bundles/nipauserbundle/js/alertify.min.js') }}"></script>
+        <link rel="stylesheet" href="{{ asset('bundles/nipauserbundle/css/alertify.default.css') }}" type="text/css" media="all" /> 
+
+               
 {% endblock %}
 
 {% block nipa_navbar %}
@@ -31,6 +37,14 @@
 {% endblock %}  
 
 {% block nipa_user_content %}
+    
+    {% if droit is defined %}
+        <div id="myAlert" class="alert alert-danger fade in">
+            <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+            <strong><span class="glyphicon glyphicon-warning-sign"></span> Vous n'avez pas les droits requis pour accéder à cette section!</strong>
+        </div>
+    {% endif %}
+    
     <div class="container">    
         <h2><span class="glyphicon glyphicon-home"></span> Accueil</h2>    
         
@@ -41,5 +55,19 @@
         </div>
         
     </div>
+      <!-- <a href = "#" id = "delay">Hide in 10 seconds</a><br> -->
+    <script>
+     
+        $("#delay").on( 'click', function () {       
+            alertify.alert("Message");            
+        });
+        /*
+          $("#delay").on( 'click', function () {
+            reset();
+            alertify.set({ delay: 10000 });
+            alertify.log("Hiding in 10 seconds");
+            return false;
+         }); */
+    </script>
     
 {% endblock nipa_user_content %}
