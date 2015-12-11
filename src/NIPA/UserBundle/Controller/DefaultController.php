@@ -9,6 +9,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use Symfony\Component\HttpFoundation\Request;
 
 class DefaultController extends Controller
 {
@@ -19,6 +20,16 @@ class DefaultController extends Controller
      */
     public function indexAction()
     {
+        /**********************DROIT SECTION************************/
+        $request = Request::createFromGlobals();
+        $droit = $request->query->get('droit');
+               
+        if ($droit == "denied") { // On test si user pour avoir accès à la section 
+            //throw new AccessDeniedException("Section autorisée uniquement pour les administrateurs!");
+            $this->get('session')->getFlashBag()->set('error', "Vous n'avez pas les droits requis pour accéder à cette section!");            
+        }        
+        /***********************************************************/
+      
         //return array();
         return $this->render('NIPAUserBundle:Default:accueil.html.twig', array());
     }
@@ -107,14 +118,6 @@ class DefaultController extends Controller
     
     exit;
    }*/
-    public function testAction()
-    {
-        $id = 4; // ID 
-
-        $user = $this->getDoctrine()->getRepository('NIPAUserBundle:Utilisateur')->find($id);
-
-        return array('user' => $user);
-    }
 
 }
 

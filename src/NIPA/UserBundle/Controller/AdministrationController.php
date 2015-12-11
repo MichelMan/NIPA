@@ -20,14 +20,15 @@ class AdministrationController extends Controller
     public function showAction()
     {
         
+        /**********************DROIT SECTION************************/
         $request = Request::createFromGlobals();
         $droit = $request->query->get('droit');
-       
-        $user = $this->getUser();
-        
-        if ($user->getAdmin() == false) { // On test si user Admin pour avoir accès à la section Administration
-            throw new AccessDeniedException("Section autorisée uniquement pour les administrateurs!");
-        }
+               
+        if ($droit == "denied") { // On test si user pour avoir accès à la section 
+            //throw new AccessDeniedException("Section autorisée uniquement pour les administrateurs!");
+            $this->get('session')->getFlashBag()->set('error', "Vous n'avez pas les droits requis pour accéder à cette section!");            
+        }        
+        /***********************************************************/
         
         //return array() List ALL Users;
         $userManager = $this->get('fos_user.user_manager');
@@ -36,7 +37,7 @@ class AdministrationController extends Controller
         //return array() List ALL Groupes;
         $groupes = $this->get('nipa_groupe.groupe_manager')->loadAllGroupe();
         
-      return $this->render('NIPAUserBundle:Administration:administration.html.twig', array('users' => $users, 'groupes' => $groupes, 'droit' => $droit));       
+      return $this->render('NIPAUserBundle:Administration:administration.html.twig', array('users' => $users, 'groupes' => $groupes));       
     }
     
    public function deleteUserAction($identifiant)

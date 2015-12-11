@@ -71,10 +71,11 @@
                 <div class="col-md-12 well admin-content" id="utilisateurs">
                     {% include "NIPAUserBundle:Groupe:add_users_content.html.twig" %}
                 </div>
-
+                {% if groupe.id %} 
                 <div class="col-md-12 well admin-content" id="droits">
                     {% include "NIPAUserBundle:Groupe:add_droits_content.html.twig" %}
-                </div>          
+                </div>  
+                {% endif %}
             </div>
         </div>
        

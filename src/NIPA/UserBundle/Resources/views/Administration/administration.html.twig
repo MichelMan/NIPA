@@ -32,20 +32,17 @@
                     
 {% endblock %}
 
+
+
 {% block nipa_navbar_admin %}
     <li class="active">
         <a class="nav-link" href="{{ path('administration') }}"><span class="glyphicon glyphicon-wrench"></span> Administration</a>
-    </li>      
+    </li> 
+    
+    
 {% endblock %}  
 
-{% block nipa_user_content %}
-    
-    {% if droit == "denied" %}
-        <div id="myAlert" class="alert alert-danger fade in">
-            <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
-            <strong><span class="glyphicon glyphicon-warning-sign"></span> Vous n'avez pas les droits requis pour accéder à cette section!</strong>
-        </div>
-    {% endif %}    
+{% block nipa_user_content %}   
     
     <div class="container">
         

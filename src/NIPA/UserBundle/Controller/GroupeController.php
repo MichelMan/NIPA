@@ -23,6 +23,16 @@ class GroupeController extends Controller
 
     public function showAction($groupeId)
     {
+        /**********************DROIT SECTION************************/
+        $request = Request::createFromGlobals();
+        $droit = $request->query->get('droit');
+               
+        if ($droit == "denied") { // On test si user pour avoir accès à la section 
+            //throw new AccessDeniedException("Section autorisée uniquement pour les administrateurs!");
+            $this->get('session')->getFlashBag()->set('error', "Vous n'avez pas les droits requis pour accéder à cette section!");            
+        }        
+        /***********************************************************/        
+        
         if (!$groupe = $this->get('nipa_groupe.groupe_manager')->loadGroupe($groupeId)) {
             throw new NotFoundHttpException($this->get('translator')->trans('This groupe does not exist.'));
         }
@@ -36,6 +46,16 @@ class GroupeController extends Controller
     */
    public function addGroupeAction()
    {
+        /**********************DROIT SECTION************************/
+        $requestDroit = Request::createFromGlobals();
+        $droit = $requestDroit->query->get('droit');
+               
+        if ($droit == "denied") { // On test si user pour avoir accès à la section 
+            //throw new AccessDeniedException("Section autorisée uniquement pour les administrateurs!");
+            $this->get('session')->getFlashBag()->set('error', "Vous n'avez pas les droits requis pour accéder à cette section!");            
+        }        
+        /***********************************************************/       
+       
        $request = $this->get('request'); // On récupère l'objet request via le service container
        $groupe = new Groupe(); // On créé notre objet Groupe vierge
 
@@ -79,7 +99,7 @@ class GroupeController extends Controller
                /*$this->get('session')->setFlash('notice', 
                    $this->get('translator')->trans('Nouveau groupe ajouté')
                ); DEPRECATED */
-                $this->get('session')->getFlashBag()->set('notice',
+                $this->get('session')->getFlashBag()->set('success',
                 $this->get('translator')->trans('Nouveau groupe ajouté')
                 );
                 
@@ -99,6 +119,15 @@ class GroupeController extends Controller
     */
     public function editGroupeAction($groupeId)
     {
+        /**********************DROIT SECTION************************/
+        $requestDroit = Request::createFromGlobals();
+        $droit = $requestDroit->query->get('droit');
+               
+        if ($droit == "denied") { // On test si user pour avoir accès à la section 
+            //throw new AccessDeniedException("Section autorisée uniquement pour les administrateurs!");
+            $this->get('session')->getFlashBag()->set('error', "Vous n'avez pas les droits requis pour accéder à cette section!");            
+        }        
+        /***********************************************************/
         
         /******1er formulaire de BASE********/
         $request = $this->get('request');
@@ -154,7 +183,7 @@ class GroupeController extends Controller
                 //    $this->get('translator')->trans('User updated.')
                 //);
 				
-                    $this->get('session')->getFlashBag()->set('notice',
+                    $this->get('session')->getFlashBag()->set('success',
                     $this->get('translator')->trans('Groupe mise à jour')
                 );
 				
@@ -174,6 +203,16 @@ class GroupeController extends Controller
     */
     public function addUsersAction($groupeId)
     {
+         /**********************DROIT SECTION************************/
+        $requestDroit = Request::createFromGlobals();
+        $droit = $requestDroit->query->get('droit');
+               
+        if ($droit == "denied") { // On test si user pour avoir accès à la section 
+            //throw new AccessDeniedException("Section autorisée uniquement pour les administrateurs!");
+            $this->get('session')->getFlashBag()->set('error', "Vous n'avez pas les droits requis pour accéder à cette section!");            
+        }        
+        /***********************************************************/       
+        
         $request = $this->get('request');
 
         $idUsers=$this->getRequest()->get('idUsers');
@@ -226,7 +265,7 @@ class GroupeController extends Controller
                     $em->flush();
                 }	
                 
-                $this->get('session')->getFlashBag()->set('notice',
+                $this->get('session')->getFlashBag()->set('success',
                 $this->get('translator')->trans('Utilisateur(s) ajouté(s) au groupe '.$groupe->getNom())
                 );
                 
@@ -239,7 +278,7 @@ class GroupeController extends Controller
                 return $response;
                 */
                 
-                return new RedirectResponse($this->generateUrl('administration', array(
+                return new RedirectResponse($this->generateUrl('groupe_edit', array(
                     'groupeId' => $groupe->getId()
                 ))); 
             //}
@@ -250,8 +289,17 @@ class GroupeController extends Controller
     
     public function deleteUsersAction($identifiant, $groupeId)
     {
-        /********************************************************************/
+         /**********************DROIT SECTION************************/
+        $requestDroit = Request::createFromGlobals();
+        $droit = $requestDroit->query->get('droit');
+               
+        if ($droit == "denied") { // On test si user pour avoir accès à la section 
+            //throw new AccessDeniedException("Section autorisée uniquement pour les administrateurs!");
+            $this->get('session')->getFlashBag()->set('error', "Vous n'avez pas les droits requis pour accéder à cette section!");            
+        }        
+        /***********************************************************/          
         
+        /********************************************************************/
         $groupe = $this->get('nipa_groupe.groupe_manager')->loadGroupe($groupeId);
 
        /******1er formulaire de BASE********/
@@ -317,6 +365,16 @@ class GroupeController extends Controller
     */
    public function addPermissionGroupeAction($groupeId)
    {
+         /**********************DROIT SECTION************************/
+        $requestDroit = Request::createFromGlobals();
+        $droit = $requestDroit->query->get('droit');
+               
+        if ($droit == "denied") { // On test si user pour avoir accès à la section 
+            //throw new AccessDeniedException("Section autorisée uniquement pour les administrateurs!");
+            $this->get('session')->getFlashBag()->set('error', "Vous n'avez pas les droits requis pour accéder à cette section!");            
+        }        
+        /***********************************************************/         
+       
         $request = $this->get('request'); // On récupère l'objet request via le service container
         $groupe = $this->get('nipa_groupe.groupe_manager')->loadGroupe($groupeId);
 
@@ -386,6 +444,17 @@ class GroupeController extends Controller
     */
    public function editPermissionGroupeAction($groupeId)
    {
+
+         /**********************DROIT SECTION************************/
+        $requestDroit = Request::createFromGlobals();
+        $droit = $requestDroit->query->get('droit');
+               
+        if ($droit == "denied") { // On test si user pour avoir accès à la section 
+            //throw new AccessDeniedException("Section autorisée uniquement pour les administrateurs!");
+            $this->get('session')->getFlashBag()->set('error', "Vous n'avez pas les droits requis pour accéder à cette section!");            
+        }        
+        /***********************************************************/         
+       
         $request = $this->get('request'); // On récupère l'objet request via le service container
         $groupe = $this->get('nipa_groupe.groupe_manager')->loadGroupe($groupeId);
 
@@ -449,5 +518,4 @@ class GroupeController extends Controller
        return $this->render('NIPAUserBundle:Groupe:add.html.twig', array('form' => $form->createView(), 'formModal' => $formModal->createView(), 'formPermission' => $formPermission->createView(), 'groupe' => $groupe,  'choices' => $choices)); // On passe à Twig l'objet form et notre objet Groupe
    }
     
-   
 }

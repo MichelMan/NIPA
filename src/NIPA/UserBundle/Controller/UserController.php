@@ -11,6 +11,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use Symfony\Component\HttpFoundation\Request;
 
 /**
  * @Route("/user")
@@ -24,6 +25,16 @@ class UserController extends Controller
     */
     public function indexAction()
     {
+         /**********************DROIT SECTION************************/
+        $requestDroit = Request::createFromGlobals();
+        $droit = $requestDroit->query->get('droit');
+               
+        if ($droit == "denied") { // On test si user pour avoir accès à la section 
+            //throw new AccessDeniedException("Section autorisée uniquement pour les administrateurs!");
+            $this->get('session')->getFlashBag()->set('error', "Vous n'avez pas les droits requis pour accéder à cette section!");            
+        }        
+        /***********************************************************/  
+        
         //return array();
 	return $this->render('NIPAUserBundle:User:user.html.twig', array());
     }
@@ -34,6 +45,16 @@ class UserController extends Controller
     */
    public function showAction($userId)
    {
+         /**********************DROIT SECTION************************/
+        $requestDroit = Request::createFromGlobals();
+        $droit = $requestDroit->query->get('droit');
+               
+        if ($droit == "denied") { // On test si user pour avoir accès à la section 
+            //throw new AccessDeniedException("Section autorisée uniquement pour les administrateurs!");
+            $this->get('session')->getFlashBag()->set('error', "Vous n'avez pas les droits requis pour accéder à cette section!");            
+        }        
+        /***********************************************************/         
+       
        if (!$user = $this->get('nipa_user.user_manager')->loadUser($userId)) // on accède aux service et on récupère les méthodes dans  UserManager
        {
            throw new NotFoundHttpException($this->get('translator')->trans('This user does not exist.'));
@@ -77,6 +98,16 @@ class UserController extends Controller
     */
    public function addAction()
    {
+         /**********************DROIT SECTION************************/
+        $requestDroit = Request::createFromGlobals();
+        $droit = $requestDroit->query->get('droit');
+               
+        if ($droit == "denied") { // On test si user pour avoir accès à la section 
+            //throw new AccessDeniedException("Section autorisée uniquement pour les administrateurs!");
+            $this->get('session')->getFlashBag()->set('error', "Vous n'avez pas les droits requis pour accéder à cette section!");            
+        }        
+        /***********************************************************/  
+        
        $request = $this->get('request'); // On récupère l'objet request via le service container
        $user = new Utilisateur(); // On créé notre objet Utilisateur vierge
 
@@ -110,6 +141,16 @@ class UserController extends Controller
     */
     public function editAction($userId)
     {
+         /**********************DROIT SECTION************************/
+        $requestDroit = Request::createFromGlobals();
+        $droit = $requestDroit->query->get('droit');
+               
+        if ($droit == "denied") { // On test si user pour avoir accès à la section 
+            //throw new AccessDeniedException("Section autorisée uniquement pour les administrateurs!");
+            $this->get('session')->getFlashBag()->set('error', "Vous n'avez pas les droits requis pour accéder à cette section!");            
+        }        
+        /***********************************************************/  
+        
         $request = $this->get('request');
         
         // On vérifie que l'ID de l'utilisateur existe
@@ -132,7 +173,7 @@ class UserController extends Controller
                 
                 $this->get('nipa_user.user_manager')->saveUser($user);
                 
-				//DEPRECATED
+                //DEPRECATED
                 //$this->get('session')->setFlash('notice',
                 //    $this->get('translator')->trans('User updated.')
                 //);

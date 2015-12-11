@@ -134,30 +134,60 @@
         </div> 
                                 
     </nav>    
-            
 
-        {% if app.request.hasPreviousSession %}
-            {% for type, messages in app.session.flashbag.all() %}
-                {% for message in messages %}
-                    <div class="flash-{{ type }}">
-                        {{ message }}
-                    </div>
-                {% endfor %}
+    {# Retourne les messages Error #} 
+    {% for flash_message in app.session.flashbag.get('error') %}
+         <div id="myAlert" class="alert alert-danger fade in">
+             <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+             <strong><span class="glyphicon glyphicon-warning-sign"></span>
+                 {{ flash_message }}        
+             </strong>
+         </div>      
+     {% endfor %}                                   
+ 
+    {# Retourne les messages Success #} 
+    {% for flash_message in app.session.flashbag.get('success') %}
+         <div id="myAlert" class="alert alert-success fade in">
+             <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+             <strong><span class="glyphicon glyphicon-check"></span>
+                 {{ flash_message }}        
+             </strong>
+         </div>      
+     {% endfor %}  
+     
+    {# Retourne les messages Notice #} 
+    {% for flash_message in app.session.flashbag.get('notice') %}
+         <div id="myAlert" class="alert alert-info fade in">
+             <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+             <strong><span class="glyphicon glyphicon-info-sign"></span>
+                 {{ flash_message }}        
+             </strong>
+         </div>      
+     {% endfor %}  
+     
+    {# Retourne tous les autres messages 
+    {% if app.request.hasPreviousSession %}
+        {% for type, messages in app.session.flashbag.all() %}
+            {% for message in messages %}
+                <div class="flash-{{ type }}">
+                    {{ message }}
+                </div>
             {% endfor %}
-        {% endif %}
+        {% endfor %}
+    {% endif %} #} 
 
-        
-        {% if is_granted("IS_AUTHENTICATED_REMEMBERED") %}
-            <div>
-                {% block nipa_user_content %}
-                {% endblock nipa_user_content %}
-            </div>    
-        {% else %}
-            <div>
-                {% block nipa_content %}
-                {% endblock nipa_content %}
-            </div>    
-        {% endif %}  
+
+    {% if is_granted("IS_AUTHENTICATED_REMEMBERED") %}
+        <div>
+            {% block nipa_user_content %}
+            {% endblock nipa_user_content %}
+        </div>    
+    {% else %}
+        <div>
+            {% block nipa_content %}
+            {% endblock nipa_content %}
+        </div>    
+    {% endif %}  
     
     </body>
 </html>

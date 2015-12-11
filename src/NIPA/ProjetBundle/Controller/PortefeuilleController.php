@@ -32,7 +32,10 @@ class PortefeuilleController extends Controller
         }
         
         if ($droit == 0) {
-            return $this->render('NIPAUserBundle:Default:accueil.html.twig', array('droit' => $droit));
+            //return $this->render($this->getRequest()->server->get('HTTP_REFERER'), array('droit' => $droit));
+            $droit = "denied";
+            $referer = $this->getRequest()->server->get('HTTP_REFERER');
+            return $this->redirect($referer."?droit=".$droit);  
         }
         
         //return array();
