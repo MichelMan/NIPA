@@ -29,12 +29,12 @@
                 <thead>
                     <tr>
                         <th>Identifiant</th>
-                        <th>Prénom</th>
                         <th>Nom</th>
+                        <th>Prénom</th>                                                
                         <th>Email</th>
                         <th>Administrateur</th>
-                        <th>Crée le</th>
-                        <th>Connecté le</th>
+                        <th>Crée le</th> 
+                        <!-- <th>Connecté le</th> -->
                         <th>Supprimer</th>
                     </tr>
                 </thead>
@@ -43,8 +43,8 @@
                 {% for user in users %}
                     <tr>
                         <td><a data-toggle="tooltip" title="Modifier utilisateur" href="{{ path('fos_user_profile_edit_id', {'identifiant': user.identifiant}) }}">{{ user.identifiant }}</a></td>
-                        <td>{{ user.prenom }}</td>
                         <td>{{ user.nom }}</td>
+                        <td>{{ user.prenom }}</td>                        
                         <td>{{ user.email }}</td>
                         <td>
                             {% if user.admin == true %}                        
@@ -52,7 +52,7 @@
                             {% endif %}
                         </td>
                         <td>{{ user.createdAt|date('d/m/Y') }}</td>
-                        <td>{{ user.lastLogin|date('d/m/Y') }}</td>
+                        <!-- <td>{{ user.lastLogin|date('d/m/Y') }}</td> -->
                         <td>
                             <a href="{{ path('administration_user_delete', {'identifiant': user.identifiant}) }}" class="confirmModalLink" href=""><span class="glyphicon glyphicon-remove icon-remove"></span></a>                        
                         </td>
@@ -61,29 +61,6 @@
                 </tbody>
             </table>
         </div>
-
-        <!-- PAGINATION -->  
-        <nav>
-          <ul class="pagination">
-            <li class="disabled">
-              <a href="#" aria-label="Previous">
-                <span aria-hidden="true">&laquo;</span>
-                <span class="sr-only">Previous</span>
-              </a>
-            </li>
-            <li class="active">
-              <a href="#">1 <span class="sr-only">(current)</span></a>
-            </li>
-            <li><a href="#">2</a></li>
-            <li><a href="#">3</a></li>
-            <li>
-              <a href="#" aria-label="Next">
-                <span aria-hidden="true">&raquo;</span>
-                <span class="sr-only">Next</span>
-              </a>
-            </li>
-          </ul>
-        </nav>
                 
     </div>
     
@@ -112,7 +89,9 @@
     <script>
         
         $(document).ready(function() {
-            $('#users-table').DataTable();
+            $('#users-table').DataTable({
+                "order": [[ 1, "asc" ]]
+            } );
         } );
         
         $(document).on("click", ".open-DeleteUser", function () {

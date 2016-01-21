@@ -4,13 +4,9 @@
     
     <!-- Container table filter -->
     <div class="col-md-12">
-
-        <!-- BOUTON ADD -->  
-        <div class="btn-toolbar">
-            <button class="btn btn-success" onclick="window.location.href='#'"><i class="glyphicon glyphicon-plus-sign"></i> Nouveau champs personnalisé</button>
-        </div>
+        
         <br>
-
+        
         <!-- PANEL -->          
         <div class="panel panel-primary">
             <div class="panel-heading">
@@ -24,30 +20,37 @@
              <div class="panel-body">
                 <input type="text" class="form-control" id="champs-table-filter" data-action="filter" data-filters="#champs-table" placeholder="Filtres champs" />
             </div>
+            
+            {% set fields = ["Nom Application", "Enveloppe", "Année", "Statut"] %}
             <table class="table table-hover" id="champs-table">
                 <thead>
                     <tr>
                         <th>Nom</th>
                         <th>Format</th>
-                        <th>Supprimer</th>
+                        <th>Editer</th>
                     </tr>
                 </thead>
                 <tbody>
+                    {% for var in fields %}
                     <tr>
-                        <td>Interlocuteurs MOA</td>
+                        <td>{{ var }}</td>
                         <td>Liste</td>
-                        <td><i class="glyphicon glyphicon-trash icon-trash"></i></td>  
+                        <td>
+                            {% if loop.index - 1 == 0  %}
+                                <a href="#" data-id="{{ loop.index - 1 }}" class="confirmModalEditNomApplication" href=""><span class="glyphicon glyphicon-edit icon-edit"></span></a>
+                            {% elseif loop.index - 1 == 1  %}
+                                <a href="#" data-id="{{ loop.index - 1 }}" class="confirmModalEditEnveloppe" href=""><span class="glyphicon glyphicon-edit icon-edit"></span></a>
+                            {% elseif loop.index - 1 == 2  %}
+                                <a href="#" data-id="{{ loop.index - 1 }}" class="confirmModalEditAnnee" href=""><span class="glyphicon glyphicon-edit icon-edit"></span></a>                            
+                            {% elseif loop.index - 1 == 3  %}
+                                <a href="#" data-id="{{ loop.index - 1 }}" class="confirmModalEditStatut" href=""><span class="glyphicon glyphicon-edit icon-edit"></span></a>                            
+                            {% endif  %}
+                        
+                        
+                        </td>
+                        
                     </tr>
-                    <tr>
-                        <td>Entités Métiers</td>
-                        <td>Liste</td>
-                        <td><i class="glyphicon glyphicon-trash icon-trash"></i></td>  
-                    </tr>
-                    <tr>
-                        <td>SDM</td>
-                        <td>Liste</td>
-                        <td><i class="glyphicon glyphicon-trash icon-trash"></i></td>  
-                    </tr>
+                    {% endfor %}
                 </tbody>
             </table>
         </div>
@@ -76,6 +79,753 @@
         </nav>            
         
     </div>
+
+    <!-- MODAL EDIT NOM APPLICATION -->
+    <div id="myModalEditNomApplication" class="modal fade in" style="">
+        <div class="modal-dialog"  style="width: 800px;">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                    <h3 id="myModalLabel"><span class="glyphicon glyphicon-edit"></span> Administration</h3>
+                </div>
+                
+                <div class="modal-body">
+                    <!--  <div id="jsGrid"></div> -->      
+                    <!-- <input type="text" name="Id" id="Id" value=""/> -->
+
+                    <!-- PANEL -->          
+                    <div class="panel panel-primary">
+                        <div class="panel-heading">               
+                            <h3 class="panel-title"><i class="glyphicon glyphicon-share-alt"></i> Nom Application</h3>             
+                        </div>        
+                        <table class="table" id="champs-table-nom-application-add">
+                            <thead>
+                                <tr>
+                                    <th class="text-center">Nouvelle valeur</th>
+                                    <th class="text-center">Action</th>                    
+                                </tr>
+                            </thead>                   
+                            <tbody>
+                                <tr>                             
+                                     <td><input type="text" class="form-control input-md textinput" id="nom" name="nom" required="true"></td>
+                                     <td class="text-center" id="add-nom-application"><button type="submit" title="Ajouter" class="btn btn-success"><i class="glyphicon glyphicon-check"></i></button></td>
+                                 </tr>   
+                            </tbody>   
+                        </table>
+                    </div>
+
+                    
+                </div>
+
+                <div class="modal-footer">
+                    <a href="#" class="btn btn-danger" id="confirmModalEditNomApplicationNo">Fermer</a>
+                </div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal-dalog -->
+    </div><!-- /.modal -->                    
+        
+    <!-- MODAL EDIT ENVELOPPE -->
+    <div id="myModalEditEnveloppe" class="modal fade in" style="">
+        <div class="modal-dialog"  style="width: 800px;">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                    <h3 id="myModalLabel"><span class="glyphicon glyphicon-edit"></span> Administration</h3>
+                </div>
+                
+                <div class="modal-body">
+                    <!--  <div id="jsGrid"></div> -->      
+                    <!-- <input type="text" name="Id" id="Id" value=""/> -->
+
+                    <!-- PANEL -->          
+                    <div class="panel panel-success">
+                        <div class="panel-heading">               
+                            <h3 class="panel-title"><i class="glyphicon glyphicon-share-alt"></i> Champ "Enveloppe"</h3>
+                            <div class="pull-right">              
+                                <span class="clickable filter" data-toggle="tooltip" title="Afficher détails" data-container="body">
+                                    <i class="glyphicon glyphicon-plus"></i>
+                                </span>
+                            </div>                
+                        </div>        
+                        <div class="panel-body" style="display: none;">
+
+                            <table class="table table-hover" id="champs-table-enveloppe">
+                                <thead>
+                                    <tr>
+                                        <th>N°</th>
+                                        <th>ID</th>                                        
+                                        <th>Valeur</th>
+                                        <th>Edition</th>                                        
+                                        <th>Suppression</th>                                           
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for enveloppe in listEnveloppes %}
+                                        <tr data-id="{{ loop.index }}">
+                                            <td>{{ loop.index }}</td>
+                                            <td data-field="id" class="id">{{ enveloppe.id }}</td>                                            
+                                            <td data-field="nom" class="nom">{{ enveloppe.nom }}</td>
+                                            <td>
+                                                <a class="button button-small edit" title="Edit"><i class="glyphicon glyphicon-pencil"></i></a>
+                                                <!-- <a class="button button-small cancel" title="Annuler"><i class="glyphicon glyphicon-remove"></i></a> -->                                                
+                                            </td>                                            
+                                            <td id="delete-enveloppe" class="text-center"><a id="{{ enveloppe.id }}" class="button button-small" title="Supprimer"><i class="glyphicon glyphicon-trash"></i> </a></td>                    
+                                        </tr>
+                                    {% endfor %}   
+                                </tbody>
+                            </table>
+
+                        </div>  
+                        <table class="table" id="champs-table-enveloppe-add">
+                            <thead>
+                                <tr>
+                                    <th class="text-center">Nouvelle valeur</th>
+                                    <th class="text-center">Action</th>                    
+                                </tr>
+                            </thead>                   
+                            <tbody>
+                                <tr>                             
+                                     <td><input type="text" class="form-control input-md textinput" id="nom" name="nom" required="true"></td>
+                                     <td class="text-center" id="add-enveloppe"><button type="submit" title="Ajouter" class="btn btn-success"><i class="glyphicon glyphicon-check"></i></button></td>
+                                 </tr>   
+                            </tbody>   
+                        </table>
+                    </div>
+
+                    
+                </div>
+
+                <div class="modal-footer">
+                    <a href="#" class="btn btn-danger" id="confirmModalEditEnveloppeNo">Fermer</a>
+                </div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal-dalog -->
+    </div><!-- /.modal -->    
+
+    <!-- MODAL EDIT ANNEE -->
+    <div id="myModalEditAnnee" class="modal fade in" style="">
+        <div class="modal-dialog"  style="width: 800px;">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                    <h3 id="myModalLabel"><span class="glyphicon glyphicon-edit"></span> Administration</h3>
+                </div>
+                
+                <div class="modal-body">
+                    <!--  <div id="jsGrid"></div> -->      
+                    <!-- <input type="text" name="Id" id="Id" value=""/> -->
+
+                   <!-- PANEL -->          
+                    <div class="panel panel-info">
+                        <div class="panel-heading">               
+                            <h3 class="panel-title"><i class="glyphicon glyphicon-share-alt"></i> Champ "Année"</h3>
+                            <div class="pull-right">              
+                                <span class="clickable filter" data-toggle="tooltip" title="Afficher détails" data-container="body">
+                                    <i class="glyphicon glyphicon-plus"></i>
+                                </span>
+                            </div>                
+                        </div>        
+                        <div class="panel-body" style="display: none;">
+
+                            <table class="table table-hover" id="champs-table-annee">
+                                <thead>
+                                    <tr>
+                                        <th>N°</th>
+                                        <th>ID</th>                                        
+                                        <th>Valeur</th>
+                                        <th>Edition</th>                                        
+                                        <th>Suppression</th>                                           
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for annee in listAnnees %}
+                                        <tr data-id="{{ loop.index }}">
+                                            <td>{{ loop.index }}</td>
+                                            <td data-field="id" class="id">{{ annee.id }}</td>                                            
+                                            <td data-field="valeur" class="valeur">{{ annee.valeur }}</td>
+                                            <td>
+                                                <a class="button button-small edit" title="Edit"><i class="glyphicon glyphicon-pencil"></i></a>
+                                                <!-- <a class="button button-small cancel" title="Annuler"><i class="glyphicon glyphicon-remove"></i></a> -->                                                
+                                            </td>                                            
+                                            <td id="delete-annee" class="text-center"><a id="{{ annee.id }}" class="button button-small" title="Supprimer"><i class="glyphicon glyphicon-trash"></i> </a></td>                    
+                                        </tr>
+                                    {% endfor %}   
+                                </tbody>
+                            </table>
+
+                        </div>  
+                        <table class="table" id="champs-table-annee-add">
+                            <thead>
+                                <tr>
+                                    <th class="text-center">Nouvelle Année</th>
+                                    <th class="text-center">Action</th>                    
+                                </tr>
+                            </thead>                   
+                            <tbody>
+                                <tr>                             
+                                     <td><input type="text" class="form-control input-md textinput" id="valeur" name="valeur" required="true"></td>
+                                     <td class="text-center" id="add-annee"><button type="submit" title="Ajouter" class="btn btn-success"><i class="glyphicon glyphicon-check"></i></button></td>
+                                 </tr>   
+                            </tbody>   
+                        </table>
+                    </div>                    
+
+                </div>
+
+                <div class="modal-footer">
+                    <a href="#" class="btn btn-danger" id="confirmModalEditAnneeNo">Fermer</a>
+                </div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal-dalog -->
+    </div><!-- /.modal -->  
  
+    <!-- MODAL EDIT STATUT -->
+    <div id="myModalEditStatut" class="modal fade in" style="">
+        <div class="modal-dialog"  style="width: 800px;">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                    <h3 id="myModalLabel"><span class="glyphicon glyphicon-edit"></span> Administration</h3>
+                </div>
+                
+                <div class="modal-body">
+                    <!--  <div id="jsGrid"></div> -->      
+                    <!-- <input type="text" name="Id" id="Id" value=""/> -->
+
+                   <!-- PANEL -->          
+                    <div class="panel panel-warning">
+                        <div class="panel-heading">               
+                            <h3 class="panel-title"><i class="glyphicon glyphicon-share-alt"></i> Champ "Statut"</h3>
+                            <div class="pull-right">              
+                                <span class="clickable filter" data-toggle="tooltip" title="Afficher détails" data-container="body">
+                                    <i class="glyphicon glyphicon-plus"></i>
+                                </span>
+                            </div>                
+                        </div>        
+                        <div class="panel-body" style="display: none;">
+
+                            <table class="table table-hover" id="champs-table-statut">
+                                <thead>
+                                    <tr>
+                                        <th>N°</th>
+                                        <th>ID</th>                                        
+                                        <th>Nom</th>
+                                        <th>Edition</th>                                        
+                                        <th>Suppression</th>                                           
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for statut in listStatuts %}
+                                        <tr data-id="{{ loop.index }}">
+                                            <td>{{ loop.index }}</td>
+                                            <td data-field="id" class="id">{{ statut.id }}</td>                                            
+                                            <td data-field="nom" class="nom">{{ statut.nom }}</td>
+                                            <td>
+                                                <a class="button button-small edit" title="Edit"><i class="glyphicon glyphicon-pencil"></i></a>
+                                                <!-- <a class="button button-small cancel" title="Annuler"><i class="glyphicon glyphicon-remove"></i></a> -->                                                
+                                            </td>                                            
+                                            <td id="delete-statut" class="text-center"><a id="{{ statut.id }}" class="button button-small" title="Supprimer"><i class="glyphicon glyphicon-trash"></i> </a></td>                    
+                                        </tr>
+                                    {% endfor %}   
+                                </tbody>
+                            </table>
+
+                        </div>  
+                        <table class="table" id="champs-table-statut-add">
+                            <thead>
+                                <tr>
+                                    <th class="text-center">Nouveau Statut</th>
+                                    <th class="text-center">Action</th>                    
+                                </tr>
+                            </thead>                   
+                            <tbody>
+                                <tr>                             
+                                     <td><input type="text" class="form-control input-md textinput" id="nom" name="nom" required="true"></td>
+                                     <td class="text-center" id="add-statut"><button type="submit" title="Ajouter" class="btn btn-success"><i class="glyphicon glyphicon-check"></i></button></td>
+                                 </tr>   
+                            </tbody>   
+                        </table>                              
+                    </div>                      
+
+                </div>
+
+                <div class="modal-footer">
+                    <a href="#" class="btn btn-danger" id="confirmModalEditStatutNo">Fermer</a>
+                </div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal-dalog -->
+    </div><!-- /.modal -->      
+
     
+<script>
+
+    $(document).ready(function () {
+        var theHREF;
+
+        $(".confirmModalEditNomApplication").click(function(e) {
+            e.preventDefault();
+            theHREF = $(this).attr("href");          
+            $("#myModalEditNomApplication").modal("show");
+            //var Id = $(this).data('id');
+            //$(".modal-body #Id").val( Id );              
+        });
+
+        $("#confirmModalEditNomApplicationNo").click(function(e) {
+            $("#myModalEditNomApplication").modal("hide");
+        });
+    });
+
+    $(document).ready(function () {
+        var theHREF;
+
+        $(".confirmModalEditAnnee").click(function(e) {
+            e.preventDefault();
+            theHREF = $(this).attr("href");          
+            $("#myModalEditAnnee").modal("show");
+            //var Id = $(this).data('id');
+            //$(".modal-body #Id").val( Id );              
+        });
+
+        $("#confirmModalEditAnneeNo").click(function(e) {
+            $("#myModalEditAnnee").modal("hide");
+        });
+    });
+ 
+    $(document).ready(function () {
+        var theHREF;
+
+        $(".confirmModalEditEnveloppe").click(function(e) {
+            e.preventDefault();
+            theHREF = $(this).attr("href");          
+            $("#myModalEditEnveloppe").modal("show");
+            //var Id = $(this).data('id');
+            //$(".modal-body #Id").val( Id );              
+        });
+
+        $("#confirmModalEditEnveloppeNo").click(function(e) {
+            $("#myModalEditEnveloppe").modal("hide");
+        });
+    });
+    
+    $(document).ready(function () {
+        var theHREF;
+
+        $(".confirmModalEditStatut").click(function(e) {
+            e.preventDefault();
+            theHREF = $(this).attr("href");          
+            $("#myModalEditStatut").modal("show");
+            //var Id = $(this).data('id');
+            //$(".modal-body #Id").val( Id );              
+        });
+
+        $("#confirmModalEditStatutNo").click(function(e) {
+            $("#myModalEditStatut").modal("hide");
+        });
+    });
+    
+    /*********Enveloppe*************/
+
+    $('#champs-table-enveloppe tr').editable({
+
+      // enable keyboard support
+      keyboard: true,
+
+      // double click to start editing
+      dblclick: true,
+
+      // enable edit buttons
+      button: true,
+
+      // CSS selector for edit buttons
+      buttonSelector: ".edit",
+
+      // uses select dropdown instead of input field
+      dropdowns: {},
+
+      // maintains column width when editing
+      maintainWidth: true,
+
+      // callbacks for edit, save and cancel actions
+      edit: function(values) {
+            $(".cancel i", this)
+            .show();
+
+            $(".edit i", this)
+            .removeClass('glyphicon-pencil')
+            .addClass('glyphicon-save')
+            .attr('title', 'Save');  
+        },
+
+      save: function(values) {
+            $(".cancel i", this)
+            .hide();     
+
+            $(".edit i", this)
+            .removeClass('glyphicon-save')
+            .addClass('glyphicon-pencil')
+            .attr('title', 'Edit');  
+
+
+            /* Test contre les valeurs dupliquées */
+             var chemin =  $(".nom", this); 
+             var boolean = 0;
+             $('#champs-table-enveloppe').find("tbody").find("tr").each(function(){
+               var identifiant= $(this).find(".id").text();
+               var nom= $(this).find(".nom").text();
+               
+               /*Pour enlever les espaces qui empechent la comparaison*/
+               var nom_X = nom.replace(/ /g, '_');
+               var nom_Y = values["nom"].replace(/ /g, '_');
+               //console.log(nom_X);
+               //console.log(nom_Y);
+
+                if(nom_X == nom_Y && identifiant != values["id"])
+                {
+                    boolean = 1;
+                }
+            });
+            
+            if(boolean == 1)
+            {
+                alert("Enveloppe déjà existante!");
+                chemin.html("");
+                return;                  
+            }
+            else
+            {
+                /* Si ok on post*/
+                var id = $(this).data('id');
+                $.post('{{ path('administration_champ_enveloppe_edit')}}', values);        
+            } 
+
+        },
+
+      cancel: function(values) {
+            $(".edit i", this)
+            .removeClass('glyphicon-save')
+            .addClass('glyphicon-pencil')
+            .attr('title', 'Edit');  
+        }
+
+    });
+
+    $('#champs-table-enveloppe tr #delete-enveloppe').on("click", function()
+    {
+        var identifiant = $("a", this).attr("id");
+
+        if(confirm("Etes-vous sûr de vouloir supprimer l'item?")==true)
+        {    
+            $(this).parent().remove();      
+
+            $.post("{{ path('administration_champ_enveloppe_delete')}}", { id: identifiant})
+              .done(function(data) {
+                alert("Suppression effectuée avec succès!");
+            });
+        }
+
+    });
+
+    $('#champs-table-enveloppe-add tr #add-enveloppe').on("click", function()
+    {
+        var nom = $("#champs-table-enveloppe-add tr #nom").val();
+        /*$.post("{{ path('administration_champ_enveloppe_add')}}", { nom: nom})
+          .done(function(data) {
+            alert("Ajout effectué avec succès!");
+        });*/
+        $.ajax({
+            type: 'post',
+            url: "{{ path('administration_champ_enveloppe_add') }}",
+            data: {nom: nom},
+            success: function()
+            {
+                alert("Ajout effectué avec succès!");
+                //var url = document.location.href;
+                //$(location).attr('href',url+"#budget");                 
+                //location.reload();        
+            },
+            error: function(e) {
+                alert("Cette enveloppe existe déjà!");                
+               console.log(e);
+             }      
+        });
+
+
+    });
+
+    /*********Annee*************/
+
+    $('#champs-table-annee tr').editable({
+
+      // enable keyboard support
+      keyboard: true,
+
+      // double click to start editing
+      dblclick: true,
+
+      // enable edit buttons
+      button: true,
+
+      // CSS selector for edit buttons
+      buttonSelector: ".edit",
+
+      // uses select dropdown instead of input field
+      dropdowns: {},
+
+      // maintains column width when editing
+      maintainWidth: true,
+
+      // callbacks for edit, save and cancel actions
+      edit: function(values) {
+            $(".cancel i", this)
+            .show();
+
+            $(".edit i", this)
+            .removeClass('glyphicon-pencil')
+            .addClass('glyphicon-save')
+            .attr('title', 'Save');  
+        },
+
+      save: function(values) {
+            $(".cancel i", this)
+            .hide();     
+
+            $(".edit i", this)
+            .removeClass('glyphicon-save')
+            .addClass('glyphicon-pencil')
+            .attr('title', 'Edit');  
+
+            /* Test contre les valeurs dupliquées */
+             var chemin =  $(".valeur", this); 
+             var boolean = 0;
+             $('#champs-table-annee').find("tbody").find("tr").each(function(){
+               var identifiant= $(this).find(".id").text();
+               var valeur = $(this).find(".valeur").text();       
+
+                if(valeur == values["valeur"] && identifiant != values["id"])
+                {
+                    boolean = 1;
+                }
+            });
+            
+            if(boolean == 1)
+            {
+                alert("Année déjà existante!");
+                chemin.html("");
+                return;                  
+            }
+            else
+            {
+                /* Si ok on post*/
+                var id = $(this).data('id');
+                $.post('{{ path('administration_champ_annee_edit')}}', values);            
+            } 
+
+        },
+
+      cancel: function(values) {
+            $(".edit i", this)
+            .removeClass('glyphicon-save')
+            .addClass('glyphicon-pencil')
+            .attr('title', 'Edit');  
+        }
+
+    });
+
+
+    $('#champs-table-annee tr #delete-annee').on("click", function()
+    {
+        var identifiant = $("a", this).attr("id");
+
+        if(confirm("Etes-vous sûr de vouloir supprimer l'item?")==true)
+        {    
+            $(this).parent().remove();      
+
+            $.post("{{ path('administration_champ_annee_delete')}}", { id: identifiant})
+              .done(function(data) {
+                alert("Suppression effectuée avec succès!");
+            });
+        }
+
+    });
+
+    $('#champs-table-annee-add tr #add-annee').on("click", function()
+    {
+        var valeur = $("#champs-table-annee-add tr #valeur").val();
+        /*$.post("{{ path('administration_champ_annee_add')}}", { valeur: valeur})
+          .done(function(data) {
+            alert("Ajout effectué avec succès!");
+        });*/
+        $.ajax({
+            type: 'post',
+            url: "{{ path('administration_champ_annee_add') }}",
+            data: {valeur: valeur},
+            success: function()
+            {
+                alert("Ajout effectué avec succès!");
+                //var url = document.location.href;
+                //$(location).attr('href',url+"#budget");                 
+                //location.reload();        
+            },
+            error: function(e) {
+                alert("Cette valeur existe déjà!");                
+               console.log(e);
+             }      
+        });          
+
+    });
+    
+    
+    /*********Statut*************/
+
+    $('#champs-table-statut tr').editable({
+
+      // enable keyboard support
+      keyboard: true,
+
+      // double click to start editing
+      dblclick: true,
+
+      // enable edit buttons
+      button: true,
+
+      // CSS selector for edit buttons
+      buttonSelector: ".edit",
+
+      // uses select dropdown instead of input field
+      dropdowns: {},
+
+      // maintains column width when editing
+      maintainWidth: true,
+
+      // callbacks for edit, save and cancel actions
+      edit: function(values) {
+            $(".cancel i", this)
+            .show();
+
+            $(".edit i", this)
+            .removeClass('glyphicon-pencil')
+            .addClass('glyphicon-save')
+            .attr('title', 'Save');  
+        },
+
+      save: function(values) {
+            $(".cancel i", this)
+            .hide();     
+
+            $(".edit i", this)
+            .removeClass('glyphicon-save')
+            .addClass('glyphicon-pencil')
+            .attr('title', 'Edit');  
+     
+            /* Test contre les valeurs dupliquées */
+             var chemin =  $(".nom", this); 
+             var boolean = 0;
+             $('#champs-table-statut').find("tbody").find("tr").each(function(){
+               var identifiant= $(this).find(".id").text();
+               var nom= $(this).find(".nom").text();       
+
+                if(nom == values["nom"] && identifiant != values["id"])
+                {
+                    boolean = 1;
+                }
+            });
+            
+            if(boolean == 1)
+            {
+                alert("Statut déjà existant!");
+                chemin.html("");
+                return;                  
+            }
+            else
+            {
+                /* Si ok on post*/
+               var id = $(this).data('id');
+               $.post('{{ path('administration_champ_statut_edit')}}', values);               
+            }  
+        },
+
+      cancel: function(values) {
+            $(".edit i", this)
+            .removeClass('glyphicon-save')
+            .addClass('glyphicon-pencil')
+            .attr('title', 'Edit');  
+        }
+
+    });
+
+
+    $('#champs-table-statut tr #delete-statut').on("click", function()
+    {
+        var identifiant = $("a", this).attr("id");
+
+        if(confirm("Etes-vous sûr de vouloir supprimer l'item?")==true)
+        {    
+            $(this).parent().remove();      
+
+            $.post("{{ path('administration_champ_statut_delete')}}", { id: identifiant})
+              .done(function(data) {
+                alert("Suppression effectuée avec succès!");
+            });
+        }
+
+    });
+
+    $('#champs-table-statut-add tr #add-statut').on("click", function()
+    {
+        var nom = $("#champs-table-statut-add tr #nom").val();
+        /*$.post("{{ path('administration_champ_statut_add')}}", { nom: nom})
+          .done(function(data) {
+            alert("Ajout effectué avec succès!");
+        });*/
+        $.ajax({
+            type: 'post',
+            url: "{{ path('administration_champ_statut_add') }}",
+            data: {nom: nom},
+            success: function()
+            {
+                alert("Ajout effectué avec succès!");
+                //var url = document.location.href;
+                //$(location).attr('href',url+"#budget");                 
+                //location.reload();        
+            },
+            error: function(e) {
+                alert("Ce statut existe déjà!");                
+               console.log(e);
+             }      
+        });        
+
+    });
+    
+
+    /***********TABLEJQUERY*************/
+  /*  
+    $(function() {
+
+        $("#jsGrid").jsGrid({
+            height: "70%",
+            width: "100%",
+            filtering: true,
+            editing: true,
+            sorting: true,
+            paging: true,
+            autoload: true,
+            pageSize: 15,
+            pageButtonCount: 5,
+            deleteConfirm: "Do you really want to delete the client?",
+            controller: db,
+            fields: [
+                { name: "Name", type: "text", width: 150 },
+                { name: "Age", type: "number", width: 50 },
+                { name: "Address", type: "text", width: 200 },
+                { name: "Country", type: "select", items: db.countries, valueField: "Id", textField: "Name" },
+                { name: "Married", type: "checkbox", title: "Is Married", sorting: false },
+                { type: "control" }
+            ]
+        });
+
+    });
+    */
+  
+</script>
+
 {% endblock nipa_users_div %}

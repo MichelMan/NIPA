@@ -1,6 +1,6 @@
 <?php
 
-namespace NIPA\ProjetBundle\Entity;
+namespace NIPA\ProjetBundle\Repository;
 
 /**
  * PortefeuilleStatutRepository

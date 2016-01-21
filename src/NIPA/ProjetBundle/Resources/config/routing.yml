@@ -2,6 +2,30 @@ portefeuille:
     path:     /portefeuille
     defaults: { _controller: NIPAProjetBundle:Portefeuille:index }
 
+portefeuille_new:
+    path:     /portefeuille/new
+    defaults: { _controller: NIPAProjetBundle:Portefeuille:addPortefeuille }
+
+portefeuille_budget_prev:
+    path:     /portefeuille/EditBudgetPrev/{reference}
+    defaults: { _controller: NIPAProjetBundle:Portefeuille:editBudgetPrev }
+
+portefeuille_budget_prev_delete:
+    path:     /portefeuille/DeleteBudgetPrev/{id}
+    defaults: { _controller: NIPAProjetBundle:Portefeuille:deleteBudgetPrev }
+
+portefeuille_budget_cons:
+    path:     /portefeuille/budgetCons/{reference}
+    defaults: { _controller: NIPAProjetBundle:Portefeuille:editBudgetCons }
+
+portefeuille_edit:
+    path:     /portefeuille/edit/{reference}
+    defaults: { _controller: NIPAProjetBundle:Portefeuille:editPortefeuille }
+
+portefeuille_delete:
+    path:     /portefeuille/delete/{reference}
+    defaults: { _controller: NIPAProjetBundle:Portefeuille:deletePortefeuille }
+
 projet:
     path:     /projet
     defaults: { _controller: NIPAProjetBundle:Projet:index }

@@ -1,16 +1,23 @@
 {% trans_default_domain 'NIPAUserBundle' %}
 
 <form action="{% if groupe.id %}{{ path('groupe_edit', {'groupeId':groupe.id}) }}{% else %}{{ path('groupe_add') }}{% endif %}" method="post" {{ form_enctype(form) }}>
-    <h3>{% if groupe.id %}<span class='glyphicon glyphicon-pencil'></span> {{ 'Modifier groupe'|trans }}{% else %}<span class='glyphicon glyphicon-plus-sign'></span> {{ 'Nouveau groupe'|trans }}{% endif %}</h3>
+    <h3>{% if groupe.id %}<span class='glyphicon glyphicon-pencil'></span> {{ 'Edition du groupe'|trans }}{% else %}<span class='glyphicon glyphicon-plus-sign'></span> {{ 'Nouveau groupe'|trans }}{% endif %}</h3>
         <br>
     <div>
-    {{ form_errors(form.Nom) }}
-    {{ form_label(form.Nom, 'Nom'|trans) }}
-    {{ form_widget(form.Nom) }}
+        {{ form_errors(form.Nom) }}
+        {{ form_label(form.Nom, 'Nom'|trans) }}*
+        {% if groupe.nom == "Manager Application" %} {# Si groupe Admin on peut bloque modif du Nom#}
+            {{ form_widget(form.Nom, {'attr': {'readonly': 'readonly'}})}}
+        {% else %}    
+            {{ form_widget(form.Nom) }}            
+        {% endif %}
     </div>
-    
+    <br>
     {{ form_rest(form) }}
     <br>
-    <button class="btn btn-success" type="submit">{% if groupe.id %}{{ 'Mise à jour'|trans }}{% else %}{{ 'Créer'|trans }}{% endif %}</button>
-
+        <div>
+            <button class="btn btn-success" type="submit">{% if groupe.id %}{{ 'Mise à jour'|trans }}{% else %}{{ 'Créer'|trans }}{% endif %}</button>
+        </div>
+    <br>
+        <p>* Champs obligatoire</p>
 </form>

@@ -266,17 +266,9 @@ class GroupeController extends Controller
                 }	
                 
                 $this->get('session')->getFlashBag()->set('success',
-                $this->get('translator')->trans('Utilisateur(s) ajouté(s) au groupe '.$groupe->getNom())
+                $this->get('translator')->trans(count($idUsers).' utilisateur(s) ajouté(s) au groupe '.$groupe->getNom())
                 );
                 
-                /*
-                $json = array();
-                $json['view1'] = $this->renderView('administration', array('groupeId' => $groupe->getId()));
-                 
-                $response = new Response(json_encode($json));
-                $response->headers->set('Content-Type', 'application/json');
-                return $response;
-                */
                 
                 return new RedirectResponse($this->generateUrl('groupe_edit', array(
                     'groupeId' => $groupe->getId()
@@ -287,7 +279,7 @@ class GroupeController extends Controller
          return $this->render('NIPAUserBundle:Groupe:add.html.twig', array('form' => $form->createView(), 'formModal' => $formModal->createView(), 'formPermission' => $formPermission->createView(), 'groupe' => $groupe,  'choices' => $choices)); // On passe à Twig l'objet form et notre objet Groupe
     }
     
-    public function deleteUsersAction($identifiant, $groupeId)
+    public function deleteUsersAction(Request $request, $identifiant, $groupeId)
     {
          /**********************DROIT SECTION************************/
         $requestDroit = Request::createFromGlobals();
@@ -347,9 +339,10 @@ class GroupeController extends Controller
         $user = $userManager->findUserBy(array('Identifiant' => $identifiant)); // on accède aux service et on récupère les méthodes dans UserManager
         
         $em = $this->getDoctrine()->getManager();
-
-        $groupe->removeUtilisateurs($user);
-
+        
+        $user->removeGroupes($groupe);
+        //$groupe->removeUtilisateurs($user);
+        
         $em->flush();
         
         $this->get('session')->getFlashBag()->add('success','Utilisateur '.$user->getNom().' '.$user->getPrenom().' effacé');
@@ -363,8 +356,8 @@ class GroupeController extends Controller
     *  ADD Permission to a Groupe
     * 
     */
-   public function addPermissionGroupeAction($groupeId)
-   {
+    public function addPermissionGroupeAction($groupeId)
+    {
          /**********************DROIT SECTION************************/
         $requestDroit = Request::createFromGlobals();
         $droit = $requestDroit->query->get('droit');
@@ -425,7 +418,7 @@ class GroupeController extends Controller
                 $em->flush();
                 
                 $this->get('session')->getFlashBag()->set('notice',
-                $this->get('translator')->trans('Permissions au groupe ajouté')
+                $this->get('translator')->trans('Permissions du groupe ajouté')
                 );
                 
                // On redirige vers la page de modification du groupe
@@ -505,7 +498,7 @@ class GroupeController extends Controller
                 $em->flush();
                 
                 $this->get('session')->getFlashBag()->set('notice',
-                $this->get('translator')->trans('Permissions au groupe modifié')
+                $this->get('translator')->trans('Permissions du groupe modifié')
                 );
                 
                // On redirige vers la page de modification du groupe

@@ -1,0 +1,301 @@
+{% trans_default_domain 'NIPAProjetBundle' %}
+		
+{% block body %}
+
+  <style type='text/css'>
+    .panel-heading a:after {
+    font-family:'Glyphicons Halflings';
+    content:"\e114";
+    float: right;
+    color: grey;
+    }
+    .panel-heading a.collapsed:after {
+        content:"\e080";
+    }
+  </style>    
+
+    <!-- Container tables hide/show with charts -->
+  <div class="panel-group" id="accordion">
+    <div class="panel panel-default" id="panel1">
+        <div class="panel-heading">
+            <h4 class="panel-title">
+                <a data-toggle="collapse" data-target="#collapseOne" accesskey="" href="#collapseOne" class="collapsed"><i class="fa fa-list-alt"></i> Demande</a>
+            </h4>        
+        </div>
+        <div id="collapseOne" class="panel-collapse collapse"> <!-- collapse.in shows content -->
+            <div class="panel-body">
+                <div class="row">
+                    <div class="col-lg-8">
+                        <div class="panel panel-default">
+                            <div class="panel-heading">
+                                <h3 class="panel-title"><i class="fa fa-dashboard"></i> Graphique</h3>
+                            </div>
+                            <div class="panel-body">
+                                <div id="morris-donut-chart-demande"></div>
+                                <div class="text-right">
+                                    <a href="#">View more <i class="fa fa-arrow-circle-right"></i></a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-4">
+                        <div class="panel panel-default">
+                            <div class="panel-heading">
+                                <h3 class="panel-title"><i class="fa fa-signal"></i> Détail</h3>
+                            </div>   
+                            <div class="panel-body">                            
+                                <div class="list-group">
+                                    <a href="#" class="list-group-item">
+                                        <span class="badge">4</span>
+                                        <i class="fa fa-fw fa-calendar"></i> Prévisionnelle
+                                    </a>
+                                    <a href="#" class="list-group-item">
+                                        <span class="badge">4</span>
+                                        <i class="fa fa-fw fa-comment"></i> Sélectionnée
+                                    </a>
+                                    <a href="#" class="list-group-item">
+                                        <span class="badge">3</span>
+                                        <i class="fa fa-fw fa-truck"></i> Engagée
+                                    </a>
+                                    <a href="#" class="list-group-item">
+                                        <span class="badge">6</span>
+                                        <i class="fa fa-fw fa-money"></i> Terminée
+                                    </a>
+                                    <a href="#" class="list-group-item">
+                                        <span class="badge">1</span>
+                                        <i class="fa fa-fw fa-money"></i> Annulée
+                                    </a>
+                                    <a href="#" class="list-group-item">
+                                        <span class="badge">1</span>
+                                        <i class="fa fa-fw fa-money"></i> Suspendue
+                                    </a>                                    
+                                    <a href="#" class="list-group-item">
+                                        <span class="badge">19</span>
+                                        <i class="fa fa-fw fa-user"></i> Total
+                                    </a>                                  
+                                </div>
+                                <div class="text-right">
+                                    <a href="#">View more <i class="fa fa-arrow-circle-right"></i></a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+      
+    <div class="panel panel-default" id="panel2">
+        <div class="panel-heading">
+             <h4 class="panel-title">
+                 <a data-toggle="collapse" data-target="#collapseTwo" accesskey="" href="#collapseTwo" class="collapsed"><i class="fa fa-list-alt"></i> Projet</a>           
+             </h4>
+        </div>
+        <div id="collapseTwo" class="panel-collapse collapse">
+            <div class="panel-body">
+                <div class="row">
+                    <div class="col-lg-8">
+                        <div class="panel panel-default">
+                            <div class="panel-heading">
+                                <h3 class="panel-title"><i class="fa fa-dashboard"></i> Graphique</h3>
+                            </div>
+                            <div class="panel-body">
+                                <div id="morris-donut-chart-projet"></div>
+                                <div class="text-right">
+                                    <a href="#">View more <i class="fa fa-arrow-circle-right"></i></a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-4">
+                        <div class="panel panel-default">
+                            <div class="panel-heading">
+                                <h3 class="panel-title"><i class="fa fa-signal"></i> Détail</h3>
+                            </div>   
+                            <div class="panel-body">                            
+                                <div class="list-group">
+                                    <a href="#" class="list-group-item">
+                                        <span class="badge">4</span>
+                                        <i class="fa fa-fw fa-calendar"></i> Cadrage
+                                    </a>
+                                    <a href="#" class="list-group-item">
+                                        <span class="badge">7</span>
+                                        <i class="fa fa-fw fa-comment"></i> Pré-Etude
+                                    </a>
+                                    <a href="#" class="list-group-item">
+                                        <span class="badge">4</span>
+                                        <i class="fa fa-fw fa-truck"></i> Etude
+                                    </a>
+                                    <a href="#" class="list-group-item">
+                                        <span class="badge">2</span>
+                                        <i class="fa fa-fw fa-money"></i> Développement
+                                    </a>
+                                    <a href="#" class="list-group-item">
+                                        <span class="badge">2</span>
+                                        <i class="fa fa-fw fa-money"></i> Développement
+                                    </a>
+                                    <a href="#" class="list-group-item">
+                                        <span class="badge">1</span>
+                                        <i class="fa fa-fw fa-money"></i> MEP
+                                    </a>
+                                    <a href="#" class="list-group-item">
+                                        <span class="badge">7</span>
+                                        <i class="fa fa-fw fa-money"></i> VSR
+                                    </a>
+                                    <a href="#" class="list-group-item">
+                                        <span class="badge">10</span>
+                                        <i class="fa fa-fw fa-money"></i> Clos
+                                    </a>
+                                    <a href="#" class="list-group-item">
+                                        <span class="badge">2</span>
+                                        <i class="fa fa-fw fa-money"></i> Annulé
+                                    </a>
+                                    <a href="#" class="list-group-item">
+                                        <span class="badge">0</span>
+                                        <i class="fa fa-fw fa-money"></i> Suspendu
+                                    </a>                                    
+                                    <a href="#" class="list-group-item">
+                                        <span class="badge">37</span>
+                                        <i class="fa fa-fw fa-user"></i> Total
+                                    </a>                                  
+                                </div>
+                                <div class="text-right">
+                                    <a href="#">View more <i class="fa fa-arrow-circle-right"></i></a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>            
+            </div>
+        </div>
+    </div>
+      
+    <div class="panel panel-default" id="panel3">
+        <div class="panel-heading">
+             <h4 class="panel-title">
+                <a data-toggle="collapse" data-target="#collapseThree" href="#collapseThree" class="collapsed"><i class="fa fa-dollar"></i> Budget</a>
+            </h4>
+        </div>
+        <div id="collapseThree" class="panel-collapse collapse">
+            <div class="panel-body">
+                <div class="row">
+                    <div class="col-lg-8">
+                        <div class="panel panel-default">
+                            <div class="panel-heading">
+                                <h3 class="panel-title"><i class="fa fa-dashboard"></i> Graphique</h3>
+                            </div>
+                            <div class="panel-body">
+                                <div id="morris-donut-chart-budget"></div>
+                                <div class="text-right">
+                                    <a href="#">View more <i class="fa fa-arrow-circle-right"></i></a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-4">
+                        <div class="panel panel-default">
+                            <div class="panel-heading">
+                                <h3 class="panel-title"><i class="fa fa-signal"></i> Détail</h3>
+                            </div>   
+                            <div class="panel-body">                            
+                                <div class="list-group">
+                                    <a href="#" class="list-group-item">
+                                        <span class="badge">4</span>
+                                        <i class="fa fa-fw fa-calendar"></i> Prévisionnelle
+                                    </a>
+                                    <a href="#" class="list-group-item">
+                                        <span class="badge">4</span>
+                                        <i class="fa fa-fw fa-comment"></i> Sélectionnée
+                                    </a>
+                                    <a href="#" class="list-group-item">
+                                        <span class="badge">3</span>
+                                        <i class="fa fa-fw fa-truck"></i> Engagée
+                                    </a>
+                                    <a href="#" class="list-group-item">
+                                        <span class="badge">6</span>
+                                        <i class="fa fa-fw fa-money"></i> Terminée
+                                    </a>
+                                    <a href="#" class="list-group-item">
+                                        <span class="badge">17</span>
+                                        <i class="fa fa-fw fa-user"></i> Total
+                                    </a>                                  
+                                </div>
+                                <div class="text-right">
+                                    <a href="#">View more <i class="fa fa-arrow-circle-right"></i></a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>            
+            </div>
+        </div>
+    </div>
+      
+</div>
+
+    
+<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/morris.js/0.5.1/morris.css">
+<script src="//cdnjs.cloudflare.com/ajax/libs/raphael/2.1.4/raphael-min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/morris.js/0.5.1/morris.min.js"></script>    
+<script>
+/*
+    new Morris.Donut({
+      // ID of the element in which to draw the chart.
+      element: 'morris-donut-chart-demande',
+      // Chart data records -- each entry in this array corresponds to a point on
+      // the chart.
+      data: [
+        { label: 'Prévisionnelle', value: 4 },
+        { label: 'Sélectionnée', value: 4 },
+        { label: 'Engagée', value: 3 },
+        { label: 'Terminée', value: 6 },
+        { label: 'Annulée', value: 1 },        
+        { label: 'Supsendue', value: 1 }
+      ],
+      labels: ['Value']
+    });    
+    
+    new Morris.Donut({
+      // ID of the element in which to draw the chart.
+      element: 'morris-donut-chart-projet',
+      // Chart data records -- each entry in this array corresponds to a point on
+      // the chart.
+      data: [
+        { label: 'Cadrage', value: 4 },
+        { label: 'Pré-Etude', value: 7 },
+        { label: 'Etude', value: 4 },
+        { label: 'Développement', value: 2 },
+        { label: 'MEP', value: 1 },
+        { label: 'VSR', value: 7 },
+        { label: 'Clos', value: 10 },
+        { label: 'Annulé', value: 1 },
+        { label: 'Suspendu', value: 0 }   
+      ],
+      labels: ['Value']
+    });       
+
+new Morris.Line({
+  // ID of the element in which to draw the chart.
+  element: 'morris-donut-chart-budget',
+  // Chart data records -- each entry in this array corresponds to a point on
+  // the chart.
+  data: [
+    { year: '2008', value: 20 },
+    { year: '2009', value: 10 },
+    { year: '2010', value: 5 },
+    { year: '2011', value: 5 },
+    { year: '2012', value: 20 }
+  ],
+  // The name of the data record attribute that contains x-values.
+  xkey: 'year',
+  // A list of names of data record attributes that contain y-values.
+  ykeys: ['value'],
+  // Labels for the ykeys -- will be displayed when you hover over the
+  // chart.
+  labels: ['Value']
+});    
+*/
+
+</script>    
+
+{% endblock %}

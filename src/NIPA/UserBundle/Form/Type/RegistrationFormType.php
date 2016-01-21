@@ -18,7 +18,6 @@ class RegistrationFormType extends BaseType
         $builder->add('Prenom');
         $builder->add('Nom');
         $builder->add('Email');
-	$builder->add('Admin');
 
     }
 

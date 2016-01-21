@@ -10,9 +10,9 @@ use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
  * portfeuille
  *
  * @ORM\Table()
- * @ORM\Entity(repositoryClass="NIPA\ProjetBundle\Entity\portfeuilleRepository")
+ * @ORM\Entity(repositoryClass="NIPA\ProjetBundle\Repository\PortefeuilleRepository")
  */
-class portfeuille
+class Portefeuille
 {
     /**
      * @var integer
@@ -41,32 +41,50 @@ class portfeuille
     /**
      * @var string
      *
-     * @ORM\Column(name="Description", type="string", length=1000)
+     * @ORM\Column(name="IPP", type="string", length=25)
      */
+    
+    private $IPP;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="Description", type="string", length=1000, nullable=true)
+     */    
+    
     private $description;
 
     /**
      * @ORM\ManyToOne(targetEntity="NIPA\ProjetBundle\Entity\PortefeuilleEnveloppe")
+     * @ORM\JoinColumn(name="portefeuille_enveloppe_id", referencedColumnName="id", onDelete="SET NULL")
      */
     private $portefeuilleEnveloppe;
     
     /**
      * @ORM\ManyToOne(targetEntity="NIPA\ProjetBundle\Entity\PortefeuilleAnnee")
+     * @ORM\JoinColumn(name="portefeuille_annee_id", referencedColumnName="id", onDelete="SET NULL")
      */
     private $portefeuilleAnnee;
-
+    
     /**
      * @var \DateTime
      *
-     * @ORM\Column(name="Date_Cloture", type="date")
+     * @ORM\Column(name="Date_Cloture", type="date", nullable=true)
      */
-    private $dateCloture;
+    private $dateCloture=null;
 
     /**
      * @ORM\ManyToOne(targetEntity="NIPA\ProjetBundle\Entity\PortefeuilleStatut")
+     * @ORM\JoinColumn(name="portefeuille_statut_id", referencedColumnName="id", onDelete="SET NULL")
      */
     private $portefeuilleStatut;
-
+    
+    /**
+     * @ORM\ManyToMany(targetEntity="Demande", inversedBy="portefeuille")
+     * @ORM\JoinTable(name="portefeuilles_demandes")
+     */
+    private $portefeuille;
+    
     
    public function __construct()
    {
@@ -132,6 +150,30 @@ class portfeuille
     }
 
     /**
+     * Set IPP
+     *
+     * @param string $IPP
+     *
+     * @return portfeuille
+     */
+    public function setIPP($IPP)
+    {
+        $this->IPP = $IPP;
+
+        return $this;
+    }
+
+    /**
+     * Get IPP
+     *
+     * @return string
+     */
+    public function getIPP()
+    {
+        return $this->IPP;
+    }    
+    
+    /**
      * Set description
      *
      * @param string $description
@@ -160,7 +202,7 @@ class portfeuille
      *
      * @param PortefeuilleAnnee $portefeuilleAnnee
      *
-     * @return portfeuille
+     * @return portefeuille
      */
     public function setPortefeuilleAnnee(PortefeuilleAnnee $portefeuilleAnnee)
     {
@@ -184,7 +226,7 @@ class portfeuille
      *
      * @param PortefeuilleEnveloppe $portefeuilleEnveloppe
      *
-     * @return portfeuille
+     * @return portefeuille
      */
     public function setPortefeuilleEnveloppe(PortefeuilleEnveloppe $portefeuilleEnveloppe)
     {
@@ -230,9 +272,9 @@ class portfeuille
     /**
      * Set PortefeuilleStatut
      *
-     * @param string $portefeuilleStatut
+     * @param PortefeuilleStatut $portefeuilleStatut
      *
-     * @return portfeuille
+     * @return portefeuille
      */
     public function setPortefeuilleStatut(PortefeuilleStatut $portefeuilleStatut)
     {

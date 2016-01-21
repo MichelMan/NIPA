@@ -11,6 +11,8 @@ class GroupeFormType extends AbstractType
     {
         // Ajoutez vos champs ici:
         $builder->add('Nom');
+        $builder->add('description', 'textarea', array('required' => false));
+        
     }
 
     public function getDefaultOptions(array $options)

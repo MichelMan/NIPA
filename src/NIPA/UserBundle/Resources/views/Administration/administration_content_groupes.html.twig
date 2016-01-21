@@ -10,7 +10,7 @@
             <button data-toggle="tooltip" title="Ajouter un groupe" class="btn btn-success" onclick="window.location.href='{{ path('groupe_add') }}'"><i class="glyphicon glyphicon-plus-sign"></i> Nouveau groupe</button>
         </div>
         <br>
-                
+               
         <!-- PANEL -->  
         <div class="panel panel-primary">
             <div class="panel-heading">
@@ -25,28 +25,31 @@
                 <input type="text" class="form-control" id="groupes-table-filter" data-action="filter" data-filters="#groupes-table" placeholder="Filtres groupe" />
             </div>
             <br>
-            <table class="table table-hover" id="groupes-table">
-                <thead>
-                    <tr>
-                        <th>Groupe</th>
-                        <th>Utilisateurs</th>
-                        <th>Supprimer</th>
-                    </tr>
-                </thead>
-                <tbody>
-                {# Liste all Groupes #}
-                {% for groupe in groupes %}
-                    <tr>
-                        <td><a data-toggle="tooltip" title="Modifier groupe" href="{{ path('groupe_edit', {'groupeId': groupe.id}) }}">{{ groupe.nom }}</a></td>
-                        <td>{{ groupe.getUtilisateursToArray()|length }}</td>
-                        <td>
-                            <!-- <a href="{{ path('administration_groupe_delete', {'groupeId': groupe.id}) }}" class="open-DeleteUser" role="button" data-id="{{ loop.index0 }}" data-toggle="modal"><span class="glyphicon glyphicon-remove icon-remove"></span></a> -->
-                            <a href="{{ path('administration_groupe_delete', {'groupeId': groupe.id}) }}" class="confirmModalLinkGroupe" href=""><span class="glyphicon glyphicon-remove icon-remove"></span></a>                                                
-                        </td>
-                    </tr>
-                {% endfor %}
-                </tbody>
-            </table>
+                <table class="table table-hover" id="groupes-table">
+                    <thead>
+                        <tr>
+                            <th>Groupe</th>
+                            <th>Utilisateurs</th>
+                            <th>Supprimer</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    {# Liste all Groupes #}
+                    {% for groupe in groupes %}
+                        <tr>
+                            <td><a data-toggle="tooltip" title="Modifier groupe" href="{{ path('groupe_edit', {'groupeId': groupe.id}) }}">{{ groupe.nom }}</a></td>
+                            <td>{{ groupe.getUtilisateursToArray()|length }}</td>
+                            <td>
+                                {% if groupe.getNom() != "Manager Application" %}
+                                    <a href="{{ path('administration_groupe_delete', {'groupeId': groupe.id}) }}" class="confirmModalLinkGroupe"><span class="glyphicon glyphicon-remove icon-remove"></span></a>                                                
+                                {% else %}
+                                    <span class="glyphicon glyphicon-lock icon-archive"></span>                                                                                
+                                {% endif %}
+                            </td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
         </div>
     
     <!-- MODAL DELETE -->

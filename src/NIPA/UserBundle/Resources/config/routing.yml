@@ -57,6 +57,42 @@ administration_groupe_delete:
     path: groupe/delete/{groupeId}
     defaults: { _controller: NIPAUserBundle:Administration:deleteGroupe }
 
+administration_champ_enveloppe_add:
+    path: champ/enveloppe/add
+    defaults: { _controller: NIPAUserBundle:Administration:addChampEnveloppe }
+
+administration_champ_enveloppe_edit:
+    path: champ/enveloppe/edit
+    defaults: { _controller: NIPAUserBundle:Administration:editChampEnveloppe }
+
+administration_champ_enveloppe_delete:
+    path: champ/enveloppe/delete
+    defaults: { _controller: NIPAUserBundle:Administration:deleteChampEnveloppe }
+
+administration_champ_annee_add:
+    path: champ/annee/add
+    defaults: { _controller: NIPAUserBundle:Administration:addChampAnnee }
+
+administration_champ_annee_edit:
+    path: champ/annee/edit
+    defaults: { _controller: NIPAUserBundle:Administration:editChampAnnee }
+
+administration_champ_annee_delete:
+    path: champ/annee/delete
+    defaults: { _controller: NIPAUserBundle:Administration:deleteChampAnnee }
+
+administration_champ_statut_add:
+    path: champ/statut/add
+    defaults: { _controller: NIPAUserBundle:Administration:addChampStatut }
+
+administration_champ_statut_edit:
+    path: champ/statut/edit
+    defaults: { _controller: NIPAUserBundle:Administration:editChampStatut }
+
+administration_champ_statut_delete:
+    path: champ/statut/delete
+    defaults: { _controller: NIPAUserBundle:Administration:deleteChampStatut }
+
 groupe_permission_add:
     path: groupe/permission/add/{groupeId}
     defaults: { _controller: NIPAUserBundle:Groupe:addPermissionGroupe }

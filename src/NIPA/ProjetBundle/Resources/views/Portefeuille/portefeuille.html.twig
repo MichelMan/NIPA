@@ -1,15 +1,23 @@
 {% extends "NIPAUserBundle::layoutNIPA.html.twig" %}
 
 {% block nipa_stylesheets %}
-        <!-- load the theme CSS file of jstree -->
+        <!-- load the theme CSS an JS files of jstree -->
         <link rel="stylesheet" href="{{ asset('bundles/nipaprojetbundle/js/dist/themes/default/style.min.css') }}" />
-        <!-- include the minified jstree source -->
         <script src="{{ asset('bundles/nipaprojetbundle/js/dist/jstree.min.js') }}"></script>
+        <!-- load the theme CSS an JS files of datetimepicker -->
+        <link rel="stylesheet" href="{{ asset('bundles/nipaprojetbundle/css/bootstrap-datetimepicker.css') }}" />
+        <script src="{{ asset('bundles/nipaprojetbundle/js/bootstrap-datetimepicker.min.js') }}"></script>   
+        <script src="{{ asset('bundles/nipaprojetbundle/js/bootstrap-datetimepicker.fr.js') }}"></script>        
 
+        <!-- load others JS files -->
      	<link rel="stylesheet" href="{{ asset('bundles/nipaprojetbundle/css/styleProjet.css') }}" type="text/css" media="all" />
         <script src="{{ asset('bundles/nipauserbundle/js/navbarAdministration.js') }}"></script>
-        <script src="{{ asset('bundles/nipauserbundle/js/panelFilter.js') }}"></script>     
-        <!-- <script src="{{ asset('bundles/nipaprojetbundle/js/treeJS.js') }}"></script> -->
+        <script src="{{ asset('bundles/nipauserbundle/js/panelFilter.js') }}"></script>
+        <script src="{{ asset('bundles/nipaprojetbundle/js/dTable.js') }}"></script>
+        <script src="{{ asset('bundles/nipaprojetbundle/js/ddtf.js') }}"></script>        
+        <script src="{{ asset('bundles/nipaprojetbundle/js/dynamitable.jquery.min.js') }}"></script>      
+        <script src="{{ asset('bundles/nipaprojetbundle/js/jquery.dataTables.js') }}"></script>                
+        <!-- <script src="{# {{ asset('bundles/nipaprojetbundle/js/treeJS.js') }} #}"></script> -->
 {% endblock %}
 
 {% block nipa_navbar %}
@@ -39,35 +47,61 @@
 {% endblock %}
 
 {% block nipa_user_content %}
-    <div class="container">    
+    <div class="container" role="tabpanel">    
         <br> 
         <div class="row">
             <div class="col-md-3">
-                <center><h4><span class="glyphicon glyphicon-folder-open"></span> Portfeuilles >> Liste</h4></center>            
+                <center><h4><span class="glyphicon glyphicon-folder-open"></span> Portefeuilles >> Liste</h4></center>            
             </div>
+            {# Si portefeuille existe #}
+            {% if portefeuille.referencePortefeuille %} 
             <div class="col-md-9">
-                <ul class="nav nav-tabs nav-justified admin-menu">
-                    <li class="active"><a href="" data-target-id="infos"><i class="fa fa-dashboard fa-fw"></i> Informations générales</a></li>
-                    <li><a href="#" data-target-id="budget"><i class="fa fa-dollar fa-fw"></i> Budget</a></li>
-                    <li><a href="#" data-target-id="synthese"><i class="fa fa-list-alt fa-fw"></i> Synthèse</a></li>
+                <ul class="nav nav-tabs nav-justified portfeuille" role="tablist">
+                    <li role="presentation" class="active">
+                        <a href="#infos" aria-controls="infos" role="tab" data-toggle="tab"><i class="fa fa-info-circle fa-fw"></i> Informations générales</a>
+                    </li>
+                    <li role="presentation">
+                        <a href="#budget" aria-controls="budget" role="tab" data-toggle="tab"><i class="fa fa-dollar fa-fw"></i> Budget</a>
+                    </li>
+                    <li role="presentation">
+                        <a href="#synthese" aria-controls="synthese" role="tab" data-toggle="tab"><i class="fa fa-list-alt fa-fw"></i> Synthèse</a>
+                    </li>
                 </ul>
             </div>
+            {% else %}
+            <div class="col-md-9">
+                <ul class="nav nav-tabs nav-justified">
+                    <li role="presentation" class="active">
+                        <a href="#infos" aria-controls="infos" role="tab" data-toggle="tab"><i class="fa fa-info-circle fa-fw"></i> Informations générales</a>
+                    </li>
+                </ul>
+            </div>                
+            {% endif %}
         </div>
         <br>        
-        <div class="row">
+        <div class="tab-content row">
              <div class="col-md-3">
                 {% include "NIPAProjetBundle:Portefeuille:portefeuille_content.html.twig" %}
             </div>       
             
-            <div class="col-md-9 well admin-content" id="infos">
+            <div role="tabpanel" class="col-md-9 well tab-pane active" id="infos">
+                {% include "NIPAProjetBundle:Portefeuille:portefeuille_content_gen.html.twig" %}
             </div>
 
-            <div class="col-md-9 well admin-content" id="budget">
+            <div role="tabpanel" class="col-md-9 well tab-pane" id="budget">
+                {% include "NIPAProjetBundle:Portefeuille:portefeuille_content_budget.html.twig" %}                
             </div>
 
-            <div class="col-md-9 well admin-content" id="synthese">
+            <div role="tabpanel" class="col-md-9 well tab-pane" id="synthese">
+                {% include "NIPAProjetBundle:Portefeuille:portefeuille_content_synthese.html.twig" %}                                
             </div>          
         </div>
     </div>
-                
+ 
+    <script>
+        var url = document.location.toString();
+        if (url.match('#')) {
+          $('.portfeuille a[href=#'+url.split('#')[1]+']').tab('show') ;
+        }        
+    </script>
 {% endblock nipa_user_content %}

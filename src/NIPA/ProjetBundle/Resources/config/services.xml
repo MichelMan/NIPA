@@ -1,0 +1,38 @@
+<?xml version="1.0" ?>
+
+<container xmlns="http://symfony.com/schema/dic/services"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
+
+    
+    <parameters>
+        <parameter key="nipa_groupe.groupe_manager.class">NIPA\UserBundle\Manager\GroupeManager</parameter>
+        <parameter key="nipa_portefeuille.portefeuille_manager.class">NIPA\ProjetBundle\Manager\PortefeuilleManager</parameter>
+    </parameters>
+
+    <services>
+        <service id="nipa_portefeuille.portefeuille_manager" class="%nipa_portefeuille.portefeuille_manager.class%">
+            <argument type="service" id="doctrine.orm.entity_manager" />
+            <!-- <argument>plain_value</argument>
+            <argument>%parameter_name%</argument> -->
+        </service>
+        <service id="nipa_groupe.groupe_manager" class="%nipa_groupe.groupe_manager.class%">
+            <argument type="service" id="doctrine.orm.entity_manager" />
+            <!-- <argument>plain_value</argument>
+            <argument>%parameter_name%</argument> -->
+        </service>
+        
+        <!-- Service override Registration form-->
+        <service id="nipa_user.registration.form.type" class="NIPA\UserBundle\Form\Type\RegistrationFormType">
+            <tag name="form.type" alias="nipa_user_registration" />             
+            <argument>%fos_user.model.user.class%</argument>         
+        </service>   
+        
+        <!-- Service override Profile form-->
+        <service id="nipa_user.profile.form.type" class="NIPA\UserBundle\Form\Type\ProfileFormType">
+            <tag name="form.type" alias="nipa_user_profile" />             
+            <argument>%fos_user.model.user.class%</argument>         
+        </service>           
+    </services>
+    
+</container>

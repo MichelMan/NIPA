@@ -1,7 +1,7 @@
 {% trans_default_domain 'NIPAUserBundle' %}
 
 {% block nipa_users_div %}
- 
+    
     <!-- Container table filter -->
     <div class="col-md-12">
 
@@ -14,7 +14,9 @@
         <!-- PANEL -->          
         <div class="panel panel-primary">
             <div class="panel-heading">
-                <h3 class="panel-title">Utilisateurs groupe: {{ groupe.Nom }}</h3>
+                <h3 class="panel-title">
+                    Utilisateurs du groupe {{ groupe.Nom }} {% if groupe.Nom == "Manager Application" %} (2 utilisateurs au minimum)  {% endif %}
+                </h3>
                 <div class="pull-right">
                     <span class="clickable filter" data-toggle="tooltip" title="Filtre" data-container="body">
                         <i class="glyphicon glyphicon-filter"></i>
@@ -28,8 +30,8 @@
                 <thead>
                     <tr>
                         <th>Identifiant</th>
-                        <th>Prénom</th>
                         <th>Nom</th>
+                        <th>Prénom</th>
                         <th>Supprimer</th>
                     </tr>
                 </thead>
@@ -38,10 +40,14 @@
                 {% for user in groupe.getUtilisateursToArray() %}
                     <tr>
                         <td><a data-toggle="tooltip" title="Modifier utilisateur" href="{{ path('fos_user_profile_edit_id', {'identifiant': user.getIdentifiant}) }}">{{ user.getIdentifiant }}</a></td>
-                        <td>{{ user.getPrenom() }}</td>
                         <td>{{ user.getNom() }}</td>
+                        <td>{{ user.getPrenom() }}</td>
                         <td>
-                            <a href="{{ path('groupe_delete_users', {'identifiant': user.identifiant, 'groupeId': groupe.id}) }}" class="confirmModalLink"><span class="glyphicon glyphicon-remove icon-remove"></span></a>                               
+                            {% if groupe.Nom == "Manager Application" and groupe.getUtilisateursToArray()|length <= 2  %} 
+                                <a href="#" class="confirmModalLinkError"><span class="glyphicon glyphicon-remove icon-remove"></span></a>                               
+                            {% else %}    
+                                <a href="{{ path('groupe_delete_users', {'identifiant': user.identifiant, 'groupeId': groupe.id}) }}" class="confirmModalLink"><span class="glyphicon glyphicon-remove icon-remove"></span></a>                               
+                            {% endif %}                           
                         </td>
                     </tr>
                 {% endfor %}
@@ -94,25 +100,34 @@
             </div><!-- /.modal-content -->
         </div><!-- /.modal-dalog -->
     </div><!-- /.modal -->
- 
-    
-     <!-- MODAL AJOUT USERS GROUPE -->
-    <div id="ModalAddUsers" class="modal fade in">
+
+    <!-- MODAL ERREUR DELETE -->
+    <div id="myModalError" class="modal fade in">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
                     <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-                    <h3 id="myModalLabel">Nouvel utilisateur </h3>
+                    <h3 id="myModalLabel"><i class="glyphicon glyphicon-warning-sign"></i> Attention</h3>
                 </div>
-                <div class="col-md-6"><br>
-                    <form action="#" method="get">
-                        <div class="input-group">
-                            <input class="form-control" id="system-search" name="q" placeholder="Search for" required>
-                            <span class="input-group-btn">
-                                <button type="submit" class="btn btn-default"><i class="glyphicon glyphicon-search"></i></button>
-                            </span>
-                        </div>
-                    </form>
+                
+                <div class="modal-body">
+                    <p class="error-text">Au moins 2 utilisateurs requis pour ce groupe!!!</p>
+                </div>
+
+                <div class="modal-footer">
+                    <a href="#" class="btn btn-warning" id="confirmModalOK">Fermer</a>
+                </div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal-dalog -->
+    </div><!-- /.modal -->    
+    
+     <!-- MODAL AJOUT USERS GROUPE -->
+    <div id="ModalAddUsers" class="modal fade in">
+        <div class="modal-dialog"  style="width: 700px;">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                    <h3 id="myModalLabel">Nouvel utilisateur </h3>
                 </div>
                 
                 <form class="form-horizontal well" data-async data-target="#ModalAddUsers" action="{% if groupe.id %}{{ path('groupe_add_users', {'groupeId':groupe.id}) }}{% endif %}" {{ form_enctype(formModal) }} method="POST">                       
@@ -121,7 +136,7 @@
                         <div class="container">
                             <div class="row">
                                 <div class="col-md-12">
-                                 <table class="table table-list-search">
+                                 <table class="table table-hover" id="users-table-panel">
                                         <thead>
                                             <tr>
                                                 <th></th>
@@ -141,8 +156,8 @@
                                                     {# <td>{{ form_widget(child) }}</td> #}
                                                     <td><input type="checkbox"  name="idUsers[]" value="{{choices[index].identifiant}}"></input></td>
                                                     <td>{{ choices[index].identifiant }}</td>
-                                                    <td>{{ choices[index].prenom }}</td>
-                                                    <td>{{ choices[index].nom}}</td>                                                
+                                                    <td>{{ choices[index].nom }}</td>
+                                                    <td>{{ choices[index].prenom}}</td>                                                
                                                   </tr>
                                                 {% else %}
                                                     {% set isPresent = isPresent + 1 %}
@@ -175,12 +190,20 @@
     </div>
 
     <script>
-   /*     $(document).on("click", ".open-DeleteUser", function () {
+   /*    
+    *  $(document).on("click", ".open-DeleteUser", function () {
              var Id = $(this).data('id');
              $(".modal-body #Id").val( Id );
             $('#myModal').modal('show');
         });
-    */    
+    */
+   
+        $(document).ready(function() {
+            $('#users-table-panel').DataTable({
+                "order": [[ 1, "asc" ]]
+            } );
+        } );
+        
         $(document).ready(function () {
             var theHREF;
 
@@ -198,5 +221,20 @@
                 window.location.href = theHREF;
             });
         });
+        
+        $(document).ready(function () {
+            var theHREF;
+
+            $(".confirmModalLinkError").click(function(e) {
+                e.preventDefault();
+                theHREF = $(this).attr("href");
+                $("#myModalError").modal("show");
+            });
+
+            $("#confirmModalOK").click(function(e) {
+                $("#myModalError").modal("hide");
+            });
+
+        });        
     </script>
 {% endblock nipa_users_div %}

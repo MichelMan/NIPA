@@ -1,0 +1,299 @@
+{% trans_default_domain 'NIPAProjetBundle' %}
+		
+{% block body %}
+
+    <style>
+        #table_texte,#textinput, .textinput, h4{
+        text-align:center;
+        }       
+        
+        table tbody td {
+         padding : 5px 2px;
+        }     
+    </style>
+    
+    {# Script JS pour reload table #}
+    <script type="text/javascript" src="//cdn.datatables.net/plug-ins/1.10.10/api/fnReloadAjax.js"></script>
+
+    <div class="row col-md-13">
+         
+        <!-- PANEL -->          
+        <div class="panel panel-success">
+            <div class="panel-heading">
+                {% set counter = 0 %}
+                {% if portefeuille.referencePortefeuille and listPortefeuilleEnveloppePrev|length > 0 %}  
+                    {% set counter = listPortefeuilleEnveloppePrev[listPortefeuilleEnveloppePrev|length-1].montant %}
+                {% endif %}                
+                <h3 class="panel-title">Budget prévisionnel: {{ counter|number_format(2, '.', ' ') }} k€ </h3>
+                <div class="pull-right">              
+                    <span class="clickable filter" data-toggle="tooltip" title="Afficher détails" data-container="body">
+                        <i class="glyphicon glyphicon-plus"></i>
+                    </span>
+                </div>                
+            </div>        
+            <div class="panel-body" style="display: none;">
+                
+                <table class="table table-hover" id="champs-table">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Révisé le</th>
+                            <th>Montant (en k€)</th>
+                            <th>Commentaires</th>
+                            <th>Action</th>     
+                        </tr>
+                    </thead>
+                    <tbody>
+                    {% if portefeuille.referencePortefeuille %}                         
+                        {% for prev in listPortefeuilleEnveloppePrev %}
+                            <tr>
+                                <td><h5><strong>{{ prev.nom }}</strong></h5></td>
+                                <td>{{ prev.date|date('d/m/Y') }}</td>
+                                <td>{{ prev.montant|number_format(2, '.', ' ') }}</td>
+                                <td>{{ prev.commentaires }}</td>
+                                <td class="text-center"><a href="{{ path('portefeuille_budget_prev_delete',{'id': prev.id})}}"  class="btn btn-danger confirmModalLink"><i class="glyphicon glyphicon-remove"></i> </a></td>                    
+                            </tr>
+                        {% endfor %}   
+                    {% endif %}    
+                    </tbody>
+                </table>
+                
+            </div>  
+            {% if portefeuille.referencePortefeuille %} 
+            <form method="POST" action="{{ path('portefeuille_budget_prev',{'reference': portefeuille.referencePortefeuille})}}" {{ form_enctype(formPrev) }} id="form_ajouter_prev">                     
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th class="text-center">ID</th>
+                            <th class="text-center">Révisé le</th>
+                            <th class="text-center">Montant (en k€)</th>
+                            <th class="text-center">Commentaires</th>
+                            <th class="text-center">Action</th>                    
+                        </tr>
+                    </thead>                   
+                    <tbody>
+                        <tr>
+                            <td>
+                                <select class="form-control" id="select" name="type">
+                                     <option>Prévisionnel</option>
+                                     <option>Révisé</option>
+                                 </select>
+                            </td>                              
+                             <td><input type="text" class="form-control input-md date textinput" id="date" name="date" required="true"></td>
+                             <td><input id="textinput" type="textarea" placeholder="Montant" class="form-control input-md textinput" name="montant" required="true"></td>
+                             <td><textarea class="form-control input-md" rows="1" id="comment" placeholder="..." name="comment"></textarea></td>                            
+                             <td class="text-center"><button type="submit" class="btn btn-success"><i class="glyphicon glyphicon-check"></i></button></td>
+                         </tr>   
+                    </tbody>   
+                </table>
+            </form>                                
+            {% endif %}
+        </div>
+    </div>
+
+    <div class="row col-md-13">
+        
+        <!-- PANEL -->          
+        <div class="panel panel-success">
+            <div class="panel-heading">
+                {% set counter2 = 0 %}
+                {% if portefeuille.referencePortefeuille %}  
+                    {% for cons in listPortefeuilleEnveloppeCons %} 
+                        {% set counter2 = counter2 + cons.montantMensuel %}
+                    {% endfor %}   
+                {% endif %}                        
+                <h3 class="panel-title">Budget consommé: {{ counter2|number_format(2, '.', ' ') }} k€ </h3>  
+                <div class="pull-right">
+                    <span class="clickable filter" data-toggle="tooltip" title="Afficher détails" data-container="body">
+                        <i class="glyphicon glyphicon-plus"></i>
+                    </span>
+                </div>                  
+            </div> 
+            <div class="panel-body" style="display: none;">
+                
+            {% if portefeuille.referencePortefeuille %} 
+            <form method="POST" action="{{ path('portefeuille_budget_cons',{'reference': portefeuille.referencePortefeuille})}}" {{ form_enctype(formCons) }} id="form_ajouter_cons">                                     
+                <table id="table_consomme" class="table table-bordered">
+                    <tbody>
+                        <tr>                         
+                            <th class="text-center">Mois</th>
+                            <th class="text-center">Montant mensuel (en k€)</th>
+                            <th class="text-center">Cumul mensuel (en k€)</th>
+                            <th class="text-center">Taux</th>                            
+                            <th class="text-center">Commentaires</th>  
+                            <th class="text-center">Action</th>                                            
+                        </tr>
+                        {% for i in 0..11 %}
+                        <tr> 
+                            {% if loop.index < 10 %}
+                                <td class="text-center"><h5><strong>0{{ loop.index }}/{{ portefeuille.getPortefeuilleAnnee().getValeur() }}</strong></h5></td>
+                            {% else %}
+                                <td class="text-center"><h5><strong>{{ loop.index }}/{{ portefeuille.getPortefeuilleAnnee().getValeur() }}</strong></h5></td>                                
+                            {% endif %}
+                            
+                            {% if listPortefeuilleEnveloppeCons is empty %}                
+                                <td><input id="textinput" type="text" placeholder="Montant" class="form-control input-sm" name="champ1[]" value="0.00"></td>
+                                <td><input id="textinput" type="text" placeholder="Montant" class="form-control input-sm" name="champ2[]" value="0.00" READONLY></td>                                
+                                <td class="text-center"><h5><strong class="text-success"></strong></h5></td>
+                                <td><textarea class="form-control input-sm" rows="1" id="comment" placeholder="..." name="champ3[]"></textarea></td>                                                                
+                                <td class="text-center"><a href="#" class="btn btn-danger btn-sm" id="reset" class="button"><span class="glyphicon glyphicon-minus-sign" data-toggle="tooltip" title="Reset ligne"></span> </a></td>       
+                            {% else %}
+                                <td><input id="textinput" type="text" placeholder="Montant" class="form-control input-sm" name="champ1[]" value="{{ listPortefeuilleEnveloppeCons[ loop.index - 1 ].getMontantMensuel() }}"></td>
+                                <td><input id="textinput" type="text" placeholder="Montant" class="form-control input-sm" name="champ2[]" value="{{ listPortefeuilleEnveloppeCons[ loop.index - 1 ].getMontantCumul()|number_format(2, '.', ' ') }}" READONLY></td>
+                                {% if counter != 0 %}
+                                    <td class="text-center"><h5><strong class="text-success">{{ (listPortefeuilleEnveloppeCons[ loop.index - 1 ].getMontantCumul() / counter * 100)|number_format(2, '.', ' ') }}%</strong></h5></td>
+                                {% else %}
+                                    <td class="text-center"><h5><strong class="text-success"></strong></h5></td>
+                                {% endif %}
+                                <td><textarea class="form-control input-sm" rows="1" id="comment" placeholder="..." name="champ3[]">{{ listPortefeuilleEnveloppeCons[ loop.index - 1 ].getCommentaires() }}</textarea></td>                                
+                                <td class="text-center"><a href="#" class="btn btn-danger btn-sm" id="reset" class="button"><span class="glyphicon glyphicon-minus-sign" data-toggle="tooltip" title="Reset ligne"></span> </a></td>                               
+                            {% endif %}    
+                        </tr>
+                        {% endfor %}              
+                    </tbody>                 
+                </table>
+                    <button type="submit" class="btn btn-success"><i class="glyphicon glyphicon-check"></i> Enregistrer</button>
+                </form>                                
+            {% endif %}
+            
+            </div>
+            
+        </div>
+    </div> 
+
+    <!-- MODAL DELETE -->
+    <div id="myModalBudget" class="modal fade in">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                    <h3 id="myModalLabel">Confirmation</h3>
+                </div>
+                
+                <div class="modal-body">
+                    <p class="error-text">Etes-vous sûr de vouloir supprimer?</p>
+                </div>
+
+                <div class="modal-footer">
+                    <a href="#" class="btn btn-warning" id="confirmModalBudgetNo">Annuler</a>
+                    <a href="#" class="btn btn-danger" id="confirmModalBudgetYes">Supprimer</a>                  
+                </div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal-dalog -->
+    </div><!-- /.modal -->
+         
+    <script>
+        
+    jQuery('#table_consomme').ddTableFilter();
+    
+    
+    $('#date').datetimepicker({
+    todayBtn:"true",
+    format:"dd/mm/yyyy", 
+    autoclose:"true",
+    startView:"year",
+    minView:"month",
+    language:"fr"
+    });  
+    
+    $('#date_mois').datetimepicker({
+    todayBtn:"true",
+    format:"mm/yy", 
+    autoclose:"true",
+    startView:"year",
+    minView:"year",
+    language:"fr"
+    });      
+
+
+$(function() {
+   
+    $("#form_ajouter_prev").submit(function(){ 
+        $.ajax({
+            type: 'post',
+            url: "{% if portefeuille.referencePortefeuille %}{{ path('portefeuille_budget_prev',{'reference': portefeuille.referencePortefeuille}) }}{% endif %}",
+            data: $('#form_ajouter_prev').serialize(),
+            success: function(data)
+            {     
+                //$('#champs-table').DataTable().ajax.reload();
+                //var table = $('#champs-table').dataTable();
+                //table.fnReloadAjax();
+                //$('#champs-table tr:first').after('<tr><td>' + $("#Name").val() + '</td></tr>');
+                alert("Ajout effectué avec succès! (TEST)");
+                //var url = document.location.toString();
+                //if (url.match('#')) {
+                //  $('.portfeuille a[href=#'+url.split('#')[1]+']').tab('show') ;
+                //} 
+                var url = document.location.href;
+                $(location).attr('href',url+"#budget");                
+                location.reload();
+                //var url = $(this).prop('href');
+                //event.preventDefault();
+                //$('#resultats_ajouter').html(data);
+                //$(".loading").hide();
+                //document.getElementById('#champs-table').location.reload(true);               
+            },
+            error: function(e) {
+               console.log(e);
+             }      
+        });
+            return false;
+    });
+});  
+
+$(function() {
+   
+    $("#form_ajouter_cons").submit(function(){ 
+        $.ajax({
+            type: 'post',
+            url: "{% if portefeuille.referencePortefeuille %}{{ path('portefeuille_budget_cons',{'reference': portefeuille.referencePortefeuille}) }}{% endif %}",
+            data: $('#form_ajouter_cons').serialize(),
+            success: function(data)
+            {
+                alert("Ajout2 effectué avec succès! (TEST)");
+                var url = document.location.href;
+                $(location).attr('href',url+"#budget");                 
+                location.reload();        
+            },
+            error: function(e) {
+               console.log(e);
+             }      
+        });
+            return false;
+    });
+});  
+
+
+ $(document).ready(function () {
+    var theHREF;
+
+    $(".confirmModalLink").click(function(e) {
+        e.preventDefault();
+        theHREF = $(this).attr("href");
+        $("#myModalBudget").modal("show");
+    });
+
+    $("#confirmModalBudgetNo").click(function(e) {
+        $("#myModalBudget").modal("hide");
+    });
+
+    $("#confirmModalBudgetYes").click(function(e) {
+        window.location.href = theHREF;
+    });
+});
+
+
+$('a[id="reset"]').on('click', function(e) {
+  var $tr = $(e.target).closest('tr'),
+      $textAreas = $tr.find('textarea');
+      $textInputs = $tr.find('input');
+
+    $textAreas.val('');
+    $textInputs.val('');
+    
+    return false;
+});
+
+    </script>
+    
+{% endblock %}

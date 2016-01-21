@@ -18,7 +18,7 @@ class ProfileFormType extends BaseType
 
         // Ajoutez vos champs ici:
         $builder->add('Identifiant');
-        $builder->add('Prenom');
+        $builder->add('Prenom', 'text', array('required' => false));
         $builder->add('Nom');
         $builder->add('email', 'email', array('label' => 'form.email', 'translation_domain' => 'FOSUserBundle'));
 	$builder->add('Admin');

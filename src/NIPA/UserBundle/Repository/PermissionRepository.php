@@ -1,6 +1,6 @@
 <?php
 
-namespace NIPA\UserBundle\Entity;
+namespace NIPA\UserBundle\Repository;
 
 /**
  * PermissionRepository

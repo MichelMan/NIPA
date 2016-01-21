@@ -17,7 +17,23 @@ use FOS\UserBundle\Model\User as BaseUser;
  * @ORM\Table(name="utilisateur")
  * @ORM\Entity(repositoryClass="NIPA\UserBundle\Repository\UtilisateurRepository")
  * @UniqueEntity(fields="Identifiant", message="Cet identifiant existe déjà...")
+ * @ORM\AttributeOverrides({
+ *     @ORM\AttributeOverride(name="email",
+ *          column=@ORM\Column(
+ *              nullable = true
+ *          )
+ *      ),
+ *     @ORM\AttributeOverride(name="emailCanonical",
+ *          column=@ORM\Column(
+ *              name = "email_canonical",
+ *              nullable = true
+ *          )
+ *      )
+ * })
  */
+
+
+
 class Utilisateur extends BaseUser
 {
    /**
@@ -37,8 +53,7 @@ class Utilisateur extends BaseUser
 
     /**
      * @var string $Prenom
-     * @Assert\NotBlank()
-     * @ORM\Column(name="Prenom", type="string", length=50)
+     * @ORM\Column(name="Prenom", type="string", length=50, nullable=true)
      */
     private $Prenom;
 
@@ -75,7 +90,9 @@ class Utilisateur extends BaseUser
    {
        parent::__construct();
        // your own logic
-	   
+
+       $this->Admin = false;
+       
        $this->createdAt = new \DateTime('now');
         
        $this->groupe = new ArrayCollection(); // Collection de Groupe(s) du User

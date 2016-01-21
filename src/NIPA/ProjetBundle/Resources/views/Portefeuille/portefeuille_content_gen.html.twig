@@ -1,0 +1,159 @@
+{% trans_default_domain 'NIPAProjetBundle' %}
+		
+{% block body %}
+       
+    {# Calcul budget prev et cons #}
+    {% set prev = 0 %}
+    {% if portefeuille.referencePortefeuille and listPortefeuilleEnveloppePrev|length > 0 %}  
+        {% set prev = listPortefeuilleEnveloppePrev[listPortefeuilleEnveloppePrev|length-1].montant %}
+    {% endif %}   
+    {% set cons = 0 %}
+    {% if portefeuille.referencePortefeuille %}  
+        {% for consomme in listPortefeuilleEnveloppeCons %} 
+            {% set cons = cons + consomme.montantMensuel %}
+        {% endfor %}   
+    {% endif %}     
+    
+    <form action="{% if portefeuille.referencePortefeuille %}{{ path('portefeuille_edit', {'reference': portefeuille.referencePortefeuille}) }}{% else %}{{ path('portefeuille_new') }}{% endif %}" method="post" {{ form_enctype(form) }}>
+        {% if portefeuille.referencePortefeuille %}                
+                <div class="pull-left"><h3><span class='glyphicon glyphicon-pencil'></span> {{ ' Portefeuille ' ~ portefeuille.referencePortefeuille  }} </h3></div>
+                <div class="pull-right">
+                    <div class="col-md-12">
+                        <div class="panel panel-success">
+                            <div class="panel-heading">  
+                                <center class="panel-title">
+                                    Budget prév: {{ prev|number_format(2, ',', ' ') }} k€  / 
+                                    Budget cons: {{ cons|number_format(2, ',', ' ') }} k€  / 
+                                    {% if prev == 0 %}
+                                        Taux: {{ 0|number_format(2, ',', ' ') }}%                                    
+                                    {% else %}
+                                        Taux: {{ (cons/prev*100)|number_format(2, ',', ' ') }}%
+                                    {% endif %}
+                                </center>       
+                            </div>         
+                        </div>
+                    </div>
+                </div>                                       
+            {% else %}
+                <div class="pull-left"><h3><span class='glyphicon glyphicon-plus-sign'></span> {{ 'Nouveau portefeuille'|trans }} </h3></div>
+            {% endif %}
+                     
+            <br>
+        
+        <div class="container">
+            
+            <div class="row">
+                <div class="col-md-12">
+                    <label class="control-label" for="textarea">
+                      {{ form_errors(form.nom) }}
+                      {{ form_label(form.nom, 'Nom'|trans) }}*          
+                    </label>  
+                    <div class="">
+                       {{ form_widget(form.nom) }}
+                    </div>                    
+                </div>
+            </div>            
+            <div class="row">
+                <div class="col-md-12">
+                    <label class="control-label" for="textarea">
+                      {{ form_errors(form.description) }}
+                      {{ form_label(form.description, 'Description'|trans) }}          
+                    </label>  
+                    <div class="">
+                       {{ form_widget(form.description) }}
+                    </div>                    
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-12">
+                    <label class="control-label" for="select">
+                      {{ form_errors(form.portefeuilleAnnee) }}
+                      {{ form_label(form.portefeuilleAnnee) }}          
+                    </label>  
+                    <div class="">
+                       {{ form_widget(form.portefeuilleAnnee) }}
+                    </div>                    
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-12">
+                    <label class="control-label" for="select">
+                      {{ form_errors(form.portefeuilleEnveloppe) }}
+                      {{ form_label(form.portefeuilleEnveloppe) }}          
+                    </label>  
+                    <div class="">
+                       {{ form_widget(form.portefeuilleEnveloppe) }}
+                    </div>                    
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-12">
+                    <label class="control-label" for="select">
+                      {{ form_errors(form.portefeuilleStatut) }}
+                      {{ form_label(form.portefeuilleStatut) }}          
+                    </label>  
+                    <div class="">
+                       {{ form_widget(form.portefeuilleStatut) }}
+                    </div>                    
+                </div>
+            </div>                    
+        </div>
+        
+        {# Pour l'erreur: "Le jeton CSRF est invalide" #}
+        {{ form_widget(form._token) }}        
+        {{form_errors(form)}}
+
+        <br>  
+        <div class="pull-right">
+            {% if portefeuille.referencePortefeuille %}                
+                <a href="{{ path('portefeuille_delete', {'reference': portefeuille.referencePortefeuille}) }}" class="confirmModalLinkPortefeuille btn btn-danger"><span class="glyphicon glyphicon-trash"></span> Supprimer </a>                                                
+            {% endif %}
+            <button class="btn btn-success" type="submit"><span class='glyphicon glyphicon-check'></span> Valider</button>           
+        </div> 
+        <br>
+            <p>* Champs obligatoire</p>        
+    </form>    
+
+    <!-- MODAL DELETE -->
+    <div id="myModalPortefeuille" class="modal fade in">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                    <h3 id="myModalLabel">Confirmation</h3>
+                </div>
+                
+                <div class="modal-body">
+                    <p class="error-text">Etes vous sûr de vouloir supprimer le portefeuille?</p>
+                </div>
+
+                <div class="modal-footer">
+                    <a href="#" class="btn btn-warning" id="confirmModalPortefeuilleNo">Annuler</a>
+                    <a href="#" class="btn btn-danger" id="confirmModalPortefeuilleYes">Supprimer</a>                  
+                </div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal-dalog -->
+    </div><!-- /.modal -->
+    
+<script>
+        
+        $(document).ready(function () {
+            var theHREF;
+
+            $(".confirmModalLinkPortefeuille").click(function(e) {
+                e.preventDefault();
+                theHREF = $(this).attr("href");
+                $("#myModalPortefeuille").modal("show");
+            });
+
+            $("#confirmModalPortefeuilleNo").click(function(e) {
+                $("#myModalPortefeuille").modal("hide");
+            });
+
+            $("#confirmModalPortefeuilleYes").click(function(e) {
+                window.location.href = theHREF;
+            });
+        });
+
+</script>    
+{% endblock %}

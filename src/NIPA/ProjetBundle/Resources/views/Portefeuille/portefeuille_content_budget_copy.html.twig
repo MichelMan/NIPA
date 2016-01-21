@@ -1,0 +1,268 @@
+{% trans_default_domain 'NIPAProjetBundle' %}
+		
+{% block body %}
+
+    <style>
+        #table_texte{
+        text-align:center;
+        }
+
+       table tbody td {
+        padding : 5px 2px;
+       }     
+    </style>
+
+    <div class="row col-md-13">
+        
+        <!-- PANEL -->          
+        <div class="panel panel-success">
+            <div class="panel-heading">
+                <h3 class="panel-title">Enveloppe Prévisionnelle</h3>
+               <div class="pull-right">
+                    <span class="clickable filter" data-toggle="tooltip" title="Afficher détails" data-container="body">
+                        <i class="glyphicon glyphicon-plus"></i>
+                    </span>
+                </div>                
+            </div>        
+            <div class="panel-body" style="display: none;">
+                
+                <table class="table table-hover" id="champs-table">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>IPP</th>                                                
+                            <th>Révisé le</th>
+                            <th>Montant (en k€)</th>
+                            <th>Commentaires</th>
+                            <th>Action</th>     
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Prévisionnelle</td>
+                            <td>IPP 2015</td>
+                            <td>10/11/15</td>
+                            <td>1213</td>
+                            <td>/</td>                            
+                            <td><i class="glyphicon glyphicon-trash icon-trash"></i></td>  
+                        </tr>
+                        <tr>
+                            <td>Révisé 1</td>
+                            <td>IPP 2015</td>
+                            <td>10/12/15</td>
+                            <td>1999</td>
+                            <td>Retard...</td>                            
+                            <td><i class="glyphicon glyphicon-trash icon-trash"></i></td>  
+                        </tr> 
+                        <tr class="active">
+                            <th></th><th></th><th></th><th></th><th></th><th></th>   
+                        </tr> 
+                        <tr>
+                            <td>Révisé 1</td>
+                            <td>IPP 2016</td>
+                            <td>10/12/16</td>
+                            <td>2372</td>
+                            <td>Retard...</td>                            
+                            <td><i class="glyphicon glyphicon-trash icon-trash"></i></td>  
+                        </tr>                         
+                    </tbody>
+                </table>
+                
+            </div>  
+                            
+                <table class="dTable table">
+                    <thead>
+                        <tr>
+                            <th class="text-center">ID</th>
+                            <th class="text-center">IPP</th>                                                
+                            <th class="text-center">Révisé le</th>
+                            <th class="text-center">Montant (en k€)</th>
+                            <th class="text-center">Commentaires</th>
+                            <th class="text-center">Action</th>                    
+                        </tr>
+                    </thead>
+                    <tfoot>
+                        <td class="text-center"><a href="#" class="btn btn-success" onclick="addLigne(this); return false;"><i class="glyphicon glyphicon-plus-sign"></i> Ajouter une ligne</a></td><td></td><td></td><td></td><td></td><td></td><br>
+                    </tfoot>                
+                    <tbody>
+                       <tr>
+                            <td><input id="textinput" type="text" class="form-control input-md text-center" name="champ1[]" disabled value="Prévisionnel"></td>
+                            <td><input id="textinput" type="text" placeholder="placeholder" class="form-control input-md" name="champ2[]"></td>
+                            <td><input type="text" class="form-control input-md date" id="date" name="champ3[]"></td>
+                            <td><input id="textinput" type="text" placeholder="placeholder" class="form-control input-md" name="champ4[]"></td>
+                             <td><input id="textinput" type="text" placeholder="placeholder" class="form-control input-md" name="champ5[]"></td>                           
+                            <td></td>
+                        </tr>                    
+                        <tr>
+                            <td><input id="textinput" type="text" class="form-control input-md" name="champ1[]"></td>
+                            <td><input id="textinput" type="text" placeholder="placeholder" class="form-control input-md" name="champ2[]"></td>
+                            <td><input type="text" class="dateRev" id="dateRev" name="champ3[]"></td>
+                            <td><input id="textinput" type="text" placeholder="placeholder" class="form-control input-md" name="champ4[]"></td>
+                            <td><input id="textinput" type="text" placeholder="placeholder" class="form-control input-md" name="champ5[]"></td>                                                      
+                            <td class="text-center"><a href="#"  class="btn btn-danger" onclick="delLigne(this); return false;"><i class="glyphicon glyphicon-remove"></i> </a></td>
+                        </tr>
+                    </tbody>    
+                </table>
+            
+        </div>
+    </div>
+    
+    <div class="row col-md-13">
+        
+        <!-- PANEL -->          
+        <div class="panel panel-success">
+            <div class="panel-heading">
+                <h3 class="panel-title">Enveloppe Consommée</h3>  
+                <div class="pull-right">
+                    <span class="clickable filter" data-toggle="tooltip" title="Afficher détails" data-container="body">
+                        <i class="glyphicon glyphicon-plus"></i>
+                    </span>
+                </div>                  
+            </div> 
+            <div class="panel-body">
+            
+                <table id="table_consomme" class="table table-bordered">
+                    <tbody>
+                        <tr>                         
+                            <th class="text-center">Mois</th>
+                            <th class="text-center">Montant mensuel (en k€)</th>
+                            <th class="text-center">Cumul mensuel (en k€)</th>
+                            <th class="text-center">Commentaires</th>                
+                        </tr>                          
+                       <tr>
+                           <td>jan</td>
+                            <td><input id="textinput" type="text" placeholder="placeholder" class="form-control input-md"></td>
+                            <td><input id="textinput" type="text" placeholder="placeholder" class="form-control input-md"></td>
+                            <td><input id="textinput" type="text" placeholder="placeholder" class="form-control input-md"></td>
+                        </tr>                    
+                        <tr>
+                            <td>fev</td>
+                            <td><input id="textinput" type="text" placeholder="placeholder" class="form-control input-md"></td>
+                            <td><input id="textinput" type="text" placeholder="placeholder" class="form-control input-md"></td>
+                            <td><input id="textinput" type="text" placeholder="placeholder" class="form-control input-md"></td>
+                        </tr>
+                        <tr>
+                            <td>mar</td>
+                            <td><input id="textinput" type="text" placeholder="placeholder" class="form-control input-md"></td>
+                            <td><input id="textinput" type="text" placeholder="placeholder" class="form-control input-md"></td>
+                            <td><input id="textinput" type="text" placeholder="placeholder" class="form-control input-md"></td>
+                        </tr>
+                        <tr>
+                            <td>avr</td>
+                            <td><input id="textinput" type="text" placeholder="placeholder" class="form-control input-md"></td>
+                            <td><input id="textinput" type="text" placeholder="placeholder" class="form-control input-md"></td>
+                            <td><input id="textinput" type="text" placeholder="placeholder" class="form-control input-md"></td>
+                        </tr>
+                        <tr>
+                            <td>mai</td>
+                            <td><input id="textinput" type="text" placeholder="placeholder" class="form-control input-md"></td>
+                            <td><input id="textinput" type="text" placeholder="placeholder" class="form-control input-md"></td>
+                            <td><input id="textinput" type="text" placeholder="placeholder" class="form-control input-md"></td>
+                        </tr>
+                        <tr>
+                            <td>jui</td>
+                            <td><input id="textinput" type="text" placeholder="placeholder" class="form-control input-md"></td>
+                            <td><input id="textinput" type="text" placeholder="placeholder" class="form-control input-md"></td>
+                            <td><input id="textinput" type="text" placeholder="placeholder" class="form-control input-md"></td>
+                        </tr>
+                        <tr>
+                            <td>juil</td>
+                            <td><input id="textinput" type="text" placeholder="placeholder" class="form-control input-md"></td>
+                            <td><input id="textinput" type="text" placeholder="placeholder" class="form-control input-md"></td>
+                            <td><input id="textinput" type="text" placeholder="placeholder" class="form-control input-md"></td>
+                        </tr>
+                        <tr>
+                            <td>aou</td>
+                            <td><input id="textinput" type="text" placeholder="placeholder" class="form-control input-md"></td>
+                            <td><input id="textinput" type="text" placeholder="placeholder" class="form-control input-md"></td>
+                            <td><input id="textinput" type="text" placeholder="placeholder" class="form-control input-md"></td>
+                        </tr>
+                        <tr>
+                            <td>sep</td>
+                            <td><input id="textinput" type="text" placeholder="placeholder" class="form-control input-md"></td>
+                            <td><input id="textinput" type="text" placeholder="placeholder" class="form-control input-md"></td>
+                            <td><input id="textinput" type="text" placeholder="placeholder" class="form-control input-md"></td>
+                        </tr>
+                        <tr>
+                            <td>oct</td>
+                            <td><input id="textinput" type="text" placeholder="placeholder" class="form-control input-md"></td>
+                            <td><input id="textinput" type="text" placeholder="placeholder" class="form-control input-md"></td>
+                            <td><input id="textinput" type="text" placeholder="placeholder" class="form-control input-md"></td>
+                        </tr>   
+                            <td>nov</td>
+                            <td><input id="textinput" type="text" placeholder="placeholder" class="form-control input-md"></td>
+                            <td><input id="textinput" type="text" placeholder="placeholder" class="form-control input-md"></td>
+                            <td><input id="textinput" type="text" placeholder="placeholder" class="form-control input-md"></td>
+                        </tr>
+                            <td>dec</td>
+                            <td><input id="textinput" type="text" placeholder="placeholder" class="form-control input-md"></td>
+                            <td><input id="textinput" type="text" placeholder="placeholder" class="form-control input-md"></td>
+                            <td><input id="textinput" type="text" placeholder="placeholder" class="form-control input-md"></td>
+                        </tr>                        
+                    </tbody>
+                </table>
+                
+            </div>
+            
+                <table class="dTable table">
+                    <thead>
+                        <tr>
+                            <th class="text-center">Mois</th>
+                            <th class="text-center">Montant (en k€)</th>
+                            <th class="text-center">Cumul mensuel (en k€)</th>
+                            <th class="text-center">Commentaires</th>   
+                            <th class="text-center">Action</th>                                                
+                        </tr>
+                    </thead>
+                    <tfoot>
+                        <td class="text-center"><a href="#" class="btn btn-success" onclick="addLigne(this); return false;"><i class="glyphicon glyphicon-plus-sign"></i> Ajouter une ligne</a></td><td></td><td></td><td></td><td></td><br>
+                    </tfoot>                
+                    <tbody>
+                       <tr>
+                            <td><input id="textinput" type="text" class="form-control input-md text-center" name="champ1[]" disabled value="Prévisionnel"></td>
+                            <td><input id="textinput" type="text" placeholder="placeholder" class="form-control input-md" name="champ2[]"></td>
+                            <td><input id="textinput" type="text" placeholder="placeholder" class="form-control input-md" name="champ3[]"></td>
+                            <td><input id="textinput" type="text" placeholder="placeholder" class="form-control input-md" name="champ4[]"></td>
+                            <td></td>
+                        </tr>                    
+                        <tr>
+                            <td><input id="textinput" type="text" class="form-control input-md" name="champ1[]"></td>
+                            <td><input id="textinput" type="text" placeholder="placeholder" class="form-control input-md" name="champ2[]"></td>
+                            <td><input id="textinput" type="text" placeholder="placeholder" class="form-control input-md" name="champ3[]"></td>
+                            <td><input id="textinput" type="text" placeholder="placeholder" class="form-control input-md" name="champ4[]"></td>
+                            <td class="text-center"><a href="#"  class="btn btn-danger" onclick="delLigne(this); return false;"><i class="glyphicon glyphicon-remove"></i> </a></td>
+                        </tr>
+                    </tbody>    
+                </table>            
+            
+        </div>
+    </div> 
+    
+    </form>    
+
+
+    <script>
+        
+    jQuery('#table_consomme').ddTableFilter();
+    
+    
+
+    $('#date').datetimepicker({
+    todayBtn:"true",
+    format:"dd/mm/yyyy", 
+    autoclose:"true",
+    startView:"year",
+    minView:"month",
+    language:"fr"
+    });      
+      
+    $('#dateRev').datetimepicker({
+      todayBtn:"true",
+      format:"dd/mm/yyyy", 
+      autoclose:"true",
+      startView:"year",
+      minView:"month",
+      language:"fr"
+      });     
+    </script>
+{% endblock %}

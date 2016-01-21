@@ -30,6 +30,14 @@ class Groupe
     private $Nom;
 
     /**
+     * @var string
+     *
+     * @ORM\Column(name="Description", type="string", length=1000, nullable=true)
+     */    
+    
+    private $description;    
+    
+    /**
      * @ORM\ManyToMany(targetEntity="Utilisateur", mappedBy="groupe")
      */
     private $utilisateur;
@@ -86,6 +94,28 @@ class Groupe
     }
 
     /**
+     * Set description
+     *
+     * @param string $description
+     */
+    public function setDescription($description)
+    {
+        $this->description = $description;
+
+        return $this;
+    }
+
+    /**
+     * Get description
+     *
+     * @return string
+     */
+    public function getDescription()
+    {
+        return $this->description;
+    }    
+    
+    /**
      * Add utilisateur
      *
      * @param \NIPA\UserBundle\Entity\Utilisateur $utilisateur
@@ -114,8 +144,7 @@ class Groupe
      */
     public function removeUtilisateurs(\NIPA\UserBundle\Entity\Utilisateur $utilisateur)
     {
-        $this->getUtilisateur()->removeElement($utilisateur);        
-        // $this->utilisateur->removeElement($utilisateur);
+        $this->getUtilisateur()->removeElement($utilisateur);  
     }    
     
     /**

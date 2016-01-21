@@ -8,7 +8,7 @@ use Doctrine\ORM\Mapping as ORM;
  * PortefeuilleStatut
  *
  * @ORM\Table()
- * @ORM\Entity(repositoryClass="NIPA\ProjetBundle\Entity\PortefeuilleStatutRepository")
+ * @ORM\Entity(repositoryClass="NIPA\ProjetBundle\Repository\PortefeuilleStatutRepository")
  */
 class PortefeuilleStatut
 {
