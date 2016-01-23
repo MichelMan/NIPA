@@ -33,3 +33,11 @@ projet:
 demande:
     path:     /demande
     defaults: { _controller: NIPAProjetBundle:Demande:index }
+
+demande_new:
+    path:     /demande/new
+    defaults: { _controller: NIPAProjetBundle:Demande:addDemande }
+
+demande_edit:
+    path:     /demande/edit/{reference}
+    defaults: { _controller: NIPAProjetBundle:Demande:editDemande }

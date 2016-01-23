@@ -16,7 +16,7 @@
     
     <form action="{% if portefeuille.referencePortefeuille %}{{ path('portefeuille_edit', {'reference': portefeuille.referencePortefeuille}) }}{% else %}{{ path('portefeuille_new') }}{% endif %}" method="post" {{ form_enctype(form) }}>
         {% if portefeuille.referencePortefeuille %}                
-                <div class="pull-left"><h3><span class='glyphicon glyphicon-pencil'></span> {{ ' Portefeuille ' ~ portefeuille.referencePortefeuille  }} </h3></div>
+                <div class="pull-left"><h4><span class='glyphicon glyphicon-list-alt'></span> {{ ' Portefeuille ' ~ portefeuille.referencePortefeuille  }} </h4></div>
                 <div class="pull-right">
                     <div class="col-md-12">
                         <div class="panel panel-success">
@@ -35,7 +35,7 @@
                     </div>
                 </div>                                       
             {% else %}
-                <div class="pull-left"><h3><span class='glyphicon glyphicon-plus-sign'></span> {{ 'Nouveau portefeuille'|trans }} </h3></div>
+                <div class="pull-left"><h4><span class='glyphicon glyphicon-plus-sign'></span> {{ 'Nouveau portefeuille'|trans }} </h4></div>
             {% endif %}
                      
             <br>
@@ -110,7 +110,6 @@
             {% endif %}
             <button class="btn btn-success" type="submit"><span class='glyphicon glyphicon-check'></span> Valider</button>           
         </div> 
-        <br>
             <p>* Champs obligatoire</p>        
     </form>    
 

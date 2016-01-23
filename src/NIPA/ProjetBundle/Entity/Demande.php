@@ -2,12 +2,13 @@
 
 namespace NIPA\ProjetBundle\Entity;
 
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
  * Demande
  *
- * @ORM\Table()
+ * @ORM\Table(name="demande")
  * @ORM\Entity(repositoryClass="NIPA\ProjetBundle\Repository\DemandeRepository")
  */
 class Demande
@@ -36,9 +37,8 @@ class Demande
     private $nom;
 
     /**
-     * @var string
-     *
-     * @ORM\Column(name="Priorite", type="string", length=25)
+     * @ORM\ManyToOne(targetEntity="NIPA\ProjetBundle\Entity\DemandePriorite")
+     * @ORM\JoinColumn(name="demande_priorite_id", referencedColumnName="id", onDelete="SET NULL")
      */
     private $priorite;
 
@@ -49,12 +49,6 @@ class Demande
      */
     private $description;
 
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="Engagement", type="string", length=50)
-     */
-    private $engagement;
     
     /**
      * @var string
@@ -129,9 +123,9 @@ class Demande
     private $divers;         
     
     /**
-     * @ORM\ManyToMany(targetEntity="Portefeuille", mappedBy="demande")
+     * @ORM\ManyToMany(targetEntity="NIPA\ProjetBundle\Entity\Portefeuille", mappedBy="demande")
      */
-    private $portefeuille;
+    private $portefeuilles;
 
     /**
      * @var string
@@ -171,16 +165,15 @@ class Demande
      */
     private $REX;    
     
-    
-   public function __construct()
-   {
-         parent::__construct();
-        // your own logic
-
+   
+    public function __construct()
+    {
+        $this->portefeuilles = new ArrayCollection();
         $this->nbLots = 0;
         $this->REX = false;
-   }
-   
+    }
+    
+    
     /*********************GETTERS AND SETTERS**************************/
     
     /**
@@ -240,15 +233,16 @@ class Demande
     {
         return $this->nom;
     }
-
-    /**
+    
+    
+   /**
      * Set priorite
      *
-     * @param string $priorite
+     * @param DemandePriorite $priorite
      *
      * @return Demande
      */
-    public function setPriorite($priorite)
+    public function setPriorite(DemandePriorite $priorite)
     {
         $this->priorite = $priorite;
 
@@ -289,30 +283,7 @@ class Demande
         return $this->description;
     }
 
-    /**
-     * Set engagement
-     *
-     * @param string $engagement
-     *
-     * @return Demande
-     */
-    public function setEngagement($engagement)
-    {
-        $this->engagement = $engagement;
-
-        return $this;
-    }
-
-    /**
-     * Get engagement
-     *
-     * @return string
-     */
-    public function getEngagement()
-    {
-        return $this->engagement;
-    }
-
+    
     /**
      * Set dateMEP
      *
@@ -460,7 +431,7 @@ class Demande
     {
         return $this->nbLots;
     }
-    
+   
     
     /**
      * Set direction
@@ -668,7 +639,7 @@ class Demande
      */
     public function setInterlocuteurMOA(DemandeInterlocuteurMOA $interlocuteurMOA)
     {
-        $this->interlocuteurMOA = $interlocuteurMOAt;
+        $this->interlocuteurMOA = $interlocuteurMOA;
 
         return $this;
     }
@@ -729,6 +700,61 @@ class Demande
     public function getREX()
     {
         return $this->REX;
+    }  
+    
+ 
+  /**
+     * Add portefeuille
+     *
+     * @param \NIPA\ProjetBundle\Entity\Portefeuille $portefeuille
+     */
+    public function addPortefeuille(\NIPA\ProjetBundle\Entity\Portefeuille $portefeuille)
+    {
+        $this->portefeuilles[] = $portefeuille;
     }    
+    
+    /**
+     * Add portefeuille
+     *
+     * @param \NIPA\ProjetBundle\Entity\Portefeuille $portefeuille
+     */
+    public function addPortefeuilles(\NIPA\ProjetBundle\Entity\Portefeuille $portefeuille)
+    {
+        //$this->utilisateur[] = $utilisateur;
+        $portefeuille->addDemande($this);
+        $this->portefeuilles[] = $portefeuille;
+    }
+
+
+    public function removePortefeuilles(Portefeuille $portefeuille)
+    {
+        $this->portefeuilles->removeElement($portefeuille);
+    }
+
+    public function getPortefeuille()
+    {
+        return $this->portefeuilles;
+    }
+     
+    /**
+     * Set Portefeuille
+     *
+     * @param \Doctrine\Common\Collections\Collection $portefeuille
+     */
+    public function setPortefeuille(\Doctrine\Common\Collections\Collection $portefeuille)
+    {
+        $this->portefeuilles = $portefeuille;
+    }  
+    
+    /**
+     * Get portefeuille
+     *
+     * @return \Doctrine\Common\Collections\Collection 
+     */    
+    public function getPortefeuillesToArray()
+    {
+        return $this->portefeuilles->toArray();                
+    }     
+    
 }
 

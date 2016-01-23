@@ -2,14 +2,14 @@
 
 namespace NIPA\ProjetBundle\Entity;
 
-use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert; //Pour ajouter des contraintes / règles sur notre entité Utilisateur
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
-
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\ORM\Mapping as ORM;
 /**
- * portfeuille
+ * portefeuille
  *
- * @ORM\Table()
+ * @ORM\Table(name="portefeuille")
  * @ORM\Entity(repositoryClass="NIPA\ProjetBundle\Repository\PortefeuilleRepository")
  */
 class Portefeuille
@@ -80,15 +80,15 @@ class Portefeuille
     private $portefeuilleStatut;
     
     /**
-     * @ORM\ManyToMany(targetEntity="Demande", inversedBy="portefeuille")
+     * @ORM\ManyToMany(targetEntity="NIPA\ProjetBundle\Entity\Demande", inversedBy="portefeuilles")
      * @ORM\JoinTable(name="portefeuilles_demandes")
      */
-    private $portefeuille;
+    private $demande;
     
     
    public function __construct()
    {
-
+       $this->demande = new ArrayCollection(); // Collection 
    }
 
     /**
@@ -292,5 +292,69 @@ class Portefeuille
     {
         return $this->portefeuilleStatut;
     }
+    
+    /**
+     * Add demande
+     *
+     * @param \NIPA\ProjetBundle\Entity\Demande $demande
+     */
+    public function addDemande(\NIPA\ProjetBundle\Entity\Demande $demande)
+    {
+        $this->demande[] = $demande;
+        //$groupe->addUtilisateur($this);
+        //$this->groupe[] = $groupe;
+    }
+    
+    /**
+     * Add demande
+     *
+     * @param \NIPA\ProjetBundle\Entity\Demande $demande
+     */
+    public function addDemandes(\NIPA\ProjetBundle\Entity\Demande $demande)
+    {
+        //$this->groupe[] = $groupe;
+        $demande->addPortefeuille($this);
+        $this->demande[] = $demande;
+    }
+
+    /**
+     * Remove demande
+     *
+     * @param \NIPA\ProjetBundle\Entity\Demande $demande
+     */
+    public function removeDemandes(\NIPA\ProjetBundle\Entity\Demande $demande)
+    {
+        //$this->groupe[] = $groupe;
+        //$groupe->addUtilisateur($this);
+        //$this->groupe[] = $groupe;
+        $this->getDemande()->removeElement($demande);
+    }
+    
+    /**
+     * Set demande
+     *
+     * @param \Doctrine\Common\Collections\Collection $demande
+     */
+    public function setDemande(\Doctrine\Common\Collections\Collection $demande)
+    {
+        $this->demande = $demande;
+    }
+  
+    /**
+     * Get demande
+     *
+     * @return \Doctrine\Common\Collections\Collection 
+     */
+    public function getDemande()
+    {
+        return $this->demande;
+    }
+    
+    public function getDemandesToArray()
+    {
+        return $this->demande->toArray();                
+    }
+        
+    
 }
 

@@ -28,6 +28,15 @@ class PortefeuilleController extends Controller
 {
     public function indexAction()
     {
+        /**********************DROIT SECTION************************/
+        $requests = Request::createFromGlobals();
+        $droit = $requests->query->get('droit');
+               
+        if ($droit == "denied") { // On test si user pour avoir accès à la section 
+            //throw new AccessDeniedException("Section autorisée uniquement pour les administrateurs!");
+            $this->get('session')->getFlashBag()->set('error', "Vous n'avez pas les droits requis pour accéder à cette section!");            
+        }        
+        /***********************************************************/
         
         $droit = 0;
         $user = $this->getUser();
@@ -72,7 +81,7 @@ class PortefeuilleController extends Controller
     
        
         //return array();
-        return $this->render('NIPAProjetBundle:Portefeuille:portefeuille.html.twig', array('user' => $user, 'form' => $form->createView(), 'portefeuille' => $portefeuille, 'listPortefeuille' => $listPortefeuille, 'listPortefeuilleEnveloppe' => $listPortefeuilleEnveloppe, 'listPortefeuilleAnnee' => $listPortefeuilleAnnee, 'listPortefeuilleStatut' => $listPortefeuilleStatut)); // On passe à Twig l'objet form et notre objet Groupe
+        return $this->render('NIPAProjetBundle:Portefeuille:portefeuille.html.twig', array('user' => $user, 'form' => $form->createView(), 'portefeuille' => $portefeuille, 'listPortefeuille' => $listPortefeuille, 'listPortefeuilleEnveloppe' => $listPortefeuilleEnveloppe, 'listPortefeuilleAnnee' => $listPortefeuilleAnnee, 'listPortefeuilleStatut' => $listPortefeuilleStatut)); // On passe à Twig l'objet form et notre objet
     } 
     
     /**
@@ -80,7 +89,17 @@ class PortefeuilleController extends Controller
     * 
     */
     public function addPortefeuilleAction()    
-    {   
+    {
+        /**********************DROIT SECTION************************/
+        $requests = Request::createFromGlobals();
+        $droit = $requests->query->get('droit');
+               
+        if ($droit == "denied") { // On test si user pour avoir accès à la section 
+            //throw new AccessDeniedException("Section autorisée uniquement pour les administrateurs!");
+            $this->get('session')->getFlashBag()->set('error', "Vous n'avez pas les droits requis pour accéder à cette section!");            
+        }        
+        /***********************************************************/        
+        
         $droit = 0;
         $user = $this->getUser();
     
@@ -123,7 +142,7 @@ class PortefeuilleController extends Controller
         /************************************/
         $portefeuille = new Portefeuille(); // On créé notre objet      
      
-        $form = $this->get('form.factory')->create(new PortefeuilleFormType(), $portefeuille); // On bind l'objet Groupe à notre formulaire GroupeFormType
+        $form = $this->get('form.factory')->create(new PortefeuilleFormType(), $portefeuille); // On bind l'objet à notre formulaire 
 
        /*************************************************/
         
@@ -193,7 +212,7 @@ class PortefeuilleController extends Controller
                 /*******************************************************/
                 
                //if ($form->isValid()) { // Si le formulaire est valide
-                
+                    
                     $this->get('nipa_portefeuille.portefeuille_manager')->savePortefeuille($portefeuille); // On utilise notre Manager pour gérer la sauvegarde de l'objet
 
                     $this->get('session')->getFlashBag()->set('success',
@@ -209,7 +228,7 @@ class PortefeuilleController extends Controller
         }
 
         //return array();
-        return $this->render('NIPAProjetBundle:Portefeuille:portefeuille.html.twig', array('user' => $user, 'form' => $form->createView(),'formPrev' => $formPrev->createView(), 'formCons' => $formCons->createView(), 'portefeuille' => $portefeuille, 'listPortefeuilleEnveloppePrev' => $listPortefeuilleEnveloppePrev,'listPortefeuilleEnveloppeCons' => $listPortefeuilleEnveloppeCons, 'listPortefeuille' => $listPortefeuille, 'listPortefeuilleEnveloppe' => $listPortefeuilleEnveloppe, 'listPortefeuilleAnnee' => $listPortefeuilleAnnee, 'listPortefeuilleStatut' => $listPortefeuilleStatut)); // On passe à Twig l'objet form et notre objet Groupe
+        return $this->render('NIPAProjetBundle:Portefeuille:portefeuille.html.twig', array('user' => $user, 'form' => $form->createView(),'formPrev' => $formPrev->createView(), 'formCons' => $formCons->createView(), 'portefeuille' => $portefeuille, 'listPortefeuilleEnveloppePrev' => $listPortefeuilleEnveloppePrev,'listPortefeuilleEnveloppeCons' => $listPortefeuilleEnveloppeCons, 'listPortefeuille' => $listPortefeuille, 'listPortefeuilleEnveloppe' => $listPortefeuilleEnveloppe, 'listPortefeuilleAnnee' => $listPortefeuilleAnnee, 'listPortefeuilleStatut' => $listPortefeuilleStatut)); // On passe à Twig l'objet form et notre objet
 
     }
     
@@ -220,6 +239,16 @@ class PortefeuilleController extends Controller
     */
     public function editPortefeuilleAction(Request $request, $reference)    
     {
+
+        /**********************DROIT SECTION************************/
+        $requests = Request::createFromGlobals();
+        $droit = $requests->query->get('droit');
+               
+        if ($droit == "denied") { // On test si user pour avoir accès à la section 
+            //throw new AccessDeniedException("Section autorisée uniquement pour les administrateurs!");
+            $this->get('session')->getFlashBag()->set('error', "Vous n'avez pas les droits requis pour accéder à cette section!");            
+        }        
+        /***********************************************************/
         
         $droit = 0;
         $user = $this->getUser();
@@ -241,8 +270,7 @@ class PortefeuilleController extends Controller
             $referer = $this->getRequest()->server->get('HTTP_REFERER');
             return $this->redirect($referer."?droit=".$droit);  
         }
-
-        
+       
         // On vérifie que le portefeuille existe
         if(!$portefeuille = $this->get('nipa_portefeuille.portefeuille_manager')->loadPortefeuille($reference)) {
             throw new NotFoundHttpException(
@@ -320,12 +348,22 @@ class PortefeuilleController extends Controller
         
         }
         //return array();
-        return $this->render('NIPAProjetBundle:Portefeuille:portefeuille.html.twig', array('user' => $user, 'form' => $form->createView(),'formPrev' => $formPrev->createView(), 'formCons' => $formCons->createView(), 'portefeuille' => $portefeuille, 'listPortefeuilleEnveloppePrev' => $listPortefeuilleEnveloppePrev,'listPortefeuilleEnveloppeCons' => $listPortefeuilleEnveloppeCons, 'listPortefeuille' => $listPortefeuille, 'listPortefeuilleEnveloppe' => $listPortefeuilleEnveloppe, 'listPortefeuilleAnnee' => $listPortefeuilleAnnee, 'listPortefeuilleStatut' => $listPortefeuilleStatut)); // On passe à Twig l'objet form et notre objet Groupe
+        return $this->render('NIPAProjetBundle:Portefeuille:portefeuille.html.twig', array('user' => $user, 'form' => $form->createView(),'formPrev' => $formPrev->createView(), 'formCons' => $formCons->createView(), 'portefeuille' => $portefeuille, 'listPortefeuilleEnveloppePrev' => $listPortefeuilleEnveloppePrev,'listPortefeuilleEnveloppeCons' => $listPortefeuilleEnveloppeCons, 'listPortefeuille' => $listPortefeuille, 'listPortefeuilleEnveloppe' => $listPortefeuilleEnveloppe, 'listPortefeuilleAnnee' => $listPortefeuilleAnnee, 'listPortefeuilleStatut' => $listPortefeuilleStatut)); // On passe à Twig l'objet form et notre objet
 
     }  
 
-   public function deletePortefeuilleAction($reference)
+    public function deletePortefeuilleAction($reference)
     {
+        /**********************DROIT SECTION************************/
+        $requests = Request::createFromGlobals();
+        $droit = $requests->query->get('droit');
+               
+        if ($droit == "denied") { // On test si user pour avoir accès à la section 
+            //throw new AccessDeniedException("Section autorisée uniquement pour les administrateurs!");
+            $this->get('session')->getFlashBag()->set('error', "Vous n'avez pas les droits requis pour accéder à cette section!");            
+        }        
+        /***********************************************************/        
+        
         // On vérifie que le portefeuille existe
         if(!$portefeuille = $this->get('nipa_portefeuille.portefeuille_manager')->loadPortefeuille($reference)) {
             throw new NotFoundHttpException(
@@ -367,6 +405,16 @@ class PortefeuilleController extends Controller
     */
     public function editBudgetPrevAction($reference)    
     {
+        
+        /**********************DROIT SECTION************************/
+        $requests = Request::createFromGlobals();
+        $droit = $requests->query->get('droit');
+               
+        if ($droit == "denied") { // On test si user pour avoir accès à la section 
+            //throw new AccessDeniedException("Section autorisée uniquement pour les administrateurs!");
+            $this->get('session')->getFlashBag()->set('error', "Vous n'avez pas les droits requis pour accéder à cette section!");            
+        }        
+        /***********************************************************/        
         
         $droit = 0;
         $user = $this->getUser();
@@ -421,6 +469,24 @@ class PortefeuilleController extends Controller
         
         /*************************************************/  
         
+        /***************DATA TREE*******************/
+        //return array() List ALL Portefeuille;
+        $listPortefeuille = $this->get('nipa_portefeuille.portefeuille_manager')->loadAllPortefeuille();
+        //On trie la liste des portefeuilles
+        usort($listPortefeuille, function ($a, $b) {
+            return strnatcmp($a->getReferencePortefeuille(), $b->getReferencePortefeuille());
+        });        
+        //On récupère tous les enveloppes
+        $repository = $this->getDoctrine()->getManager()->getRepository('NIPAProjetBundle:PortefeuilleEnveloppe');
+        $listPortefeuilleEnveloppe = $repository->findAll();     
+        //On récupère toutes les années
+        $repository = $this->getDoctrine()->getManager()->getRepository('NIPAProjetBundle:PortefeuilleAnnee');
+        $listPortefeuilleAnnee = $repository->findAll();         
+         //On récupère tous les status
+        $repository = $this->getDoctrine()->getManager()->getRepository('NIPAProjetBundle:PortefeuilleStatut');
+        $listPortefeuilleStatut = $repository->findAll();           
+        /************************************/        
+        
         if ($request->isXmlHttpRequest()) {
             //return new JsonResponse(array('message' => 'You can access this only using Ajax!'), 200);
             
@@ -469,7 +535,7 @@ class PortefeuilleController extends Controller
         }
         
         //return array();
-        return $this->render('NIPAProjetBundle:Portefeuille:portefeuille.html.twig', array('user' => $user, 'form' => $form->createView(),'formPrev' => $formPrev->createView(), 'formCons' => $formCons->createView(), 'portefeuille' => $portefeuille, 'listPortefeuilleEnveloppePrev' => $listPortefeuilleEnveloppePrev,'listPortefeuilleEnveloppeCons' => $listPortefeuilleEnveloppeCons)); // On passe à Twig l'objet form et notre objet Groupe
+        return $this->render('NIPAProjetBundle:Portefeuille:portefeuille.html.twig', array('user' => $user, 'form' => $form->createView(),'formPrev' => $formPrev->createView(), 'formCons' => $formCons->createView(), 'portefeuille' => $portefeuille, 'listPortefeuilleEnveloppePrev' => $listPortefeuilleEnveloppePrev,'listPortefeuilleEnveloppeCons' => $listPortefeuilleEnveloppeCons, 'listPortefeuille' => $listPortefeuille, 'listPortefeuilleEnveloppe' => $listPortefeuilleEnveloppe, 'listPortefeuilleAnnee' => $listPortefeuilleAnnee, 'listPortefeuilleStatut' => $listPortefeuilleStatut)); // On passe à Twig l'objet form et notre objet
 
     }      
 
@@ -479,6 +545,16 @@ class PortefeuilleController extends Controller
     */
     public function editBudgetConsAction($reference)    
     {
+      
+        /**********************DROIT SECTION************************/
+        $requests = Request::createFromGlobals();
+        $droit = $requests->query->get('droit');
+               
+        if ($droit == "denied") { // On test si user pour avoir accès à la section 
+            //throw new AccessDeniedException("Section autorisée uniquement pour les administrateurs!");
+            $this->get('session')->getFlashBag()->set('error', "Vous n'avez pas les droits requis pour accéder à cette section!");            
+        }        
+        /***********************************************************/        
         
         $droit = 0;
         $user = $this->getUser();
@@ -532,7 +608,25 @@ class PortefeuilleController extends Controller
         $listPortefeuilleEnveloppeCons = $repository->findByPortefeuille($portefeuille);        
         
         /*************************************************/        
-        
+
+        /***************DATA TREE*******************/
+        //return array() List ALL Portefeuille;
+        $listPortefeuille = $this->get('nipa_portefeuille.portefeuille_manager')->loadAllPortefeuille();
+        //On trie la liste des portefeuilles
+        usort($listPortefeuille, function ($a, $b) {
+            return strnatcmp($a->getReferencePortefeuille(), $b->getReferencePortefeuille());
+        });        
+        //On récupère tous les enveloppes
+        $repository = $this->getDoctrine()->getManager()->getRepository('NIPAProjetBundle:PortefeuilleEnveloppe');
+        $listPortefeuilleEnveloppe = $repository->findAll();     
+        //On récupère toutes les années
+        $repository = $this->getDoctrine()->getManager()->getRepository('NIPAProjetBundle:PortefeuilleAnnee');
+        $listPortefeuilleAnnee = $repository->findAll();         
+         //On récupère tous les status
+        $repository = $this->getDoctrine()->getManager()->getRepository('NIPAProjetBundle:PortefeuilleStatut');
+        $listPortefeuilleStatut = $repository->findAll();           
+        /************************************/  
+             
         if ($request->isXmlHttpRequest()) {
             //return new JsonResponse(array('message' => 'You can access this only using Ajax!'), 200);
             
@@ -595,12 +689,22 @@ class PortefeuilleController extends Controller
         }
         
         //return array();
-        return $this->render('NIPAProjetBundle:Portefeuille:portefeuille.html.twig', array('user' => $user, 'form' => $form->createView(),'formPrev' => $formPrev->createView(), 'formCons' => $formCons->createView(), 'portefeuille' => $portefeuille, 'listPortefeuilleEnveloppePrev' => $listPortefeuilleEnveloppePrev,'listPortefeuilleEnveloppeCons' => $listPortefeuilleEnveloppeCons)); // On passe à Twig l'objet form et notre objet Groupe
+        return $this->render('NIPAProjetBundle:Portefeuille:portefeuille.html.twig', array('user' => $user, 'form' => $form->createView(),'formPrev' => $formPrev->createView(), 'formCons' => $formCons->createView(), 'portefeuille' => $portefeuille, 'listPortefeuilleEnveloppePrev' => $listPortefeuilleEnveloppePrev,'listPortefeuilleEnveloppeCons' => $listPortefeuilleEnveloppeCons, 'listPortefeuille' => $listPortefeuille, 'listPortefeuilleEnveloppe' => $listPortefeuilleEnveloppe, 'listPortefeuilleAnnee' => $listPortefeuilleAnnee, 'listPortefeuilleStatut' => $listPortefeuilleStatut)); // On passe à Twig l'objet form et notre objet
 
     }      
 
-   public function deleteBudgetPrevAction($id)
+    public function deleteBudgetPrevAction($id)
     {
+        /**********************DROIT SECTION************************/
+        $requests = Request::createFromGlobals();
+        $droit = $requests->query->get('droit');
+               
+        if ($droit == "denied") { // On test si user pour avoir accès à la section 
+            //throw new AccessDeniedException("Section autorisée uniquement pour les administrateurs!");
+            $this->get('session')->getFlashBag()->set('error', "Vous n'avez pas les droits requis pour accéder à cette section!");            
+        }        
+        /***********************************************************/        
+        
         //On récupère tous les enveloppes budgetaire PREV
         $repository = $this->getDoctrine()->getManager()->getRepository('NIPAProjetBundle:PortefeuilleEnveloppePrev');
         $PortefeuilleEnveloppePrev = $repository->findOneBy(array('id' => $id)); 

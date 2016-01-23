@@ -9,7 +9,8 @@
         
         table tbody td {
          padding : 5px 2px;
-        }     
+        }   
+        
     </style>
     
     {# Script JS pour reload table #}
@@ -24,14 +25,15 @@
                 {% if portefeuille.referencePortefeuille and listPortefeuilleEnveloppePrev|length > 0 %}  
                     {% set counter = listPortefeuilleEnveloppePrev[listPortefeuilleEnveloppePrev|length-1].montant %}
                 {% endif %}                
-                <h3 class="panel-title">Budget prévisionnel: {{ counter|number_format(2, '.', ' ') }} k€ </h3>
+                <h3 class="panel-title">Budget prévisionnel: {{ counter|number_format(2, ',', ' ') }} k€ </h3>
                 <div class="pull-right">              
-                    <span class="clickable filter" data-toggle="tooltip" title="Afficher détails" data-container="body">
+                    <span data-toggle="collapse" data-target="#collapsePrev" class="clickable collapsed" title="Afficher détails" data-container="body">
                         <i class="glyphicon glyphicon-plus"></i>
                     </span>
                 </div>                
-            </div>        
-            <div class="panel-body" style="display: none;">
+            </div>   
+        <div id="collapsePrev" class="panel-collapse collapse">                                
+            <div class="panel-body">
                 
                 <table class="table table-hover" id="champs-table">
                     <thead>
@@ -48,9 +50,9 @@
                         {% for prev in listPortefeuilleEnveloppePrev %}
                             <tr>
                                 <td><h5><strong>{{ prev.nom }}</strong></h5></td>
-                                <td>{{ prev.date|date('d/m/Y') }}</td>
-                                <td>{{ prev.montant|number_format(2, '.', ' ') }}</td>
-                                <td>{{ prev.commentaires }}</td>
+                                <td><h5>{{ prev.date|date('d/m/Y') }}</h5></td>
+                                <td><h5>{{ prev.montant|number_format(2, ',', ' ') }}</h5></td>
+                                <td><h5>{{ prev.commentaires }}</h5></td>
                                 <td class="text-center"><a href="{{ path('portefeuille_budget_prev_delete',{'id': prev.id})}}"  class="btn btn-danger confirmModalLink"><i class="glyphicon glyphicon-remove"></i> </a></td>                    
                             </tr>
                         {% endfor %}   
@@ -58,7 +60,8 @@
                     </tbody>
                 </table>
                 
-            </div>  
+            </div> 
+        </div>           
             {% if portefeuille.referencePortefeuille %} 
             <form method="POST" action="{{ path('portefeuille_budget_prev',{'reference': portefeuille.referencePortefeuille})}}" {{ form_enctype(formPrev) }} id="form_ajouter_prev">                     
                 <table class="table">
@@ -80,7 +83,7 @@
                                  </select>
                             </td>                              
                              <td><input type="text" class="form-control input-md date textinput" id="date" name="date" required="true"></td>
-                             <td><input id="textinput" type="textarea" placeholder="Montant" class="form-control input-md textinput" name="montant" required="true"></td>
+                             <td><input type="number" min="0" step="0.01" data-number-to-fixed="2" data-number-stepfactor="100" id="textinput" placeholder="Montant" class="form-control input-md textinput currency" name="montant" required="true"></td>
                              <td><textarea class="form-control input-md" rows="1" id="comment" placeholder="..." name="comment"></textarea></td>                            
                              <td class="text-center"><button type="submit" class="btn btn-success"><i class="glyphicon glyphicon-check"></i></button></td>
                          </tr>   
@@ -102,14 +105,15 @@
                         {% set counter2 = counter2 + cons.montantMensuel %}
                     {% endfor %}   
                 {% endif %}                        
-                <h3 class="panel-title">Budget consommé: {{ counter2|number_format(2, '.', ' ') }} k€ </h3>  
+                <h3 class="panel-title">Budget consommé: {{ counter2|number_format(2, ',', ' ') }} k€ </h3>
                 <div class="pull-right">
-                    <span class="clickable filter" data-toggle="tooltip" title="Afficher détails" data-container="body">
+                    <span data-toggle="collapse" data-target="#collapseCons" class="clickable collapsed" title="Afficher détails" data-container="body">
                         <i class="glyphicon glyphicon-plus"></i>
                     </span>
                 </div>                  
-            </div> 
-            <div class="panel-body" style="display: none;">
+            </div>
+        <div id="collapseCons" class="panel-collapse collapse">                
+            <div class="panel-body">
                 
             {% if portefeuille.referencePortefeuille %} 
             <form method="POST" action="{{ path('portefeuille_budget_cons',{'reference': portefeuille.referencePortefeuille})}}" {{ form_enctype(formCons) }} id="form_ajouter_cons">                                     
@@ -132,16 +136,16 @@
                             {% endif %}
                             
                             {% if listPortefeuilleEnveloppeCons is empty %}                
-                                <td><input id="textinput" type="text" placeholder="Montant" class="form-control input-sm" name="champ1[]" value="0.00"></td>
-                                <td><input id="textinput" type="text" placeholder="Montant" class="form-control input-sm" name="champ2[]" value="0.00" READONLY></td>                                
+                                <td><input type="number" min="0" step="0.01" data-number-to-fixed="2" data-number-stepfactor="100" id="textinput" placeholder="Montant" class="form-control input-sm currency" name="champ1[]" value="0"></td>
+                                <td><input type="number" min="0" step="0.01" data-number-to-fixed="2" data-number-stepfactor="100" id="textinput" placeholder="Montant" class="form-control input-sm currency" name="champ2[]" value="0" READONLY></td>                                
                                 <td class="text-center"><h5><strong class="text-success"></strong></h5></td>
                                 <td><textarea class="form-control input-sm" rows="1" id="comment" placeholder="..." name="champ3[]"></textarea></td>                                                                
                                 <td class="text-center"><a href="#" class="btn btn-danger btn-sm" id="reset" class="button"><span class="glyphicon glyphicon-minus-sign" data-toggle="tooltip" title="Reset ligne"></span> </a></td>       
                             {% else %}
-                                <td><input id="textinput" type="text" placeholder="Montant" class="form-control input-sm" name="champ1[]" value="{{ listPortefeuilleEnveloppeCons[ loop.index - 1 ].getMontantMensuel() }}"></td>
-                                <td><input id="textinput" type="text" placeholder="Montant" class="form-control input-sm" name="champ2[]" value="{{ listPortefeuilleEnveloppeCons[ loop.index - 1 ].getMontantCumul()|number_format(2, '.', ' ') }}" READONLY></td>
+                                <td><input type="number" min="0" step="0.01" data-number-to-fixed="2" data-number-stepfactor="100" id="textinput" placeholder="Montant" class="form-control input-sm currency" name="champ1[]" value="{{ listPortefeuilleEnveloppeCons[ loop.index - 1 ].getMontantMensuel() }}"></td>
+                                <td><input type="number" min="0" step="0.01" data-number-to-fixed="2" data-number-stepfactor="100" id="textinput" placeholder="Montant" class="form-control input-sm currency" name="champ2[]" value="{{ listPortefeuilleEnveloppeCons[ loop.index - 1 ].getMontantCumul()}}" READONLY></td>
                                 {% if counter != 0 %}
-                                    <td class="text-center"><h5><strong class="text-success">{{ (listPortefeuilleEnveloppeCons[ loop.index - 1 ].getMontantCumul() / counter * 100)|number_format(2, '.', ' ') }}%</strong></h5></td>
+                                    <td class="text-center"><h5><strong class="text-success">{{ (listPortefeuilleEnveloppeCons[ loop.index - 1 ].getMontantCumul() / counter * 100)|number_format(2, ',', ' ') }}%</strong></h5></td>
                                 {% else %}
                                     <td class="text-center"><h5><strong class="text-success"></strong></h5></td>
                                 {% endif %}
@@ -157,7 +161,7 @@
             {% endif %}
             
             </div>
-            
+        </div>    
         </div>
     </div> 
 

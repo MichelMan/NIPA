@@ -8,16 +8,16 @@
         <link rel="stylesheet" href="{{ asset('bundles/nipaprojetbundle/css/bootstrap-datetimepicker.css') }}" />
         <script src="{{ asset('bundles/nipaprojetbundle/js/bootstrap-datetimepicker.min.js') }}"></script>   
         <script src="{{ asset('bundles/nipaprojetbundle/js/bootstrap-datetimepicker.fr.js') }}"></script>        
-
+        
         <!-- load others JS files -->
      	<link rel="stylesheet" href="{{ asset('bundles/nipaprojetbundle/css/styleProjet.css') }}" type="text/css" media="all" />
         <script src="{{ asset('bundles/nipauserbundle/js/navbarAdministration.js') }}"></script>
-        <script src="{{ asset('bundles/nipauserbundle/js/panelFilter.js') }}"></script>
         <script src="{{ asset('bundles/nipaprojetbundle/js/dTable.js') }}"></script>
         <script src="{{ asset('bundles/nipaprojetbundle/js/ddtf.js') }}"></script>        
         <script src="{{ asset('bundles/nipaprojetbundle/js/dynamitable.jquery.min.js') }}"></script>      
-        <script src="{{ asset('bundles/nipaprojetbundle/js/jquery.dataTables.js') }}"></script>                
-        <!-- <script src="{# {{ asset('bundles/nipaprojetbundle/js/treeJS.js') }} #}"></script> -->
+        <script src="{{ asset('bundles/nipaprojetbundle/js/jquery.dataTables.js') }}"></script>
+                             
+         <!-- <script src="{# {{ asset('bundles/nipaprojetbundle/js/treeJS.js') }} #}"></script> -->
 {% endblock %}
 
 {% block nipa_navbar %}
@@ -56,7 +56,7 @@
             {# Si portefeuille existe #}
             {% if portefeuille.referencePortefeuille %} 
             <div class="col-md-9">
-                <ul class="nav nav-tabs nav-justified portfeuille" role="tablist">
+                <ul class="nav nav-tabs nav-justified portefeuille" role="tablist">
                     <li role="presentation" class="active">
                         <a href="#infos" aria-controls="infos" role="tab" data-toggle="tab"><i class="fa fa-info-circle fa-fw"></i> Informations générales</a>
                     </li>
@@ -101,7 +101,7 @@
     <script>
         var url = document.location.toString();
         if (url.match('#')) {
-          $('.portfeuille a[href=#'+url.split('#')[1]+']').tab('show') ;
+          $('.portefeuille a[href=#'+url.split('#')[1]+']').tab('show') ;
         }        
     </script>
 {% endblock nipa_user_content %}

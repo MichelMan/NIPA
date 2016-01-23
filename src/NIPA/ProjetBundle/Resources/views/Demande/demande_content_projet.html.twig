@@ -1,0 +1,174 @@
+{% trans_default_domain 'NIPAProjetBundle' %}
+
+{% block body %}   
+
+        <style>    
+
+        </style>     
+
+        <div class="container">                   
+            <div class="row col-md-13">
+
+                <!-- PANEL PORTEFEUILLE -->          
+                <div class="panel panel-danger" id="GDD">
+                    <div class="panel-heading" id="GDD">
+                        <h5 class="panel-title"> Informations liées au(x) Portefeuille(s)</h5>
+                        <div class="pull-right">              
+                            <span data-toggle="collapse" data-target="#collapseInfoPortefeuille" class="clickable collapsed" title="Afficher détails" data-container="body">
+                                <i class="glyphicon glyphicon-plus"></i>
+                            </span>
+                        </div>                      
+                    </div>   
+                <div id="collapseInfoPortefeuille" class="panel-collapse collapse">                                
+                    <div class="panel-body">
+ 
+                    <!-- BOUTON ADD -->  
+                    <div class="btn-toolbar">
+                        <button data-toggle="tooltip" title="Ajouter un portefeuille" class="btn btn-success" onclick="window.location.href='#'"><i class="glyphicon glyphicon-plus-sign"></i> Ajouter Portefeuille</button>
+                    </div>
+                    <br>                           
+                        
+                        <table class="table table-hover" id="champs-table GDD">
+                            <thead>
+                                <tr>
+                                    <th class="text-center">Référence</th>
+                                    <th class="text-center">Enveloppe</th>
+                                    <th class="text-center">Statut Portefeuille</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                </tr>   
+                            </tbody>
+                        </table>
+                    </div> 
+                </div>                    
+                </div>             
+                
+                <br>
+                                        
+                <!-- PANEL PROJETS -->          
+                <div class="panel panel-danger" id="GDD">
+                    <div class="panel-heading" id="GDD">
+                        <h5 class="panel-title"> Informations liées au(x) Projet(s)</h5>
+                        <div class="pull-right">              
+                            <span data-toggle="collapse" data-target="#collapseInfoProjet" class="clickable collapsed" title="Afficher détails" data-container="body">
+                                <i class="glyphicon glyphicon-plus"></i>
+                            </span>
+                        </div>                      
+                    </div>   
+                <div id="collapseInfoProjet" class="panel-collapse collapse">                                
+                    <div class="panel-body">
+
+                        <!-- row 1-->                                              
+                        <table class="table table-hover" id="GDD">
+                            <thead>
+                                <tr>
+                                    <th class="text-center">Σ  Budgets Projet</th>
+                                    <th class="text-center">Nombre de lots</th>
+                                    <th></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td class="text-center"><h4>0 €</h4></td>
+                                    <td><center>{{ form_widget(form.nbLots, { 'attr': {'class': 'number', 'min': '0'} }) }}</center></td>
+                                    <td class="text-center">
+                                        <a class="btn btn-warning"><span data-toggle="collapse" data-target="#collapseProjetGDD" class="clickable collapsed" title="Afficher" data-container="body">
+                                            <span class='glyphicon glyphicon-list-alt'></span> Liste des Projets
+                                        </span></a>                                
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+
+                        <br>
+
+                        <!-- PANEL DATE DE MEP et TTD -->          
+                        <div class="panel panel-danger" id="GDD">
+                            <div class="panel-heading">
+                                <h5 class="panel-title">Date de MEP: </h5>
+                                <div class="pull-right">              
+                                    <span data-toggle="collapse" data-target="#collapseMEP" class="clickable collapsed" title="Afficher détails" data-container="body">
+                                        <i class="glyphicon glyphicon-plus"></i>
+                                    </span>
+                                </div>                
+                            </div>   
+                        <div id="collapseMEP" class="panel-collapse collapse">                                
+                            <div class="panel-body">
+                                <table class="table table-hover" id="champs-table GDD">
+                                    <thead>
+                                        <tr>
+                                            <th class="text-center">TTD Souhaité</th>
+                                            <th class="text-center">TTD Souhaité révisé</th>
+                                            <th class="text-center">TTD Projets</th>
+                                            <th class="text-center">TTD Projets révisés</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td>{{ form_widget(form.TTDSouhaite) }}</td>
+                                            <td>{{ form_widget(form.TTDSouhaiteRevise) }}</td>
+                                            <td>{{ form_widget(form.TTDProjets) }}</td>
+                                            <td>{{ form_widget(form.TTDProjetsRevises) }}</td>
+                                        </tr>   
+                                    </tbody>
+                                </table>
+                            </div> 
+                        </div>
+                        </div>
+
+                        <br>
+
+                       <!-- PANEL Liste Projets -->          
+                        <div class="panel panel-warning" id="GDD">
+                            <div class="panel-heading">
+                                <h4 class="panel-title">Projets </h4>        
+                            </div>   
+                        <div id="collapseProjetGDD" class="panel-collapse collapse">                                
+                            <div class="panel-body">
+                                <table class="table table-hover" id="champs-table GDD">
+                                    <thead>
+                                        <tr>
+                                            <th class="text-center">N° Lotissement</th>
+                                            <th class="text-center">Référence</th>
+                                            <th class="text-center">Phase Projet</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                        </tr>   
+                                    </tbody>
+                                </table>
+                            </div> 
+                        </div>
+                        </div>  
+
+                    </div> 
+                </div>                    
+                </div>
+            </div>                    
+        </div>
+
+        {# Pour l'erreur: "Le jeton CSRF est invalide" #}
+        {{ form_widget(form._token) }}        
+        {{form_errors(form)}}
+
+        <br>  
+        <div class="pull-right">
+            {% if portefeuille.referencePortefeuille is defined %}                
+                <a href="{{ path('portefeuille_delete', {'reference': portefeuille.referencePortefeuille}) }}" class="confirmModalLinkPortefeuille btn btn-danger"><span class="glyphicon glyphicon-trash"></span> Supprimer </a>                                                
+            {% endif %}
+            <button class="btn btn-success" type="submit"><span class='glyphicon glyphicon-check'></span> Valider</button>           
+        </div> 
+            <p>* Champs obligatoire</p>  
+            
+    </form> 
+
+{% endblock %}            

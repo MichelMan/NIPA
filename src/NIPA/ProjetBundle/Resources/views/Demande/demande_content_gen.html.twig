@@ -1,0 +1,212 @@
+{% trans_default_domain 'NIPAProjetBundle' %}
+		
+{% block body %}   
+ 
+    <style>
+        .panel#GDD {
+            margin-bottom: 0px;
+            background-color: #fff;
+            border-radius: 4px;
+        }        
+        
+        .panel-heading#GDD {
+            padding: 18px 15px;
+            border-bottom: 1px solid transparent;
+            border-top-left-radius: 3px;
+            border-top-right-radius: 3px;
+        }
+
+        .table#GDD {
+            width: 100%;
+            max-width: 100%;
+            margin-bottom: 0px; 
+        }   
+        
+        .area{
+            margin: 0px 0px 0px 0px;
+            //width: 285px;
+            //height: 54px;            
+        }
+        
+        .number{
+            width: 60px;
+        }
+        
+    </style>    
+  
+    {% if demande.referenceDemande %}                
+        <h4 class=""><span class='glyphicon glyphicon-edit'></span> {{ 'Mise à jour Demande'|trans }} </h4>            
+    {% else %}
+        <h4 class=""><span class='glyphicon glyphicon-plus-sign'></span> {{ 'Nouvelle Demande'|trans }} </h4>        
+    {% endif %}      
+        
+    <form action="{% if demande.referenceDemande %}{{ path('demande_edit', {'reference': demande.referenceDemande}) }}{% else %}{{ path('demande_new') }}{% endif %}" method="post" {{ form_enctype(form) }} >
+                  
+        <div class="container">                   
+            <div class="row col-md-13">
+
+                <!-- PANEL -->          
+                <div class="panel panel-danger" id="GDD">
+                    <div class="panel-heading" id="GDD">
+                        <h5 class="panel-title"> Informations générales de la Demande <strong>{% if demande.referenceDemande %} {{ demande.referenceDemande }} ({{ demande.demandeStatut.getNom() }}) {% endif %}</strong></h5>
+                        <div class="pull-right">
+                            REX: {{ form_widget(form.REX) }}
+                        </div>
+                    </div>   
+                <div id="collapseInfo" class="panel-collapse collapse-in">                                
+                    <div class="panel-body">
+                        
+                        <!-- row 1-->          
+                        <table class="table table-hover" id="GDD">
+                            <thead>
+                                <tr>
+                                    <th >Référence IPP</th>
+                                    <th>Priorité</th>
+                                    <th class="text-center">Titre</th>
+                                    <th class="text-center">Enveloppe</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><h4><strong>{% if demande.referenceDemande %} {{ demande.referenceDemande }} {% endif %}</strong></h4></td>
+                                    <td>{{ form_widget(form.priorite) }}</td>
+                                    <td>{{ form_widget(form.nom) }}</td>
+                                    <td class="text-center"><h5>{% if demande.referenceDemande and demande.getPortefeuillesToArray() is not empty %} {{ demande.getPortefeuillesToArray()[0].getIPP() }} {% endif %}</h5></td>                    
+                                </tr>
+                            </tbody>
+                        </table>
+ 
+                        <!-- row 2-->                                              
+                        <table class="table table-hover" id="GDD">
+                            <thead>
+                                <tr>
+                                    <th class="text-center">Commentaires</th>
+                                    <th class="text-center">Statut Demande</th>
+                                    <th class="text-center">Portefeuille</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>{{ form_widget(form.description, { 'attr': {'class': 'area'} }) }}</td>
+                                    <td><center>{{ form_widget(form.demandeStatut) }}</center></td>
+                                    <td>
+                                        <center>
+                                            <select class="form-control" id="referencePortefeuille" name="referencePortefeuille" {% if demande.referenceDemande %} READONLY {% endif %}>
+                                            {% if demande.referenceDemande and demande.getPortefeuillesToArray() is not empty %}
+                                                    <option value="{{ demande.getPortefeuillesToArray()[0].getReferencePortefeuille() }}">{{ demande.getPortefeuillesToArray()[0].getNom() }}</option>
+                                            {% else %}
+                                                {% for child in form.portefeuille %}
+                                                    {% set index = child.vars.value %}
+                                                        <option value="{{choices[index].referencePortefeuille}}">{{ choices[index].nom }}</option>
+                                                {% endfor %}
+                                            {% endif %}
+                                            </select>
+                                         </center>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                                                      
+                        <!-- row 3: Direction, EM, Offres, Type Projet... -->          
+                        <table class="table table-hover" id="GDD">
+                            <thead>
+                                <tr>
+                                    <th class="text-center">Direction</th>
+                                    <th class="text-center">Entité Métier</th>
+                                    <th class="text-center">Offre concernée</th>
+                                    <th class="text-center">Type de projet</th>
+                                    <th class="text-center">Divers</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>{{ form_widget(form.direction) }}</td>
+                                    <td>{{ form_widget(form.entiteMetier) }}</td>
+                                    <td><center>{{ form_widget(form.offres) }}</center></td>
+                                    <td><center>{{ form_widget(form.typeProjet) }}</center></td>
+                                    <td><center>{{ form_widget(form.divers) }}</center></td>
+                                </tr>
+                            </tbody>
+                        </table>
+
+                        <!-- row 4: Porteur Metier, Interlocuteur MOA, SDM -->          
+                        <table class="table table-hover" id="GDD">
+                            <thead>
+                                <tr>
+                                    <th class="text-center">Porteur Métier</th>
+                                    <th class="text-center">Interlocuteur MOA</th>
+                                    <th class="text-center">SDM - Pilote technique (SI/Réseau)</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>{{ form_widget(form.porteurMetier) }}</td>
+                                    <td>{{ form_widget(form.interlocuteurMOA) }}</td>
+                                    <td><center>{{ form_widget(form.SDM) }}</center></td>
+                                </tr>
+                            </tbody>
+                        </table>                                
+                                
+                    </div> 
+                </div>                    
+                </div>
+            </div>                    
+        </div>
+                                
+        {# Pour l'erreur: "Le jeton CSRF est invalide" #}
+        {{ form_widget(form._token) }}        
+        {{form_errors(form)}}
+        
+        <br>  
+        <div class="pull-right">
+            {% if portefeuille.referencePortefeuille is defined %}                
+                <a href="{{ path('portefeuille_delete', {'reference': portefeuille.referencePortefeuille}) }}" class="confirmModalLinkPortefeuille btn btn-danger"><span class="glyphicon glyphicon-trash"></span> Supprimer </a>                                                
+            {% endif %}
+            <button class="btn btn-success" type="submit"><span class='glyphicon glyphicon-check'></span> Valider</button>           
+        </div> 
+            <p>* Champs obligatoire</p>        
+            
+            
+    <!-- MODAL DELETE -->
+    <div id="myModalPortefeuille" class="modal fade in">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                    <h3 id="myModalLabel">Confirmation</h3>
+                </div>
+                
+                <div class="modal-body">
+                    <p class="error-text">Etes vous sûr de vouloir supprimer le portefeuille?</p>
+                </div>
+
+                <div class="modal-footer">
+                    <a href="#" class="btn btn-warning" id="confirmModalPortefeuilleNo">Annuler</a>
+                    <a href="#" class="btn btn-danger" id="confirmModalPortefeuilleYes">Supprimer</a>                  
+                </div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal-dalog -->
+    </div><!-- /.modal -->
+    
+<script>
+        
+        $(document).ready(function () {
+            var theHREF;
+
+            $(".confirmModalLinkPortefeuille").click(function(e) {
+                e.preventDefault();
+                theHREF = $(this).attr("href");
+                $("#myModalPortefeuille").modal("show");
+            });
+
+            $("#confirmModalPortefeuilleNo").click(function(e) {
+                $("#myModalPortefeuille").modal("hide");
+            });
+
+            $("#confirmModalPortefeuilleYes").click(function(e) {
+                window.location.href = theHREF;
+            });
+        });
+
+</script>    
+{% endblock %}            
