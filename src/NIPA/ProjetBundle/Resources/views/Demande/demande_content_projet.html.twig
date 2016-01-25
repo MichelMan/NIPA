@@ -2,10 +2,8 @@
 
 {% block body %}   
 
-        <style>    
-
-        </style>     
-
+        <h4 class=""><span class='glyphicon glyphicon-list-alt'></span> {{ 'Portefeuille(s) & Projet(s)'|trans }} </h4>        
+ 
         <div class="container">                   
             <div class="row col-md-13">
 
@@ -24,7 +22,7 @@
  
                     <!-- BOUTON ADD -->  
                     <div class="btn-toolbar">
-                        <button data-toggle="tooltip" title="Ajouter un portefeuille" class="btn btn-success" onclick="window.location.href='#'"><i class="glyphicon glyphicon-plus-sign"></i> Ajouter Portefeuille</button>
+                        <a data-toggle="modal" title="Ajouter portefeuilles" class="btn btn-success" href="#ModalAddPortefeuilles"><i class="glyphicon glyphicon-plus-sign"></i> Ajouter Portefeuille</a>
                     </div>
                     <br>                           
                         
@@ -32,16 +30,28 @@
                             <thead>
                                 <tr>
                                     <th class="text-center">Référence</th>
+                                    <th class="text-center">Nom</th>
                                     <th class="text-center">Enveloppe</th>
                                     <th class="text-center">Statut Portefeuille</th>
+                                    <th class="text-center">Supprimer</th>
                                 </tr>
                             </thead>
                             <tbody>
+                                {% for portefeuille in demande.getPortefeuillesToArray() %}
                                 <tr>
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
-                                </tr>   
+                                    <td class="text-center">{{ portefeuille.getReferencePortefeuille() }}</td>
+                                    <td class="text-center">{{ portefeuille.getNom() }}</td>
+                                    <td class="text-center">{{ portefeuille.getIPP() }}</td>
+                                    <td class="text-center">{{ portefeuille.getPortefeuilleStatut().getNom() }}</td>
+                                    <td>
+                                       {% if demande.getPortefeuillesToArray()[demande.getPortefeuillesToArray()|length-1] == portefeuille  %} 
+                                           <a href="#" ><span class="glyphicon glyphicon-lock" style="color:yellow;"></span></a>                               
+                                       {% else %}    
+                                           <a href="{{ path('demande_delete_portefeuilles', {'referencePortefeuille': portefeuille.referencePortefeuille, 'referenceDemande': demande.referenceDemande}) }}" class="confirmModalLink"><span class="glyphicon glyphicon-remove" style="color:red;"></span></a>                               
+                                       {% endif %}                           
+                                   </td>                               
+                                </tr>
+                                {% endfor %}
                             </tbody>
                         </table>
                     </div> 
@@ -170,5 +180,131 @@
             <p>* Champs obligatoire</p>  
             
     </form> 
+    
+    
+     <!-- MODAL AJOUT PORTEFEUILLE DEMANDE -->
+    <div id="ModalAddPortefeuilles" class="modal fade in">
+        <div class="modal-dialog"  style="width: 700px;">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                    <h3 id="myModalLabel">Ajouter Portefeuille(s) </h3>
+                </div>
+                
+                <form class="form-horizontal well" data-async data-target="#ModalAddPortefeuilles" action="{% if demande.referenceDemande %}{{ path('demande_add_portefeuilles', {'reference':demande.referenceDemande}) }}{% endif %}" {{ form_enctype(formModal) }} method="POST">                       
+                    <div class="modal-body">
 
+                        <div class="container">
+                            <div class="row">
+                                <div class="col-md-12">
+                                 <table class="table table-hover" id="portefeuilles-table-panel">
+                                        <thead>
+                                            <tr>
+                                                <th></th>
+                                                <th>Référence</th>
+                                                <th>Nom</th>
+                                                <th>Enveloppe</th>
+                                                <th>Statut</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {% set isPresent = 0 %}
+                                            {% for child in formModal.portefeuille %}
+                                                {% set index = child.vars.value %}
+
+                                                {# On liste juste les portefeuilles non affiliés encore à la demande#}
+                                                {% if demande.getPortefeuillesToArray() is not empty and choices2[index] not in demande.getPortefeuillesToArray() %}  
+                                                    {# On affiche que les portefeuilles ayant un IPP différent #}
+                                                    {% if choices2[index].getPortefeuilleAnnee().getValeur() != demande.getPortefeuillesToArray()[demande.getPortefeuillesToArray()|length-1].getPortefeuilleAnnee().getValeur() %} 
+                                                        <tr>
+                                                          {# <td>{{ form_widget(child) }}</td> #}
+                                                          <td><input type="checkbox"  name="idPortefeuilles[]" value="{{choices2[index].referencePortefeuille}}"></input></td>
+                                                          <td>{{ choices2[index].referencePortefeuille }}</td>
+                                                          <td>{{ choices2[index].nom }}</td>
+                                                          <td>{{ choices2[index].IPP }}</td>
+                                                          <td>{{ choices2[index].portefeuilleStatut.nom}}</td>                                                
+                                                        </tr>
+                                                    {% else %}
+                                                        {% set isPresent = isPresent + 1 %}
+                                                    {% endif %}
+                                                {% else %}
+                                                    {% set isPresent = isPresent + 1 %}
+                                                {% endif %}
+
+                                                {# Si tous les portefeuilles sont déjà dans la demande#}
+                                                {% if isPresent ==  formModal.portefeuille|length%}  
+                                                    <p>Aucun Portefeuille(s) à ajouter</p>
+                                                {% endif %}
+
+                                            {% else %}
+                                                <p>Aucun Portefeuille(s)</p>
+                                            {% endfor %}
+                                        </tbody>
+                                    </table>   
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                    <div class="modal-footer">
+                        <button class="btn btn-primary" data-dismiss="modal" aria-hidden="true"> Annuler</button>
+                        <button class="btn btn-success" type="submit">Ajouter</button>
+                    </div> 
+                    {{ form_errors(formModal) }}
+                    <!-- <pre> {#{{ dump(formModal) }}#} </pre> -->
+                </form>                                                  
+            </div>
+        </div>
+    </div>    
+
+    <!-- MODAL DELETE -->
+    <div id="myModal" class="modal fade in">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                    <h3 id="myModalLabel">Confirmation</h3>
+                </div>
+                
+                <div class="modal-body">
+                    <p class="error-text">Etes vous sûr de vouloir supprimer le portefeuille?</p>
+                </div>
+
+                <div class="modal-footer">
+                    <a href="#" class="btn btn-warning" id="confirmModalNo">Annuler</a>
+                    <a href="#" class="btn btn-danger" id="confirmModalYes">Supprimer</a>                  
+                </div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal-dalog -->
+    </div><!-- /.modal -->                
+                    
+     <script>
+
+   
+        $(document).ready(function() {
+            $('#portefeuilles-table-panel').DataTable({
+                "order": [[ 1, "asc" ]]
+            } );
+        } );
+
+        $(document).ready(function () {
+            var theHREF;
+
+            $(".confirmModalLink").click(function(e) {
+                e.preventDefault();
+                theHREF = $(this).attr("href");
+                $("#myModal").modal("show");
+            });
+
+            $("#confirmModalNo").click(function(e) {
+                $("#myModal").modal("hide");
+            });
+
+            $("#confirmModalYes").click(function(e) {
+                window.location.href = theHREF;
+            });
+        });
+        
+    </script>                
+                    
 {% endblock %}            

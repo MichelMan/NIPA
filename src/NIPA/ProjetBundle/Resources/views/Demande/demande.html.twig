@@ -3,6 +3,13 @@
 {% block nipa_stylesheets %}
         <!-- load the theme CSS file of jstree -->
         <link rel="stylesheet" href="{{ asset('bundles/nipaprojetbundle/js/dist/themes/default/style.min.css') }}" />
+        <link rel="stylesheet" href="{{ asset('bundles/nipauserbundle/css/jquery.dataTables.min.css') }}" type="text/css" media="all" />
+
+        <!-- load the theme CSS an JS files of datetimepicker -->
+        <link rel="stylesheet" href="{{ asset('bundles/nipaprojetbundle/css/bootstrap-datetimepicker.css') }}" />
+        <script src="{{ asset('bundles/nipaprojetbundle/js/bootstrap-datetimepicker.min.js') }}"></script>   
+        <script src="{{ asset('bundles/nipaprojetbundle/js/bootstrap-datetimepicker.fr.js') }}"></script> 
+        
         <!-- include the minified jstree source -->
         <script src="{{ asset('bundles/nipaprojetbundle/js/dist/jstree.min.js') }}"></script>
 
@@ -10,6 +17,9 @@
         <script src="{{ asset('bundles/nipauserbundle/js/navbarAdministration.js') }}"></script>
         <script src="{{ asset('bundles/nipauserbundle/js/panelFilter.js') }}"></script>     
         <!-- <script src="{{ asset('bundles/nipaprojetbundle/js/treeJS.js') }}"></script> -->
+        <script src="{{ asset('bundles/nipauserbundle/js/jquery.dataTables.min.js') }}"></script>
+        <script src="{{ asset('bundles/nipauserbundle/js/dataTables.bootstrap.min.js') }}"></script>           
+      
 {% endblock %}
 
 {% block nipa_navbar %}
@@ -89,6 +99,7 @@
             </div>
 
             <div role="tabpanel" class="col-md-9 well tab-pane" id="budget">
+                {% include "NIPAProjetBundle:Demande:demande_content_budget.html.twig" %}                
             </div> 
 
             <div role="tabpanel" class="col-md-9 well tab-pane" id="champs">

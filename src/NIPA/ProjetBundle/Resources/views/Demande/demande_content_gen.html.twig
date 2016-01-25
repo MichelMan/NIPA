@@ -62,7 +62,7 @@
                                 <tr>
                                     <th >Référence IPP</th>
                                     <th>Priorité</th>
-                                    <th class="text-center">Titre</th>
+                                    <th class="text-center">Titre*</th>
                                     <th class="text-center">Enveloppe</th>
                                 </tr>
                             </thead>
@@ -93,7 +93,7 @@
                                         <center>
                                             <select class="form-control" id="referencePortefeuille" name="referencePortefeuille" {% if demande.referenceDemande %} READONLY {% endif %}>
                                             {% if demande.referenceDemande and demande.getPortefeuillesToArray() is not empty %}
-                                                    <option value="{{ demande.getPortefeuillesToArray()[0].getReferencePortefeuille() }}">{{ demande.getPortefeuillesToArray()[0].getNom() }}</option>
+                                                <option value="{{ demande.getPortefeuillesToArray()[demande.getPortefeuillesToArray()|length-1].getReferencePortefeuille() }}">{{ demande.getPortefeuillesToArray()[demande.getPortefeuillesToArray()|length-1].getNom() }}</option>
                                             {% else %}
                                                 {% for child in form.portefeuille %}
                                                     {% set index = child.vars.value %}

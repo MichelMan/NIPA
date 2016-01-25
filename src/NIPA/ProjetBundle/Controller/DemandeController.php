@@ -3,17 +3,20 @@
 namespace NIPA\ProjetBundle\Controller;
 
 use NIPA\ProjetBundle\Form\Type\DemandeFormType;
+use NIPA\ProjetBundle\Form\Type\SelectPortefeuilleModalType;
 
 use NIPA\ProjetBundle\Entity\Demande;
+use NIPA\ProjetBundle\Entity\DemandeBudget;
 
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
-use Symfony\Component\Security\Core\Exception\AccessDeniedException;
+use Symfony\Component\HttpFoundation\JsonResponse;
 
 
 class DemandeController extends Controller
@@ -126,7 +129,23 @@ class DemandeController extends Controller
         
         $options = $form->get('portefeuille')->getConfig()->getOptions();
         $choices = $options['choice_list']->getChoices();         
-        /*************************************************/       
+
+        /***************Formulaire select Portefeuilles****************/
+        $portefeuilleManager = $this->get('nipa_portefeuille.portefeuille_manager');
+        $portefeuilles = $portefeuilleManager->loadAllPortefeuille(); // on accède aux service et on récupère les méthodes dans portefeuilleManager
+        
+        $formModal = $this->get('form.factory')->create(new SelectPortefeuilleModalType(), $portefeuilles);        
+        
+        $options2 = $formModal->get('portefeuille')->getConfig()->getOptions();
+        $choices2 = $options2['choice_list']->getChoices();            
+        /***************************************************************/
+       
+        //On récupère toutes les tuples du budget actuel
+        $repository = $this->getDoctrine()->getManager()->getRepository('NIPAProjetBundle:DemandeBudget');
+        $listDemandeBudget = $repository->findAll();  
+        
+        /***************************************************************/  
+        
         
         $form->handleRequest($request);
         if ($form->isSubmitted()) {                                   
@@ -219,7 +238,7 @@ class DemandeController extends Controller
         }
 
         //return array();
-        return $this->render('NIPAProjetBundle:Demande:demande.html.twig', array('user' => $user, 'form' => $form->createView(), 'demande' => $demande, 'listDemande' => $listDemande,'choices' => $choices)); // On passe à Twig l'objet form et notre objet
+        return $this->render('NIPAProjetBundle:Demande:demande.html.twig', array('user' => $user, 'form' => $form->createView(), 'formModal' => $formModal->createView(), 'demande' => $demande, 'listDemande' => $listDemande,'choices' => $choices, 'choices2' => $choices2, 'listDemandeBudget' => $listDemandeBudget)); // On passe à Twig l'objet form et notre objet
 
     }    
     
@@ -263,7 +282,7 @@ class DemandeController extends Controller
         }
 
         
-        // On vérifie que le portefeuille existe
+        // On vérifie que l'objet existe
         if(!$demande = $this->get('nipa_demande.demande_manager')->loadDemande($reference)) {
             throw new NotFoundHttpException(
                 $this->get('translator')->trans('This demande does not exist.')
@@ -284,6 +303,22 @@ class DemandeController extends Controller
          
         $options = $form->get('portefeuille')->getConfig()->getOptions();
         $choices = $options['choice_list']->getChoices(); 
+        
+        /***************Formulaire select Portefeuilles****************/
+        $portefeuilleManager = $this->get('nipa_portefeuille.portefeuille_manager');
+        $portefeuilles = $portefeuilleManager->loadAllPortefeuille(); // on accède aux service et on récupère les méthodes dans portefeuilleManager
+        
+        $formModal = $this->get('form.factory')->create(new SelectPortefeuilleModalType(), $portefeuilles);        
+        
+        $options2 = $formModal->get('portefeuille')->getConfig()->getOptions();
+        $choices2 = $options2['choice_list']->getChoices();            
+        /***************************************************************/
+       
+        //On récupère toutes les tuples du budget actuel
+        $repository = $this->getDoctrine()->getManager()->getRepository('NIPAProjetBundle:DemandeBudget');
+        $listDemandeBudget = $repository->findAll();  
+        
+        /***************************************************************/
         
         
         $form->handleRequest($request);
@@ -309,8 +344,247 @@ class DemandeController extends Controller
         
         }
         //return array();
-        return $this->render('NIPAProjetBundle:Demande:demande.html.twig', array('user' => $user, 'form' => $form->createView(), 'demande' => $demande, 'listDemande' => $listDemande,'choices' => $choices)); // On passe à Twig l'objet form et notre objet
+        return $this->render('NIPAProjetBundle:Demande:demande.html.twig', array('user' => $user, 'form' => $form->createView(), 'formModal' => $formModal->createView(), 'demande' => $demande, 'listDemande' => $listDemande,'choices' => $choices, 'choices2' => $choices2, 'listDemandeBudget' => $listDemandeBudget)); // On passe à Twig l'objet form et notre objet
 
     }      
+    
+    
+    /**
+    *  ADD a Portfeuille to a Demande
+    * 
+    */
+    public function addPortefeuillesAction($reference)
+    {
+         /**********************DROIT SECTION************************/
+        $requestDroit = Request::createFromGlobals();
+        $droit = $requestDroit->query->get('droit');
+               
+        if ($droit == "denied") { // On test si user pour avoir accès à la section 
+            //throw new AccessDeniedException("Section autorisée uniquement pour les administrateurs!");
+            $this->get('session')->getFlashBag()->set('error', "Vous n'avez pas les droits requis pour accéder à cette section!");            
+        }        
+        /***********************************************************/       
+        $request = $this->get('request');
+        
+        $droit = 0;
+        $user = $this->getUser();
+            
+        foreach($user->getGroupesToArray() as $groupe) // Pour chaque Groupe affilié au user
+        {
+            if($groupe->getPermission() != null) // Test si le groupe a des permissions
+            {
+                if(($groupe->getPermission()->getCMSPortefeuille() == 1) || ($groupe->getPermission()->getLPortefeuille() == 1)) // Si oui on test les droits d'accès
+                {
+                    $droit++;           
+                }
+            }
+        }
+        
+        if ($droit == 0) {
+            //return $this->render($this->getRequest()->server->get('HTTP_REFERER'), array('droit' => $droit));
+            $droit = "denied";
+            $referer = $this->getRequest()->server->get('HTTP_REFERER');
+            return $this->redirect($referer."?droit=".$droit);  
+        }  
+        
+        
+
+        $idPortefeuilles=$this->getRequest()->get('idPortefeuilles');
+        $demande = $this->get('nipa_demande.demande_manager')->loadDemande($reference);
+   
+        /***************DATA TREE*******************/
+        //return array() List ALL Demandes;
+        $listDemande = $this->get('nipa_demande.demande_manager')->loadAllDemande();
+        //On trie la liste des demandes
+        usort($listDemande, function ($a, $b) {
+            return strnatcmp($a->getReferenceDemande(), $b->getReferenceDemande());
+        });         
+                  
+        /************************************/
+        
+        $form = $this->createForm(new DemandeFormType(), $demande);
+         
+        $options = $form->get('portefeuille')->getConfig()->getOptions();
+        $choices = $options['choice_list']->getChoices();  
+        
+        /***************Formulaire select Portefeuilles****************/
+        $portefeuilleManager = $this->get('nipa_portefeuille.portefeuille_manager');
+        $portefeuilles = $portefeuilleManager->loadAllPortefeuille(); // on accède aux service et on récupère les méthodes dans portefeuilleManager
+        
+        $formModal = $this->get('form.factory')->create(new SelectPortefeuilleModalType(), $portefeuilles);        
+        
+        $options2 = $formModal->get('portefeuille')->getConfig()->getOptions();
+        $choices2 = $options2['choice_list']->getChoices();            
+        /***************************************************************/
+       
+        //On récupère toutes les tuples du budget actuel
+        $repository = $this->getDoctrine()->getManager()->getRepository('NIPAProjetBundle:DemandeBudget');
+        $listDemandeBudget = $repository->findAll();  
+        
+        /***************************************************************/
+        
+        // Si soumet le formulaire
+        if ('POST' == $request->getMethod()) {
+            
+           $formModal->submit($request->request->get($form->getName()));            
+           //$formModal->handleRequest($request);
+           //if ($formModal->isValid()) {
+              
+                $em = $this->getDoctrine()->getEntityManager();
+
+                for($i = 0;$i < count($idPortefeuilles); $i++)
+                {
+
+                    $portfeuilleManager = $this->get('nipa_portefeuille.portefeuille_manager');
+                    $portefeuille = $portfeuilleManager->loadPortefeuille(array('referencePortefeuille' => $idPortefeuilles[$i]));
+
+                    $portefeuille->addDemandes($demande);
+
+                    $em->flush();
+                }	
+                
+                $this->get('session')->getFlashBag()->set('success',
+                $this->get('translator')->trans('Demande '.$demande->getreferenceDemande().' ajoutée aux portefeuille(s)')
+                );
+                
+                
+                // On redirige vers la page de modification du portefeuille
+                return new RedirectResponse($this->generateUrl('demande_edit', array(
+                  'reference' => $demande->getReferenceDemande()
+               )));
+            //}
+        }
+
+        return $this->render('NIPAProjetBundle:Demande:demande.html.twig', array('user' => $user, 'form' => $form->createView(), 'formModal' => $formModal->createView(), 'demande' => $demande, 'listDemande' => $listDemande,'choices' => $choices, 'choices2' => $choices2, 'listDemandeBudget' => $listDemandeBudget)); // On passe à Twig l'objet form et notre objet
+    }
+    
+    public function deletePortefeuillesAction(Request $request, $referencePortefeuille, $referenceDemande)
+    {
+         /**********************DROIT SECTION************************/
+        $requestDroit = Request::createFromGlobals();
+        $droit = $requestDroit->query->get('droit');
+               
+        if ($droit == "denied") { // On test si user pour avoir accès à la section 
+            //throw new AccessDeniedException("Section autorisée uniquement pour les administrateurs!");
+            $this->get('session')->getFlashBag()->set('error', "Vous n'avez pas les droits requis pour accéder à cette section!");            
+        }        
+        /***********************************************************/          
+        $request = $this->get('request');         
+        
+        $demande = $this->get('nipa_demande.demande_manager')->loadDemande($referenceDemande);
+
+        /***************DATA TREE*******************/
+        //return array() List ALL Demandes;
+        $listDemande = $this->get('nipa_demande.demande_manager')->loadAllDemande();
+        //On trie la liste des demandes
+        usort($listDemande, function ($a, $b) {
+            return strnatcmp($a->getReferenceDemande(), $b->getReferenceDemande());
+        });         
+                  
+        /************************************/
+        
+        $form = $this->createForm(new DemandeFormType(), $demande);
+         
+        $options = $form->get('portefeuille')->getConfig()->getOptions();
+        $choices = $options['choice_list']->getChoices();  
+        
+        /***************Formulaire select Portefeuilles****************/
+        $portefeuilleManager = $this->get('nipa_portefeuille.portefeuille_manager');
+        $portefeuilles = $portefeuilleManager->loadAllPortefeuille(); // on accède aux service et on récupère les méthodes dans portefeuilleManager
+        
+        $formModal = $this->get('form.factory')->create(new SelectPortefeuilleModalType(), $portefeuilles);        
+        
+        $options2 = $formModal->get('portefeuille')->getConfig()->getOptions();
+        $choices2 = $options2['choice_list']->getChoices();            
+        /***************************************************************/
+       
+        //On récupère toutes les tuples du budget actuel
+        $repository = $this->getDoctrine()->getManager()->getRepository('NIPAProjetBundle:DemandeBudget');
+        $listDemandeBudget = $repository->findAll();  
+        
+        /***************************************************************/
+   
+        $em = $this->getDoctrine()->getEntityManager();
+
+        // On efface un portefeuille d'une demande
+        $portfeuilleManager = $this->get('nipa_portefeuille.portefeuille_manager');
+        $portefeuille = $portfeuilleManager->loadPortefeuille(array('referencePortefeuille' => $referencePortefeuille));
+        
+        $em = $this->getDoctrine()->getManager();
+        
+        $portefeuille->removeDemandes($demande);
+        
+        $em->flush();
+        
+        $this->get('session')->getFlashBag()->add('success','Portefeuille '.$portefeuille->getNom().' ('.$portefeuille->getReferencePortefeuille().') retiré de la Demande '.$demande->getReferenceDemande());
+        
+        // On redirige vers la page de modification du portefeuille
+        return new RedirectResponse($this->generateUrl('demande_edit', array(
+          'reference' => $demande->getReferenceDemande()
+       )));        
+    }
+    
+    /**
+    *  EDIT budget actuel of a Demande
+    * 
+    */
+    public function editBudgetAction($reference)    
+    {
+        
+        /**********************DROIT SECTION************************/
+        $requests = Request::createFromGlobals();
+        $droit = $requests->query->get('droit');
+               
+        if ($droit == "denied") { // On test si user pour avoir accès à la section 
+            //throw new AccessDeniedException("Section autorisée uniquement pour les administrateurs!");
+            $this->get('session')->getFlashBag()->set('error', "Vous n'avez pas les droits requis pour accéder à cette section!");            
+        }        
+        /***********************************************************/        
+        
+        // On vérifie que l'objet existe
+        if(!$demande = $this->get('nipa_demande.demande_manager')->loadDemande($reference)) {
+            throw new NotFoundHttpException(
+                $this->get('translator')->trans('This demande does not exist.')
+            );
+        }
+        
+        $request = $this->get('request');
+        
+        if ($request->isXmlHttpRequest()) {
+            //return new JsonResponse(array('message' => 'You can access this only using Ajax!'), 200);
+                            
+                $data = $request->request->all();
+
+                $ipp= $data["ipp"];
+                $var= $data["date"];
+                $date = str_replace('/', '-', $var);
+                $format = date('Y-m-d', strtotime($date));     
+                $time = new \DateTime($format);
+               
+                $montant= $data["montant"];
+                $commentaire= $data["commentaires"];
+                
+                $entity = new DemandeBudget();
+                $entity->setIPP($ipp);
+                $entity->setDate($time);
+                $entity->setMontant($montant);
+                $entity->setCommentaires($commentaire);
+                $entity->setDemande($demande);
+
+                $em = $this->getDoctrine()->getManager();
+                $em->persist($entity);
+                $em->flush();
+
+                $this->get('session')->getFlashBag()->add('success','Mise à jour budget actuel effectuée');  
+ 
+                return new JsonResponse(array('message' => 'Success!'), 200);
+
+                $response = new JsonResponse(array('message' => 'Error'), 400);
+
+                return $response; 
+        }
+        
+
+    }          
     
 }

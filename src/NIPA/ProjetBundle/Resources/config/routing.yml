@@ -41,3 +41,15 @@ demande_new:
 demande_edit:
     path:     /demande/edit/{reference}
     defaults: { _controller: NIPAProjetBundle:Demande:editDemande }
+
+demande_add_portefeuilles:
+    path: demande/edit/addPortfeuilles/{reference}
+    defaults: { _controller: NIPAProjetBundle:Demande:addPortefeuilles }
+
+demande_delete_portefeuilles:
+    path: demande/edit/{referenceDemande}/deletePortefeuilles/{referencePortefeuille}
+    defaults: { _controller: NIPAProjetBundle:Demande:deletePortefeuilles }
+
+demande_update_budget:
+    path: demande/edit/{reference}/budget/update
+    defaults: { _controller: NIPAProjetBundle:Demande:editBudget }

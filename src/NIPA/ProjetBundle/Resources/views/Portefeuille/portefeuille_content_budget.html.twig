@@ -10,7 +10,6 @@
         table tbody td {
          padding : 5px 2px;
         }   
-        
     </style>
     
     {# Script JS pour reload table #}
@@ -198,105 +197,96 @@
     startView:"year",
     minView:"month",
     language:"fr"
+    });   
+
+
+    $(function() {
+
+        $("#form_ajouter_prev").submit(function(){ 
+            $.ajax({
+                type: 'post',
+                url: "{% if portefeuille.referencePortefeuille %}{{ path('portefeuille_budget_prev',{'reference': portefeuille.referencePortefeuille}) }}{% endif %}",
+                data: $('#form_ajouter_prev').serialize(),
+                success: function(data)
+                {     
+                    //$('#champs-table').DataTable().ajax.reload();
+                    //var table = $('#champs-table').dataTable();
+                    //table.fnReloadAjax();
+                    //$('#champs-table tr:first').after('<tr><td>' + $("#Name").val() + '</td></tr>');
+                    alert("Ajout effectué avec succès! (TEST)");
+                    //var url = document.location.toString();
+                    //if (url.match('#')) {
+                    //  $('.portfeuille a[href=#'+url.split('#')[1]+']').tab('show') ;
+                    //} 
+                    var url = document.location.href;
+                    $(location).attr('href',url+"#budget");                
+                    location.reload();
+                    //var url = $(this).prop('href');
+                    //event.preventDefault();
+                    //$('#resultats_ajouter').html(data);
+                    //$(".loading").hide();
+                    //document.getElementById('#champs-table').location.reload(true);               
+                },
+                error: function(e) {
+                   console.log(e);
+                 }      
+            });
+                return false;
+        });
     });  
-    
-    $('#date_mois').datetimepicker({
-    todayBtn:"true",
-    format:"mm/yy", 
-    autoclose:"true",
-    startView:"year",
-    minView:"year",
-    language:"fr"
-    });      
 
+    $(function() {
 
-$(function() {
-   
-    $("#form_ajouter_prev").submit(function(){ 
-        $.ajax({
-            type: 'post',
-            url: "{% if portefeuille.referencePortefeuille %}{{ path('portefeuille_budget_prev',{'reference': portefeuille.referencePortefeuille}) }}{% endif %}",
-            data: $('#form_ajouter_prev').serialize(),
-            success: function(data)
-            {     
-                //$('#champs-table').DataTable().ajax.reload();
-                //var table = $('#champs-table').dataTable();
-                //table.fnReloadAjax();
-                //$('#champs-table tr:first').after('<tr><td>' + $("#Name").val() + '</td></tr>');
-                alert("Ajout effectué avec succès! (TEST)");
-                //var url = document.location.toString();
-                //if (url.match('#')) {
-                //  $('.portfeuille a[href=#'+url.split('#')[1]+']').tab('show') ;
-                //} 
-                var url = document.location.href;
-                $(location).attr('href',url+"#budget");                
-                location.reload();
-                //var url = $(this).prop('href');
-                //event.preventDefault();
-                //$('#resultats_ajouter').html(data);
-                //$(".loading").hide();
-                //document.getElementById('#champs-table').location.reload(true);               
-            },
-            error: function(e) {
-               console.log(e);
-             }      
+        $("#form_ajouter_cons").submit(function(){ 
+            $.ajax({
+                type: 'post',
+                url: "{% if portefeuille.referencePortefeuille %}{{ path('portefeuille_budget_cons',{'reference': portefeuille.referencePortefeuille}) }}{% endif %}",
+                data: $('#form_ajouter_cons').serialize(),
+                success: function(data)
+                {
+                    alert("Ajout2 effectué avec succès! (TEST)");
+                    var url = document.location.href;
+                    $(location).attr('href',url+"#budget");                 
+                    location.reload();        
+                },
+                error: function(e) {
+                   console.log(e);
+                 }      
+            });
+                return false;
         });
-            return false;
-    });
-});  
+    });  
 
-$(function() {
-   
-    $("#form_ajouter_cons").submit(function(){ 
-        $.ajax({
-            type: 'post',
-            url: "{% if portefeuille.referencePortefeuille %}{{ path('portefeuille_budget_cons',{'reference': portefeuille.referencePortefeuille}) }}{% endif %}",
-            data: $('#form_ajouter_cons').serialize(),
-            success: function(data)
-            {
-                alert("Ajout2 effectué avec succès! (TEST)");
-                var url = document.location.href;
-                $(location).attr('href',url+"#budget");                 
-                location.reload();        
-            },
-            error: function(e) {
-               console.log(e);
-             }      
+
+     $(document).ready(function () {
+        var theHREF;
+
+        $(".confirmModalLink").click(function(e) {
+            e.preventDefault();
+            theHREF = $(this).attr("href");
+            $("#myModalBudget").modal("show");
         });
-            return false;
-    });
-});  
 
+        $("#confirmModalBudgetNo").click(function(e) {
+            $("#myModalBudget").modal("hide");
+        });
 
- $(document).ready(function () {
-    var theHREF;
-
-    $(".confirmModalLink").click(function(e) {
-        e.preventDefault();
-        theHREF = $(this).attr("href");
-        $("#myModalBudget").modal("show");
+        $("#confirmModalBudgetYes").click(function(e) {
+            window.location.href = theHREF;
+        });
     });
 
-    $("#confirmModalBudgetNo").click(function(e) {
-        $("#myModalBudget").modal("hide");
+
+    $('a[id="reset"]').on('click', function(e) {
+      var $tr = $(e.target).closest('tr'),
+          $textAreas = $tr.find('textarea');
+          $textInputs = $tr.find('input');
+
+        $textAreas.val('');
+        $textInputs.val('');
+
+        return false;
     });
-
-    $("#confirmModalBudgetYes").click(function(e) {
-        window.location.href = theHREF;
-    });
-});
-
-
-$('a[id="reset"]').on('click', function(e) {
-  var $tr = $(e.target).closest('tr'),
-      $textAreas = $tr.find('textarea');
-      $textInputs = $tr.find('input');
-
-    $textAreas.val('');
-    $textInputs.val('');
-    
-    return false;
-});
 
     </script>
     
