@@ -154,6 +154,11 @@ class PortefeuilleController extends Controller
         $repository = $this->getDoctrine()->getManager()->getRepository('NIPAProjetBundle:PortefeuilleEnveloppePrev');
         $listPortefeuilleEnveloppePrev = $repository->findByPortefeuille($portefeuille);       
         
+        // On trie les budgets prev dans l'ordre CHRONO
+        $listTriEnveloppePrev = $listPortefeuilleEnveloppePrev;        
+        usort($listTriEnveloppePrev, function($a, $b) {
+          return ($a->getDate() < $b->getDate()) ? -1 : 1;
+        });
         /*************************************************/
           
         $entity2 = new PortefeuilleEnveloppeCons();
@@ -208,7 +213,7 @@ class PortefeuilleController extends Controller
                
                 /*******************CALCUL de l'IPP*********************/           
                 $IPP = $portefeuille->getPortefeuilleEnveloppe()->getNom().' '.$portefeuille->getPortefeuilleAnnee()->getValeur();
-                $portefeuille->setIPP($IPP);
+                $portefeuille->setNom($IPP);
                 /*******************************************************/
                 
                //if ($form->isValid()) { // Si le formulaire est valide
@@ -228,7 +233,7 @@ class PortefeuilleController extends Controller
         }
 
         //return array();
-        return $this->render('NIPAProjetBundle:Portefeuille:portefeuille.html.twig', array('user' => $user, 'form' => $form->createView(),'formPrev' => $formPrev->createView(), 'formCons' => $formCons->createView(), 'portefeuille' => $portefeuille, 'listPortefeuilleEnveloppePrev' => $listPortefeuilleEnveloppePrev,'listPortefeuilleEnveloppeCons' => $listPortefeuilleEnveloppeCons, 'listPortefeuille' => $listPortefeuille, 'listPortefeuilleEnveloppe' => $listPortefeuilleEnveloppe, 'listPortefeuilleAnnee' => $listPortefeuilleAnnee, 'listPortefeuilleStatut' => $listPortefeuilleStatut)); // On passe à Twig l'objet form et notre objet
+        return $this->render('NIPAProjetBundle:Portefeuille:portefeuille.html.twig', array('user' => $user, 'form' => $form->createView(),'formPrev' => $formPrev->createView(), 'formCons' => $formCons->createView(), 'portefeuille' => $portefeuille, 'listPortefeuilleEnveloppePrev' => $listPortefeuilleEnveloppePrev,'listPortefeuilleEnveloppeCons' => $listPortefeuilleEnveloppeCons, 'listPortefeuille' => $listPortefeuille, 'listPortefeuilleEnveloppe' => $listPortefeuilleEnveloppe, 'listPortefeuilleAnnee' => $listPortefeuilleAnnee, 'listPortefeuilleStatut' => $listPortefeuilleStatut, 'listTriEnveloppePrev' => $listTriEnveloppePrev)); // On passe à Twig l'objet form et notre objet
 
     }
     
@@ -307,7 +312,12 @@ class PortefeuilleController extends Controller
         //On récupère tous les enveloppes budgetaire PREV
         $repository = $this->getDoctrine()->getManager()->getRepository('NIPAProjetBundle:PortefeuilleEnveloppePrev');
         $listPortefeuilleEnveloppePrev = $repository->findByPortefeuille($portefeuille);       
-        
+
+        // On trie les budgets prev dans l'ordre CHRONO
+        $listTriEnveloppePrev = $listPortefeuilleEnveloppePrev;        
+        usort($listTriEnveloppePrev, function($a, $b) {
+          return ($a->getDate() < $b->getDate()) ? -1 : 1;
+        });
         /*************************************************/
           
         $entity2 = new PortefeuilleEnveloppeCons();
@@ -331,7 +341,7 @@ class PortefeuilleController extends Controller
             
                 /*******************CALCUL de l'IPP*********************/           
                 $IPP = $portefeuille->getPortefeuilleEnveloppe()->getNom().' '.$portefeuille->getPortefeuilleAnnee()->getValeur();
-                $portefeuille->setIPP($IPP);
+                $portefeuille->setNom($IPP);
                 /*******************************************************/
                         
                 $this->get('nipa_portefeuille.portefeuille_manager')->savePortefeuille($portefeuille); // On utilise notre Manager pour gérer la sauvegarde de l'objet
@@ -348,7 +358,7 @@ class PortefeuilleController extends Controller
         
         }
         //return array();
-        return $this->render('NIPAProjetBundle:Portefeuille:portefeuille.html.twig', array('user' => $user, 'form' => $form->createView(),'formPrev' => $formPrev->createView(), 'formCons' => $formCons->createView(), 'portefeuille' => $portefeuille, 'listPortefeuilleEnveloppePrev' => $listPortefeuilleEnveloppePrev,'listPortefeuilleEnveloppeCons' => $listPortefeuilleEnveloppeCons, 'listPortefeuille' => $listPortefeuille, 'listPortefeuilleEnveloppe' => $listPortefeuilleEnveloppe, 'listPortefeuilleAnnee' => $listPortefeuilleAnnee, 'listPortefeuilleStatut' => $listPortefeuilleStatut)); // On passe à Twig l'objet form et notre objet
+        return $this->render('NIPAProjetBundle:Portefeuille:portefeuille.html.twig', array('user' => $user, 'form' => $form->createView(),'formPrev' => $formPrev->createView(), 'formCons' => $formCons->createView(), 'portefeuille' => $portefeuille, 'listPortefeuilleEnveloppePrev' => $listPortefeuilleEnveloppePrev,'listPortefeuilleEnveloppeCons' => $listPortefeuilleEnveloppeCons, 'listPortefeuille' => $listPortefeuille, 'listPortefeuilleEnveloppe' => $listPortefeuilleEnveloppe, 'listPortefeuilleAnnee' => $listPortefeuilleAnnee, 'listPortefeuilleStatut' => $listPortefeuilleStatut, 'listTriEnveloppePrev' => $listTriEnveloppePrev)); // On passe à Twig l'objet form et notre objet
 
     }  
 
@@ -375,8 +385,8 @@ class PortefeuilleController extends Controller
 
         //On récupère tous les enveloppes budgetaire PREV        
         $repository = $this->getDoctrine()->getManager()->getRepository('NIPAProjetBundle:PortefeuilleEnveloppePrev');
-        $listPortefeuilleEnveloppePrev = $repository->findByPortefeuille($portefeuille); 
-        
+        $listPortefeuilleEnveloppePrev = $repository->findByPortefeuille($portefeuille);           
+
         //On récupère tous les enveloppes budgetaire CONS
         $repository = $this->getDoctrine()->getManager()->getRepository('NIPAProjetBundle:PortefeuilleEnveloppeCons');
         $listPortefeuilleEnveloppeCons = $repository->findByPortefeuille($portefeuille); 
@@ -457,6 +467,11 @@ class PortefeuilleController extends Controller
         $repository = $this->getDoctrine()->getManager()->getRepository('NIPAProjetBundle:PortefeuilleEnveloppePrev');
         $listPortefeuilleEnveloppePrev = $repository->findByPortefeuille($portefeuille);       
         
+        // On trie les budgets prev dans l'ordre CHRONO
+        $listTriEnveloppePrev = $listPortefeuilleEnveloppePrev;        
+        usort($listTriEnveloppePrev, function($a, $b) {
+          return ($a->getDate() < $b->getDate()) ? -1 : 1;
+        });
         /*************************************************/
           
         $entity2 = new PortefeuilleEnveloppeCons();
@@ -535,7 +550,7 @@ class PortefeuilleController extends Controller
         }
         
         //return array();
-        return $this->render('NIPAProjetBundle:Portefeuille:portefeuille.html.twig', array('user' => $user, 'form' => $form->createView(),'formPrev' => $formPrev->createView(), 'formCons' => $formCons->createView(), 'portefeuille' => $portefeuille, 'listPortefeuilleEnveloppePrev' => $listPortefeuilleEnveloppePrev,'listPortefeuilleEnveloppeCons' => $listPortefeuilleEnveloppeCons, 'listPortefeuille' => $listPortefeuille, 'listPortefeuilleEnveloppe' => $listPortefeuilleEnveloppe, 'listPortefeuilleAnnee' => $listPortefeuilleAnnee, 'listPortefeuilleStatut' => $listPortefeuilleStatut)); // On passe à Twig l'objet form et notre objet
+        return $this->render('NIPAProjetBundle:Portefeuille:portefeuille.html.twig', array('user' => $user, 'form' => $form->createView(),'formPrev' => $formPrev->createView(), 'formCons' => $formCons->createView(), 'portefeuille' => $portefeuille, 'listPortefeuilleEnveloppePrev' => $listPortefeuilleEnveloppePrev,'listPortefeuilleEnveloppeCons' => $listPortefeuilleEnveloppeCons, 'listPortefeuille' => $listPortefeuille, 'listPortefeuilleEnveloppe' => $listPortefeuilleEnveloppe, 'listPortefeuilleAnnee' => $listPortefeuilleAnnee, 'listPortefeuilleStatut' => $listPortefeuilleStatut, 'listTriEnveloppePrev' => $listTriEnveloppePrev)); // On passe à Twig l'objet form et notre objet
 
     }      
 
@@ -596,7 +611,12 @@ class PortefeuilleController extends Controller
         //On récupère tous les enveloppes budgetaire PREV
         $repository = $this->getDoctrine()->getManager()->getRepository('NIPAProjetBundle:PortefeuilleEnveloppePrev');
         $listPortefeuilleEnveloppePrev = $repository->findByPortefeuille($portefeuille);       
-        
+
+        // On trie les budgets prev dans l'ordre CHRONO
+        $listTriEnveloppePrev = $listPortefeuilleEnveloppePrev;        
+        usort($listTriEnveloppePrev, function($a, $b) {
+          return ($a->getDate() < $b->getDate()) ? -1 : 1;
+        });
         /*************************************************/
           
         $entity2 = new PortefeuilleEnveloppeCons();
@@ -689,7 +709,7 @@ class PortefeuilleController extends Controller
         }
         
         //return array();
-        return $this->render('NIPAProjetBundle:Portefeuille:portefeuille.html.twig', array('user' => $user, 'form' => $form->createView(),'formPrev' => $formPrev->createView(), 'formCons' => $formCons->createView(), 'portefeuille' => $portefeuille, 'listPortefeuilleEnveloppePrev' => $listPortefeuilleEnveloppePrev,'listPortefeuilleEnveloppeCons' => $listPortefeuilleEnveloppeCons, 'listPortefeuille' => $listPortefeuille, 'listPortefeuilleEnveloppe' => $listPortefeuilleEnveloppe, 'listPortefeuilleAnnee' => $listPortefeuilleAnnee, 'listPortefeuilleStatut' => $listPortefeuilleStatut)); // On passe à Twig l'objet form et notre objet
+        return $this->render('NIPAProjetBundle:Portefeuille:portefeuille.html.twig', array('user' => $user, 'form' => $form->createView(),'formPrev' => $formPrev->createView(), 'formCons' => $formCons->createView(), 'portefeuille' => $portefeuille, 'listPortefeuilleEnveloppePrev' => $listPortefeuilleEnveloppePrev,'listPortefeuilleEnveloppeCons' => $listPortefeuilleEnveloppeCons, 'listPortefeuille' => $listPortefeuille, 'listPortefeuilleEnveloppe' => $listPortefeuilleEnveloppe, 'listPortefeuilleAnnee' => $listPortefeuilleAnnee, 'listPortefeuilleStatut' => $listPortefeuilleStatut, 'listTriEnveloppePrev' => $listTriEnveloppePrev)); // On passe à Twig l'objet form et notre objet
 
     }      
 

@@ -40,7 +40,7 @@
                             <td><a data-toggle="tooltip" title="Modifier groupe" href="{{ path('groupe_edit', {'groupeId': groupe.id}) }}">{{ groupe.nom }}</a></td>
                             <td>{{ groupe.getUtilisateursToArray()|length }}</td>
                             <td>
-                                {% if groupe.getNom() != "Manager Application" %}
+                                {% if groupe.getNom() != "MANAGER APPLICATION" %}
                                     <a href="{{ path('administration_groupe_delete', {'groupeId': groupe.id}) }}" class="confirmModalLinkGroupe"><span class="glyphicon glyphicon-remove icon-remove"></span></a>                                                
                                 {% else %}
                                     <span class="glyphicon glyphicon-lock icon-archive"></span>                                                                                

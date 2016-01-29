@@ -31,7 +31,7 @@
                                 <tr>
                                     <th class="text-center">Référence</th>
                                     <th class="text-center">Nom</th>
-                                    <th class="text-center">Enveloppe</th>
+                                    <th class="text-center">Année</th>
                                     <th class="text-center">Statut Portefeuille</th>
                                     <th class="text-center">Supprimer</th>
                                 </tr>
@@ -41,10 +41,11 @@
                                 <tr>
                                     <td class="text-center">{{ portefeuille.getReferencePortefeuille() }}</td>
                                     <td class="text-center">{{ portefeuille.getNom() }}</td>
-                                    <td class="text-center">{{ portefeuille.getIPP() }}</td>
+                                    <td class="text-center">{{ portefeuille.getPortefeuilleAnnee().getValeur() }}</td>
                                     <td class="text-center">{{ portefeuille.getPortefeuilleStatut().getNom() }}</td>
                                     <td>
-                                       {% if demande.getPortefeuillesToArray()[demande.getPortefeuillesToArray()|length-1] == portefeuille  %} 
+                                       {# On bloque la suppression du postefeuille de BASE (le premier affilié à la Demande)#}
+                                       {% if demande.getReferenceDemande()|striptags|slice(2, 2)|raw == portefeuille.getReferencePortefeuille()|striptags|slice(3, 2)|raw  %} 
                                            <a href="#" ><span class="glyphicon glyphicon-lock" style="color:yellow;"></span></a>                               
                                        {% else %}    
                                            <a href="{{ path('demande_delete_portefeuilles', {'referencePortefeuille': portefeuille.referencePortefeuille, 'referenceDemande': demande.referenceDemande}) }}" class="confirmModalLink"><span class="glyphicon glyphicon-remove" style="color:red;"></span></a>                               
@@ -120,10 +121,10 @@
                                     </thead>
                                     <tbody>
                                         <tr>
-                                            <td>{{ form_widget(form.TTDSouhaite) }}</td>
-                                            <td>{{ form_widget(form.TTDSouhaiteRevise) }}</td>
-                                            <td>{{ form_widget(form.TTDProjets) }}</td>
-                                            <td>{{ form_widget(form.TTDProjetsRevises) }}</td>
+                                            <td>{{ form_widget(form.TTDSouhaite, { 'attr': {'class': 'TTDSouhaite textcenter'} }) }}</td>
+                                            <td>{{ form_widget(form.TTDSouhaiteRevise, { 'attr': {'class': 'TTDSouhaiteRevise textcenter'} }) }}</td>
+                                            <td>{{ form_widget(form.TTDProjets, { 'attr': {'class': 'TTDProjets textcenter'} }) }}</td>
+                                            <td>{{ form_widget(form.TTDProjetsRevises, { 'attr': {'class': 'TTDProjetsRevises textcenter'} }) }}</td>
                                         </tr>   
                                     </tbody>
                                 </table>
@@ -143,13 +144,21 @@
                                 <table class="table table-hover" id="champs-table GDD">
                                     <thead>
                                         <tr>
-                                            <th class="text-center">N° Lotissement</th>
+                                            <th class="text-center">N°</th>
                                             <th class="text-center">Référence</th>
+                                            <th class="text-center">Titre</th>
+                                            <th class="text-center">Enveloppe Budgétaire</th>
+                                            <th class="text-center">Budget Projet Actualisé</th>
+                                            <th class="text-center">TTD</th>
                                             <th class="text-center">Phase Projet</th>
                                         </tr>
                                     </thead>
                                     <tbody>
                                         <tr>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
                                             <td></td>
                                             <td></td>
                                             <td></td>
@@ -172,17 +181,14 @@
 
         <br>  
         <div class="pull-right">
-            {% if portefeuille.referencePortefeuille is defined %}                
-                <a href="{{ path('portefeuille_delete', {'reference': portefeuille.referencePortefeuille}) }}" class="confirmModalLinkPortefeuille btn btn-danger"><span class="glyphicon glyphicon-trash"></span> Supprimer </a>                                                
-            {% endif %}
             <button class="btn btn-success" type="submit"><span class='glyphicon glyphicon-check'></span> Valider</button>           
         </div> 
             <p>* Champs obligatoire</p>  
             
     </form> 
     
-    
-     <!-- MODAL AJOUT PORTEFEUILLE DEMANDE -->
+    {% if demande.referenceDemande %}       
+    <!-- MODAL AJOUT PORTEFEUILLE DEMANDE -->
     <div id="ModalAddPortefeuilles" class="modal fade in">
         <div class="modal-dialog"  style="width: 700px;">
             <div class="modal-content">
@@ -191,7 +197,7 @@
                     <h3 id="myModalLabel">Ajouter Portefeuille(s) </h3>
                 </div>
                 
-                <form class="form-horizontal well" data-async data-target="#ModalAddPortefeuilles" action="{% if demande.referenceDemande %}{{ path('demande_add_portefeuilles', {'reference':demande.referenceDemande}) }}{% endif %}" {{ form_enctype(formModal) }} method="POST">                       
+                <form class="form-horizontal well" data-async data-target="#ModalAddPortefeuilles" action="{{ path('demande_add_portefeuilles', {'reference':demande.referenceDemande}) }} {{ form_enctype(formModal) }}"  method="POST">                       
                     <div class="modal-body">
 
                         <div class="container">
@@ -203,7 +209,7 @@
                                                 <th></th>
                                                 <th>Référence</th>
                                                 <th>Nom</th>
-                                                <th>Enveloppe</th>
+                                                <th>Année</th>
                                                 <th>Statut</th>
                                             </tr>
                                         </thead>
@@ -211,34 +217,42 @@
                                             {% set isPresent = 0 %}
                                             {% for child in formModal.portefeuille %}
                                                 {% set index = child.vars.value %}
-
-                                                {# On liste juste les portefeuilles non affiliés encore à la demande#}
-                                                {% if demande.getPortefeuillesToArray() is not empty and choices2[index] not in demande.getPortefeuillesToArray() %}  
-                                                    {# On affiche que les portefeuilles ayant un IPP différent #}
-                                                    {% if choices2[index].getPortefeuilleAnnee().getValeur() != demande.getPortefeuillesToArray()[demande.getPortefeuillesToArray()|length-1].getPortefeuilleAnnee().getValeur() %} 
-                                                        <tr>
-                                                          {# <td>{{ form_widget(child) }}</td> #}
-                                                          <td><input type="checkbox"  name="idPortefeuilles[]" value="{{choices2[index].referencePortefeuille}}"></input></td>
-                                                          <td>{{ choices2[index].referencePortefeuille }}</td>
-                                                          <td>{{ choices2[index].nom }}</td>
-                                                          <td>{{ choices2[index].IPP }}</td>
-                                                          <td>{{ choices2[index].portefeuilleStatut.nom}}</td>                                                
-                                                        </tr>
+                                                {% if demande.getPortefeuillesToArray() is not empty %}
+                                                    {# On liste juste les portefeuilles non affiliés encore à la demande#}
+                                                    {%if choices2[index] not in demande.getPortefeuillesToArray() %}  
+                                                        {# On affiche que les portefeuilles ayant un IPP différent #}
+                                                        {% if choices2[index].getPortefeuilleAnnee() not in demande.getPortefeuillesToArray() %} 
+                                                                <tr>
+                                                                  {# <td>{{ form_widget(child) }}</td> #}
+                                                                  <td><input type="radio"  name="idPortefeuilles[]" value="{{choices2[index].referencePortefeuille}}"></input></td>
+                                                                  <td>{{ choices2[index].referencePortefeuille }}</td>
+                                                                  <td>{{ choices2[index].nom }}</td>
+                                                                  <td>{{ choices2[index].getPortefeuilleAnnee().getValeur() }}</td>
+                                                                  <td>{{ choices2[index].portefeuilleStatut.nom}}</td>                                                
+                                                                </tr>
+                                                        {% else %}
+                                                            {% set isPresent = isPresent + 1 %}
+                                                        {% endif %}
                                                     {% else %}
                                                         {% set isPresent = isPresent + 1 %}
                                                     {% endif %}
-                                                {% else %}
-                                                    {% set isPresent = isPresent + 1 %}
-                                                {% endif %}
-
-                                                {# Si tous les portefeuilles sont déjà dans la demande#}
-                                                {% if isPresent ==  formModal.portefeuille|length%}  
-                                                    <p>Aucun Portefeuille(s) à ajouter</p>
-                                                {% endif %}
-
+                                                    {# Si tous les portefeuilles sont déjà dans la demande#}
+                                                    {% if isPresent ==  formModal.portefeuille|length%}  
+                                                        <p>Aucun Portefeuille(s) à ajouter</p>
+                                                    {% endif %}
+                                                {%else %}
+                                                <tr>
+                                                  {# <td>{{ form_widget(child) }}</td> #}
+                                                  <td><input type="checkbox"  name="idPortefeuilles[]" value="{{choices2[index].referencePortefeuille}}"></input></td>
+                                                  <td>{{ choices2[index].referencePortefeuille }}</td>
+                                                  <td>{{ choices2[index].nom }}</td>
+                                                  <td>{{ choices2[index].getPortefeuilleAnnee().getValeur() }}</td>
+                                                  <td>{{ choices2[index].portefeuilleStatut.nom}}</td>                                                
+                                                </tr>                                                {% endif %}
                                             {% else %}
                                                 <p>Aucun Portefeuille(s)</p>
                                             {% endfor %}
+
                                         </tbody>
                                     </table>   
                                 </div>
@@ -256,7 +270,8 @@
             </div>
         </div>
     </div>    
-
+    {% endif %}
+        
     <!-- MODAL DELETE -->
     <div id="myModal" class="modal fade in">
         <div class="modal-dialog">
@@ -280,8 +295,44 @@
                     
      <script>
 
-   
-        $(document).ready(function() {
+    $('.TTDSouhaite').datetimepicker({
+    todayBtn:"true",
+    format:"dd/mm/yyyy", 
+    autoclose:"true",
+    startView:"year",
+    minView:"month",
+    language:"fr"
+    });  
+
+    $('.TTDSouhaiteRevise').datetimepicker({
+    todayBtn:"true",
+    format:"dd/mm/yyyy", 
+    autoclose:"true",
+    startView:"year",
+    minView:"month",
+    language:"fr"
+    });  
+    
+    $('.TTDProjets').datetimepicker({
+    todayBtn:"true",
+    format:"dd/mm/yyyy", 
+    autoclose:"true",
+    startView:"year",
+    minView:"month",
+    language:"fr"
+    });  
+
+    $('.TTDProjetsRevises').datetimepicker({
+    todayBtn:"true",
+    format:"dd/mm/yyyy", 
+    autoclose:"true",
+    startView:"year",
+    minView:"month",
+    language:"fr"
+    });  
+    
+    
+    $(document).ready(function() {
             $('#portefeuilles-table-panel').DataTable({
                 "order": [[ 1, "asc" ]]
             } );

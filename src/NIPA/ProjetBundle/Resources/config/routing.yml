@@ -53,3 +53,15 @@ demande_delete_portefeuilles:
 demande_update_budget:
     path: demande/edit/{reference}/budget/update
     defaults: { _controller: NIPAProjetBundle:Demande:editBudget }
+
+demande_delete_budget:
+    path: demande/edit/{reference}/budget/delete
+    defaults: { _controller: NIPAProjetBundle:Demande:deleteBudget }
+
+demande_add_instance:
+    path: demande/edit/{reference}/instance/add
+    defaults: { _controller: NIPAProjetBundle:Demande:addInstance }
+
+demande_delete_instance:
+    path: demande/edit/{reference}/instance/delete
+    defaults: { _controller: NIPAProjetBundle:Demande:deleteInstance }

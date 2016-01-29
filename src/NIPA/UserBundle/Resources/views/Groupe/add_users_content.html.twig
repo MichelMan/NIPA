@@ -15,7 +15,7 @@
         <div class="panel panel-primary">
             <div class="panel-heading">
                 <h3 class="panel-title">
-                    Utilisateurs du groupe {{ groupe.Nom }} {% if groupe.Nom == "Manager Application" %} (2 utilisateurs au minimum)  {% endif %}
+                    Utilisateurs du groupe {{ groupe.Nom }} {% if groupe.Nom == "MANAGER APPLICATION" %} (2 utilisateurs au minimum)  {% endif %}
                 </h3>
                 <div class="pull-right">
                     <span class="clickable filter" data-toggle="tooltip" title="Filtre" data-container="body">
@@ -43,7 +43,7 @@
                         <td>{{ user.getNom() }}</td>
                         <td>{{ user.getPrenom() }}</td>
                         <td>
-                            {% if groupe.Nom == "Manager Application" and groupe.getUtilisateursToArray()|length <= 2  %} 
+                            {% if groupe.Nom == "MANAGER APPLICATION" and groupe.getUtilisateursToArray()|length <= 2  %} 
                                 <a href="#" class="confirmModalLinkError"><span class="glyphicon glyphicon-remove icon-remove"></span></a>                               
                             {% else %}    
                                 <a href="{{ path('groupe_delete_users', {'identifiant': user.identifiant, 'groupeId': groupe.id}) }}" class="confirmModalLink"><span class="glyphicon glyphicon-remove icon-remove"></span></a>                               
@@ -203,7 +203,38 @@
                 "order": [[ 1, "asc" ]]
             } );
         } );
-        
+      
+    /*
+    $(document).ready(function() {
+        var selected = [];
+
+        $("#users-table-panel").DataTable({
+            "processing": true,
+            "serverSide": true,
+            "order": [[ 1, "asc" ]],
+            "ajax": "/s2/project/Symfony/web/DataTables/examples/server_side/scripts/ids-arrays.php",
+            "rowCallback": function( row, data ) {
+                if ( $.inArray(data.DT_RowId, selected) !== -1 ) {
+                    $(row).addClass('selected');
+                }
+            }
+        });
+
+        $('#users-table-panel').on('click', 'tr', function () {
+            var id = this.id;
+            var index = $.inArray(id, selected);
+
+            if ( index === -1 ) {
+                selected.push( id );
+            } else {
+                selected.splice( index, 1 );
+            }
+
+            $(this).toggleClass('selected');
+        } );
+    
+    } ); */
+    
         $(document).ready(function () {
             var theHREF;
 

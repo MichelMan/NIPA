@@ -1,0 +1,165 @@
+{% trans_default_domain 'NIPAProjetBundle' %}
+		
+{% block body %}
+    
+    <style>
+        #table_texte,#textinput, .textcenter{
+        text-align:center;
+        }       
+    </style>
+    
+    <h4 class=""><i class="fa fa-users fa-fw"></i> {{ 'Instances '|trans }} </h4>        
+        
+        <div class="row col-md-13">
+
+            <!-- PANEL -->          
+            <div class="panel panel-danger">
+                <div class="panel-heading">
+                    <h3 class="panel-title">  
+                        Informations sur les instances passées
+                    </h3>
+                    <div class="pull-right">              
+                        <span data-toggle="collapse" data-target="#collapseInstances" class="clickable collapsed" title="Afficher détails" data-container="body">
+                            <i class="glyphicon glyphicon-plus"></i>
+                        </span>
+                    </div>                
+                </div>   
+            <div id="collapseInstances" class="panel-collapse collapse">                                
+                <div class="panel-body">
+
+                    <table class="table table-hover" id="champs-table-resume-instance">
+                        <thead>
+                            <tr>
+                                <th>Instance</th>
+                                <th>Date prév.</th>
+                                <th>Date rév.</th>
+                                <th>Validation effective</th>
+                                <th>Remarques</th>
+                                <th>Statut</th>
+                                <th>Action</th>     
+                            </tr>
+                        </thead>
+                        <tbody>
+                        {% if demande.referenceDemande %} 
+                            {% for instance in listDemandeInstance %}
+                                <tr>
+                                    <td><h5><strong>{{ instance.getInstance().getNom() }}</strong></h5></td>
+                                    <td><h5>{{ instance.datePrev }}</h5></td>
+                                    <td><h5>{{ instance.dateRev }}</h5></td>
+                                    {% if instance.validationEffective == true %}
+                                        <td><h5>OK</h5></td>
+                                    {% else %}
+                                        <td><h5>NOK</h5></td>
+                                    {% endif %}
+                                    <td><h5>{{ instance.remarques }}</h5></td>
+                                    <td><h5>{{ instance.getStatut().getNom() }}</h5></td>
+                                    <td id="delete-instance"><a id="{{ instance.id }}" class="btn btn-danger confirmModalBudget"><i class="glyphicon glyphicon-remove"></i> </a></td>                    
+                                </tr>
+                            {% endfor %}                        
+                        {% endif %}
+                        </tbody>
+                    </table>
+
+                </div> 
+            </div>           
+                {% if demande.referenceDemande %} 
+                <form action="" method="post" {{ form_enctype(formInstance) }} id="form_ajouter_instance" >
+                    <table class="table" id="champs-table-budget-instance">
+                        <thead>
+                            <tr>
+                                <th class="text-center">Instance</th>
+                                <th class="text-center">Date prév.</th>
+                                <th class="text-center">Date rév.</th>
+                                <th class="text-center">Validation effective</th>
+                                <th class="text-center">Remarques</th>
+                                <th class="text-center">Statut</th>
+                                <th class="text-center">Ajouter Instance</th>                    
+                            </tr>
+                        </thead>                   
+                        <tbody>
+                            <tr>
+                                <td>{{ form_widget(formInstance.instance) }}</td>
+                                <td>{{ form_widget(formInstance.datePrev, { 'attr': {'class': 'datePrev textcenter'} }) }}</td>
+                                <td>{{ form_widget(formInstance.dateRev, { 'attr': {'class': 'dateRev textcenter'} }) }}</td>
+                                <td class="text-center">{{ form_widget(formInstance.validationEffective) }}</td>
+                                <td>{{ form_widget(formInstance.remarques) }}</td>
+                                <td>{{ form_widget(formInstance.statut) }}</td>
+                                <td class="text-center"><button type="submit" class="btn btn-success" id="add-instance"><i class="glyphicon glyphicon-plus"></i></button></td>
+                            </tr>   
+                            {# Pour l'erreur: "Le jeton CSRF est invalide" #}
+                            {{ form_widget(form._token) }}        
+                            {{form_errors(form)}}
+                        </tbody>   
+                    </table>
+                </form>    
+                {% endif %}
+            </div>
+        </div>
+   
+            
+    <script>    
+    
+    $('.datePrev').datetimepicker({
+    todayBtn:"true",
+    format:"dd/mm/yyyy", 
+    autoclose:"true",
+    startView:"year",
+    minView:"month",
+    language:"fr"
+    });  
+
+    $('.dateRev').datetimepicker({
+    todayBtn:"true",
+    format:"dd/mm/yyyy", 
+    autoclose:"true",
+    startView:"year",
+    minView:"month",
+    language:"fr"
+    });  
+    
+        $(function() {
+
+        $("#form_ajouter_instance").submit(function(){ 
+        
+            $.ajax({
+                type: 'post',
+                url: "{% if demande.referenceDemande %}{{ path('demande_add_instance',{'reference': demande.referenceDemande}) }}{% endif %}",
+                data: $('#form_ajouter_instance').serialize(),
+                success: function()
+                {
+                    alert("Ajout5 effectué avec succès! (TEST)");
+                    var url = document.location.href;
+                    $(location).attr('href',url+"#instances");                 
+                    location.reload();        
+                },
+                error: function(e) {
+                   console.log(e);
+                 }      
+            });
+                return false;
+        }); 
+    });  
+    
+
+    $('#champs-table-resume-instance tr #delete-instance').on("click", function()
+    {
+        var id = $("a", this).attr("id");
+
+        //if(confirm("Etes-vous sûr de vouloir supprimer l'item?")==true)
+        //{    
+            $(this).parent().remove();      
+
+            $.post("{% if demande.referenceDemande %}{{ path('demande_delete_instance',{'reference': demande.referenceDemande}) }}{% endif %}", {id: id})
+              .done(function(data) {
+                alert("Suppression effectuée avec succès!");
+                var url = document.location.href;
+                $(location).attr('href',url+"#instances");                
+                location.reload();
+            });
+        //}
+
+    });
+
+    </script>
+    
+{% endblock %}        

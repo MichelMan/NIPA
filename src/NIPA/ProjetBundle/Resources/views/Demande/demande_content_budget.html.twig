@@ -8,89 +8,127 @@
         }       
     </style>
     
-    <div class="row col-md-13">
-         
-        <!-- PANEL -->          
-        <div class="panel panel-success">
-            <div class="panel-heading">            
-                <h3 class="panel-title">Budget actuel: k€ </h3>
-                <div class="pull-right">              
-                    <span data-toggle="collapse" data-target="#collapseBudget" class="clickable collapsed" title="Afficher détails" data-container="body">
-                        <i class="glyphicon glyphicon-plus"></i>
-                    </span>
-                </div>                
-            </div>   
-        <div id="collapseBudget" class="panel-collapse collapse">                                
-            <div class="panel-body">
-                
-                <table class="table table-hover" id="champs-table">
-                    <thead>
-                        <tr>
-                            <th class="text-center">ID</th>
-                            <th class="text-center">Révisé le</th>
-                            <th class="text-center">Montant (en k€)</th>
-                            <th class="text-center">Commentaires</th>
-                            <th class="text-center">Action</th>     
-                        </tr>
-                    </thead>
-                    <tbody>
-                    {% if demande.referenceDemande %}                         
-                        {% for budget in listDemandeBudget %}
-                            <tr>
-                                <td><h5><strong>{{ budget.IPP }}</strong></h5></td>
-                                <td><h5>{{ budget.date|date('d/m/Y') }}</h5></td>
-                                <td><h5>{{ budget.montant|number_format(2, ',', ' ') }}</h5></td>
-                                <td><h5>{{ budget.commentaires }}</h5></td>
-                                <td class="text-center"><a href=""  class="btn btn-danger confirmModalLink"><i class="glyphicon glyphicon-remove"></i> </a></td>                    
-                            </tr>
-                        {% endfor %}   
-                    {% endif %}    
-                    </tbody>
-                </table>
-                
-            </div> 
-        </div>           
-            {% if demande.referenceDemande %} 
-                <table class="table" id="champs-table-budget-add">
-                    <thead>
-                        <tr>
-                            <th class="text-center">ID</th>
-                            <th class="text-center">Révisé le</th>
-                            <th class="text-center">Montant (en k€)</th>
-                            <th class="text-center">Commentaires</th>
-                            <th class="text-center">Action</th>                    
-                        </tr>
-                    </thead>                   
-                    <tbody>
-                        <tr>
-                            <td>
-                                <center>
-                                    <select class="form-control" id="IPP" name="IPP">
-                                    {% for portefeuille in demande.getPortefeuillesToArray() %}
-                                            <option value="{{portefeuille.IPP}}">{{ portefeuille.IPP }}</option>
-                                    {% endfor %}
-                                    </select>
-                                 </center>
-                            </td>                             
-                             <td>
-                                <!-- DatetimePiker --> 
-                                <div class="container"> 
-                                        <div class='col-sm-12'>
-                                            <input type='text' class="form-control input-md date textinput" id='date' name="date" required="true" />
-                                        </div>
-                                </div>                         
-                             </td>
-                             <td><input type="number" min="0" step="0.01" data-number-to-fixed="2" data-number-stepfactor="100" id="montant" placeholder="Montant" class="form-control input-md textinput currency" name="montant" required="true"></td>
-                             <td><textarea class="form-control input-md" rows="1" id="comment" placeholder="..." name="comment"></textarea></td>                            
-                             <td class="text-center"><button type="submit" class="btn btn-success" id="add-budget"><i class="glyphicon glyphicon-check"></i></button></td>
-                         </tr>   
-                    </tbody>   
-                </table>
-            {% endif %}
-        </div>
-    </div>
+    <h4 class=""><span class='glyphicon glyphicon-usd'></span> {{ 'Budget actuel '|trans }} </h4>        
         
-         
+    <div class="container">                   
+
+        <div class="row col-md-13">
+
+            <!-- PANEL -->          
+            <div class="panel panel-danger">
+                <div class="panel-heading">
+                    <h3 class="panel-title">  
+                        {% if demande.referenceDemande %} 
+                            {% for portefeuille in demande.getPortefeuillesToArray() %}
+                                {% set counter = 0 %}
+                                {% for budget in listDemandeBudget %}
+                                    {% if budget.IPP == portefeuille.getPortefeuilleAnnee().getValeur() %}
+                                        {% set counter = counter + budget.montant %}
+                                    {% endif %}
+                                {% endfor %} 
+                                <strong>{{ portefeuille.getPortefeuilleAnnee().getValeur() }}</strong> <span class="glyphicon glyphicon-arrow-right"></span> {{ counter|number_format(2, ',', ' ') }} k€ /
+                            {% endfor %} 
+                        {% endif %} 
+                    </h3>
+                    <div class="pull-right">              
+                        <span data-toggle="collapse" data-target="#collapseBudget" class="clickable collapsed" title="Afficher détails" data-container="body">
+                            <i class="glyphicon glyphicon-plus"></i>
+                        </span>
+                    </div>                
+                </div>   
+            <div id="collapseBudget" class="panel-collapse collapse">                                
+                <div class="panel-body">
+
+                    <table class="table table-hover" id="champs-table-resume-budget">
+                        <thead>
+                            <tr>
+                                <th>Année</th>
+                                <th>Révisé le</th>
+                                <th>Montant (en k€)</th>
+                                <th>Commentaires</th>
+                                <th>Action</th>     
+                            </tr>
+                        </thead>
+                        <tbody>
+                        {% if demande.referenceDemande %}                         
+                            {% for budget in listDemandeBudget %}
+                                <tr>
+                                    <td><h5><strong>{{ budget.IPP }}</strong></h5></td>
+                                    <td><h5>{{ budget.date|date('d/m/Y') }}</h5></td>
+                                    <td><h5>{{ budget.montant|number_format(2, ',', ' ') }}</h5></td>
+                                    <td><h5>{{ budget.commentaires }}</h5></td>
+                                    <td id="delete-budget"><a id="{{ budget.id }}" class="btn btn-danger confirmModalBudget"><i class="glyphicon glyphicon-remove"></i> </a></td>                    
+                                </tr>
+                            {% endfor %}   
+                        {% endif %}    
+                        </tbody>
+                    </table>
+
+                </div> 
+            </div>           
+                {% if demande.referenceDemande %} 
+                    <table class="table" id="champs-table-budget-add">
+                        <thead>
+                            <tr>
+                                <th class="text-center">Année</th>
+                                <th class="text-center">Révisé le</th>
+                                <th class="text-center">Montant (en k€)</th>
+                                <th class="text-center">Commentaires</th>
+                                <th class="text-center">Action</th>                    
+                            </tr>
+                        </thead>                   
+                        <tbody>
+                            <tr>
+                                <td>
+                                    <center>
+                                        <select class="form-control" id="IPP" name="IPP">
+                                        {% for portefeuille in demande.getPortefeuillesToArray() %}
+                                                <option value="{{portefeuille.getPortefeuilleAnnee().getValeur()}}">{{ portefeuille.getPortefeuilleAnnee().getValeur() }}</option>
+                                        {% endfor %}
+                                        </select>
+                                     </center>
+                                </td>                             
+                                 <td>
+                                    <!-- DatetimePiker --> 
+                                    <div class="container"> 
+                                            <div class='col-sm-12'>
+                                                <input type='text' class="form-control input-md date textinput" id='date' name="date" required="true" />
+                                            </div>
+                                    </div>                         
+                                 </td>
+                                 <td><input type="number" min="0" step="0.01" data-number-to-fixed="2" data-number-stepfactor="100" id="montant" placeholder="Montant" class="form-control input-md textinput currency" name="montant" required="true"></td>
+                                 <td><textarea class="form-control input-md" rows="1" id="comment" placeholder="..." name="comment"></textarea></td>                            
+                                 <td class="text-center"><button type="submit" class="btn btn-success" id="add-budget"><i class="glyphicon glyphicon-check"></i></button></td>
+                             </tr>   
+                        </tbody>   
+                    </table>
+                {% endif %}
+            </div>
+        </div>
+    </div>    
+
+            
+    <!-- MODAL DELETE -->
+    <div id="myModalBudget" class="modal fade in">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                    <h3 id="myModalLabel">Confirmation</h3>
+                </div>
+                
+                <div class="modal-body">
+                    <p class="error-text">Etes vous sûr de vouloir supprimer?</p>
+                </div>
+
+                <div class="modal-footer">
+                    <a href="#" class="btn btn-warning" id="confirmModalBudgetNo">Annuler</a>
+                    <a href="#" class="btn btn-danger" id="confirmModalBudgetYes">Supprimer</a>                  
+                </div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal-dalog -->
+    </div><!-- /.modal -->               
+            
     <script>    
     
     $('#date').datetimepicker({
@@ -116,28 +154,75 @@
             data: {ipp: ipp, date: date, montant: montant, commentaires: commentaires},
             success: function()
             {     
-                //$('#champs-table').DataTable().ajax.reload();
-                //var table = $('#champs-table').dataTable();
-                //table.fnReloadAjax();
-                //$('#champs-table tr:first').after('<tr><td>' + $("#Name").val() + '</td></tr>');
                 alert("Ajout effectué avec succès! (TEST)");
-                //var url = document.location.toString();
-                //if (url.match('#')) {
-                //  $('.portfeuille a[href=#'+url.split('#')[1]+']').tab('show') ;
-                //} 
+
                 var url = document.location.href;
                 $(location).attr('href',url+"#budget");                
                 location.reload();
-                //var url = $(this).prop('href');
-                //event.preventDefault();
-                //$('#resultats_ajouter').html(data);
-                //$(".loading").hide();
-                //document.getElementById('#champs-table').location.reload(true);               
             },
             error: function(e) {
                console.log(e);
              }      
         });       
+    });
+
+    /*
+    $(document).ready(function() {
+        $('#portefeuilles-table-panel').DataTable({
+            "order": [[ 1, "asc" ]]
+        } );
+    } );
+
+    $(document).ready(function () {
+        var theHREF;
+
+        $(".confirmModalBudget").click(function(e) {
+            e.preventDefault();
+            theHREF = $(this).attr("href");
+            $("#myModalBudget").modal("show");
+        });
+
+        $("#confirmModalBudgetNo").click(function(e) {
+            $("#myModalBudget").modal("hide");
+        });
+
+        $("#confirmModalBudgetYes").click(function(e) {
+            $("#myModalBudget").modal("hide");
+
+            //var IPP = $("#champs-table-resume td #delete-budget a").attr("id");
+            //console.log(IPP);
+        
+            //var date = $("#champs-table-resume tr .date").val();
+            //var montant = $("#champs-table-resume tr .montant").val();
+ 
+            //$(this).parent().remove();      
+
+            $.post()
+              .done(function(data) {
+                alert("Suppression effectuée avec succès!");
+                console.log("Suppression effectuée avec succès!");
+            });
+            
+        });
+    });*/
+
+    $('#champs-table-resume-budget tr #delete-budget').on("click", function()
+    {
+        var id = $("a", this).attr("id");
+
+        //if(confirm("Etes-vous sûr de vouloir supprimer l'item?")==true)
+        //{    
+            $(this).parent().remove();      
+
+            $.post("{% if demande.referenceDemande %}{{ path('demande_delete_budget',{'reference': demande.referenceDemande}) }}{% endif %}", {id: id})
+              .done(function(data) {
+                alert("Suppression effectuée avec succès!");
+                var url = document.location.href;
+                $(location).attr('href',url+"#budget");                
+                location.reload();
+            });
+        //}
+
     });
 
     </script>

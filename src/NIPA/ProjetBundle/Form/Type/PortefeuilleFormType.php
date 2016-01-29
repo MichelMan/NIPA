@@ -14,7 +14,7 @@ class PortefeuilleFormType extends AbstractType
     {
         // Ajoutez vos champs ici:
         $builder->add('referencePortefeuille', 'hidden');        
-        $builder->add('nom');
+        $builder->add('nom', 'text', array('required' => false, 'read_only' => true));
         $builder->add('description', 'textarea', array('required' => false));
         $builder->add('portefeuilleAnnee', 'entity',
                 array ('label' => 'Année portefeuille',

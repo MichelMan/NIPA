@@ -41,14 +41,6 @@ class Portefeuille
     /**
      * @var string
      *
-     * @ORM\Column(name="IPP", type="string", length=25)
-     */
-    
-    private $IPP;
-
-    /**
-     * @var string
-     *
      * @ORM\Column(name="Description", type="string", length=1000, nullable=true)
      */    
     
@@ -149,30 +141,6 @@ class Portefeuille
         return $this->nom;
     }
 
-    /**
-     * Set IPP
-     *
-     * @param string $IPP
-     *
-     * @return portfeuille
-     */
-    public function setIPP($IPP)
-    {
-        $this->IPP = $IPP;
-
-        return $this;
-    }
-
-    /**
-     * Get IPP
-     *
-     * @return string
-     */
-    public function getIPP()
-    {
-        return $this->IPP;
-    }    
-    
     /**
      * Set description
      *

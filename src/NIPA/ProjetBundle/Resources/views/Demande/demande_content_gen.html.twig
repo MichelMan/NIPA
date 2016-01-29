@@ -63,7 +63,7 @@
                                     <th >Référence IPP</th>
                                     <th>Priorité</th>
                                     <th class="text-center">Titre*</th>
-                                    <th class="text-center">Enveloppe</th>
+                                    <th class="text-center">Type Enveloppe</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -71,7 +71,7 @@
                                     <td><h4><strong>{% if demande.referenceDemande %} {{ demande.referenceDemande }} {% endif %}</strong></h4></td>
                                     <td>{{ form_widget(form.priorite) }}</td>
                                     <td>{{ form_widget(form.nom) }}</td>
-                                    <td class="text-center"><h5>{% if demande.referenceDemande and demande.getPortefeuillesToArray() is not empty %} {{ demande.getPortefeuillesToArray()[0].getIPP() }} {% endif %}</h5></td>                    
+                                    <td class="text-center"><h5>{% if demande.referenceDemande and demande.getPortefeuillesToArray() is not empty %} {{ demande.getPortefeuillesToArray()[0].getPortefeuilleEnveloppe().getNom() }} {% endif %}</h5></td>                    
                                 </tr>
                             </tbody>
                         </table>
@@ -87,7 +87,7 @@
                             </thead>
                             <tbody>
                                 <tr>
-                                    <td>{{ form_widget(form.description, { 'attr': {'class': 'area'} }) }}</td>
+                                    <td>{{ form_widget(form.commentaires, { 'attr': {'class': 'area'} }) }}</td>
                                     <td><center>{{ form_widget(form.demandeStatut) }}</center></td>
                                     <td>
                                         <center>

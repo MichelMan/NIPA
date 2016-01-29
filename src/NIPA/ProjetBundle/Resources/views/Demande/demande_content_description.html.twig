@@ -1,0 +1,80 @@
+{% trans_default_domain 'NIPAProjetBundle' %}
+		
+{% block body %}   
+
+    <h4 class=""><i class="fa fa-pencil-square fa-fw"></i> {{ 'Description & Enjeux Business'|trans }} </h4>        
+
+    <div class="container">                   
+            <div class="row col-md-13">
+
+                <!-- PANEL -->          
+                <div class="panel panel-danger" id="GDD">
+                    <div class="panel-heading" id="GDD">
+                        <h5 class="panel-title"> Informations R0 de la Demande <strong>{% if demande.referenceDemande %} {{ demande.referenceDemande }} ({{ demande.demandeStatut.getNom() }}) {% endif %}</strong></h5>                        <div class="pull-right">
+                        </div>
+                    </div>   
+                <div id="collapseInfo" class="panel-collapse collapse-in">                                
+                    <div class="panel-body">
+                        
+                        <!-- row 1 Description -->          
+                        <table class="table table-hover" id="GDD">
+                            <thead>
+                                <tr>
+                                    <th>Description fonctionnelle</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><center>{{ form_widget(form.description, { 'attr': {'class': 'area'} }) }}</center></td>
+                                </tr>
+                            </tbody>
+                        </table>
+ 
+                        <!-- row 2 Contexte, Enjeux-->                                              
+                        <table class="table table-hover" id="GDD">
+                            <thead>
+                                <tr>
+                                    <th class="text-center">Contexte</th>
+                                    <th class="text-center">Enjeux</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><center>{{ form_widget(form.contexte, { 'attr': {'class': 'area'} }) }}</center></td>
+                                    <td><center>{{ form_widget(form.enjeux, { 'attr': {'class': 'area'} }) }}</center></td>
+                                </tr>
+                            </tbody>
+                        </table>   
+                                                      
+                        <!-- row 3: Remarques, ROI -->          
+                        <table class="table table-hover" id="GDD">
+                            <thead>
+                                <tr>
+                                    <th class="text-center">Remarques</th>
+                                    <th class="text-center">ROI</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><center>{{ form_widget(form.remarques, { 'attr': {'class': 'area'} }) }}</center></td>
+                                    <td><center>{{ form_widget(form.ROI, { 'attr': {'class': 'number', 'min': '0'} }) }}</center></td>
+                                </tr>
+                            </tbody>
+                        </table>                          
+                                
+                    </div> 
+                </div>                    
+                </div>
+            </div>                    
+        </div>
+                                
+        {# Pour l'erreur: "Le jeton CSRF est invalide" #}
+        {{ form_widget(form._token) }}        
+        {{form_errors(form)}}
+
+        <br>  
+        <div class="pull-right">
+            <button class="btn btn-success" type="submit"><span class='glyphicon glyphicon-check'></span> Valider</button>           
+        </div> 
+            
+{% endblock %}            

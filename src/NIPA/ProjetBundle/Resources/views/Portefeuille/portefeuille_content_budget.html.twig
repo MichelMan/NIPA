@@ -21,8 +21,8 @@
         <div class="panel panel-success">
             <div class="panel-heading">
                 {% set counter = 0 %}
-                {% if portefeuille.referencePortefeuille and listPortefeuilleEnveloppePrev|length > 0 %}  
-                    {% set counter = listPortefeuilleEnveloppePrev[listPortefeuilleEnveloppePrev|length-1].montant %}
+                {% if portefeuille.referencePortefeuille and listTriEnveloppePrev|length > 0 %}  
+                    {% set counter = listTriEnveloppePrev[listPortefeuilleEnveloppePrev|length-1].montant %}
                 {% endif %}                
                 <h3 class="panel-title">Budget prévisionnel: {{ counter|number_format(2, ',', ' ') }} k€ </h3>
                 <div class="pull-right">              
@@ -46,13 +46,14 @@
                     </thead>
                     <tbody>
                     {% if portefeuille.referencePortefeuille %}                         
-                        {% for prev in listPortefeuilleEnveloppePrev %}
+                        {# On affiche les budgets Prev dans l'ordre chronologique#}
+                        {% for prev in listTriEnveloppePrev %}
                             <tr>
                                 <td><h5><strong>{{ prev.nom }}</strong></h5></td>
                                 <td><h5>{{ prev.date|date('d/m/Y') }}</h5></td>
                                 <td><h5>{{ prev.montant|number_format(2, ',', ' ') }}</h5></td>
                                 <td><h5>{{ prev.commentaires }}</h5></td>
-                                <td class="text-center"><a href="{{ path('portefeuille_budget_prev_delete',{'id': prev.id})}}"  class="btn btn-danger confirmModalLink"><i class="glyphicon glyphicon-remove"></i> </a></td>                    
+                                <td><a href="{{ path('portefeuille_budget_prev_delete',{'id': prev.id})}}"  class="btn btn-danger confirmModalLink"><i class="glyphicon glyphicon-remove"></i> </a></td>                    
                             </tr>
                         {% endfor %}   
                     {% endif %}    

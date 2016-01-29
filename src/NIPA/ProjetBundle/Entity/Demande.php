@@ -45,9 +45,9 @@ class Demande
     /**
      * @var string
      *
-     * @ORM\Column(name="Description", type="string", length=255, nullable=true)
+     * @ORM\Column(name="Commentaires", type="string", length=255, nullable=true)
      */
-    private $description;
+    private $commentaires;
 
     
     /**
@@ -165,7 +165,44 @@ class Demande
      */
     private $REX;    
     
-   
+    
+    /**********Description et Enjeux*************/
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="Contexte", type="string", length=500, nullable= true)
+     */
+    private $contexte;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="Enjeux", type="string", length=500, nullable= true)
+     */
+    private $enjeux;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="Remarques", type="string", length=500, nullable= true)
+     */
+    private $remarques;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="Description", type="string", length=500, nullable= true)
+     */
+    private $description;
+
+    /**
+     * @var float
+     *
+     * @ORM\Column(name="ROI", type="float", nullable= true)
+     */
+    private $ROI;
+    /***********************/
+    
     public function __construct()
     {
         $this->portefeuilles = new ArrayCollection();
@@ -260,27 +297,27 @@ class Demande
     }
 
     /**
-     * Set description
+     * Set commentaires
      *
-     * @param string $description
+     * @param string $commentaires
      *
      * @return Demande
      */
-    public function setDescription($description)
+    public function setCommentaires($commentaires)
     {
-        $this->description = $description;
+        $this->commentaires = $commentaires;
 
         return $this;
     }
 
     /**
-     * Get description
+     * Get commentaires
      *
      * @return string
      */
-    public function getDescription()
+    public function getCommentaires()
     {
-        return $this->description;
+        return $this->commentaires;
     }
 
     
@@ -702,7 +739,130 @@ class Demande
         return $this->REX;
     }  
     
- 
+    /*************Description et Enjeux***************/
+    
+    /**
+     * Set contexte
+     *
+     * @param string $contexte
+     *
+     * @return Demande
+     */
+    public function setContexte($contexte)
+    {
+        $this->contexte = $contexte;
+
+        return $this;
+    }
+
+    /**
+     * Get contexte
+     *
+     * @return string
+     */
+    public function getContexte()
+    {
+        return $this->contexte;
+    }
+
+    /**
+     * Set enjeux
+     *
+     * @param string $enjeux
+     *
+     * @return Demande
+     */
+    public function setEnjeux($enjeux)
+    {
+        $this->enjeux = $enjeux;
+
+        return $this;
+    }
+
+    /**
+     * Get enjeux
+     *
+     * @return string
+     */
+    public function getEnjeux()
+    {
+        return $this->enjeux;
+    }
+    
+    /**
+     * Set remarques
+     *
+     * @param string $remarques
+     *
+     * @return Demande
+     */
+    public function setRemarques($remarques)
+    {
+        $this->remarques = $remarques;
+
+        return $this;
+    }
+
+    /**
+     * Get remarques
+     *
+     * @return string
+     */
+    public function getRemarques()
+    {
+        return $this->remarques;
+    }
+    
+    /**
+     * Set description
+     *
+     * @param string $description
+     *
+     * @return Demande
+     */
+    public function setDescription($description)
+    {
+        $this->description = $description;
+
+        return $this;
+    }
+
+    /**
+     * Get description
+     *
+     * @return string
+     */
+    public function getDescription()
+    {
+        return $this->description;
+    }    
+    
+    /**
+     * Set ROI
+     *
+     * @param string $ROI
+     *
+     * @return Demande
+     */
+    public function setROI($ROI)
+    {
+        $this->ROI = $ROI;
+
+        return $this;
+    }
+
+    /**
+     * Get ROI
+     *
+     * @return string
+     */
+    public function getROI()
+    {
+        return $this->ROI;
+    }    
+    
+    /***************************/
+    
   /**
      * Add portefeuille
      *

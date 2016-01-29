@@ -24,7 +24,7 @@ class DemandeFormType extends AbstractType
             // *this line is important*
             'multiple'  => false,
         ));*/
-        $builder->add('description', 'textarea', array('required' => false));
+        $builder->add('commentaires', 'textarea', array('required' => false));
         $builder->add('dateMEP', 'text', array('required' => false));        
         $builder->add('TTDSouhaite', 'text', array('required' => false));        
         $builder->add('TTDSouhaiteRevise', 'text', array('required' => false));        
@@ -33,6 +33,13 @@ class DemandeFormType extends AbstractType
         $builder->add('nbLots', 'text', array('required' => false));        
         $builder->add('dateCloture', 'text', array('required' => false));        
         $builder->add('REX');        
+        
+        // Section Description et Enjeux
+        $builder->add('description', 'textarea', array('required' => false));
+        $builder->add('contexte', 'textarea', array('required' => false));
+        $builder->add('enjeux', 'textarea', array('required' => false));
+        $builder->add('remarques', 'textarea', array('required' => false));
+        $builder->add('ROI');        
         
         /***Select modal portefeuille***/
         $builder->add('portefeuille', 'entity',

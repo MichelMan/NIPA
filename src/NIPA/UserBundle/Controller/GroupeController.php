@@ -216,6 +216,7 @@ class GroupeController extends Controller
         $request = $this->get('request');
 
         $idUsers=$this->getRequest()->get('idUsers');
+
         //$idUsers = array ("u136227");        
         $groupe = $this->get('nipa_groupe.groupe_manager')->loadGroupe($groupeId);
    
@@ -253,6 +254,7 @@ class GroupeController extends Controller
            //if ($formModal->isValid()) {
               
                 $em = $this->getDoctrine()->getEntityManager();
+                //\Doctrine\Common\Util\Debug::dump($idUsers);
 
                 for($i = 0;$i < count($idUsers); $i++)
                 {
@@ -418,7 +420,7 @@ class GroupeController extends Controller
                 $em->flush();
                 
                 $this->get('session')->getFlashBag()->set('notice',
-                $this->get('translator')->trans('Permissions du groupe ajouté')
+                $this->get('translator')->trans('Permissions du groupe ajoutées')
                 );
                 
                // On redirige vers la page de modification du groupe
@@ -498,7 +500,7 @@ class GroupeController extends Controller
                 $em->flush();
                 
                 $this->get('session')->getFlashBag()->set('notice',
-                $this->get('translator')->trans('Permissions du groupe modifié')
+                $this->get('translator')->trans('Permissions du groupe modifiées')
                 );
                 
                // On redirige vers la page de modification du groupe
