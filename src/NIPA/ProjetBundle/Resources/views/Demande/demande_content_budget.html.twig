@@ -23,7 +23,7 @@
                                 {% set counter = 0 %}
                                 {% for budget in listDemandeBudget %}
                                     {% if budget.IPP == portefeuille.getPortefeuilleAnnee().getValeur() %}
-                                        {% set counter = counter + budget.montant %}
+                                        {% set counter = budget.montant %}
                                     {% endif %}
                                 {% endfor %} 
                                 <strong>{{ portefeuille.getPortefeuilleAnnee().getValeur() }}</strong> <span class="glyphicon glyphicon-arrow-right"></span> {{ counter|number_format(2, ',', ' ') }} k€ /
@@ -45,8 +45,8 @@
                                 <th>Année</th>
                                 <th>Révisé le</th>
                                 <th>Montant (en k€)</th>
-                                <th>Commentaires</th>
-                                <th>Action</th>     
+                                <th class="text-center">Commentaires</th>
+                                <th class="text-center">Action</th>     
                             </tr>
                         </thead>
                         <tbody>
@@ -56,8 +56,8 @@
                                     <td><h5><strong>{{ budget.IPP }}</strong></h5></td>
                                     <td><h5>{{ budget.date|date('d/m/Y') }}</h5></td>
                                     <td><h5>{{ budget.montant|number_format(2, ',', ' ') }}</h5></td>
-                                    <td><h5>{{ budget.commentaires }}</h5></td>
-                                    <td id="delete-budget"><a id="{{ budget.id }}" class="btn btn-danger confirmModalBudget"><i class="glyphicon glyphicon-remove"></i> </a></td>                    
+                                    <td><h5><textarea class="form-control" cols=30 rows=3 id="Commentaires" READONLY>{{ budget.commentaires }}</textarea></h5></td> 
+                                    <td id="delete-budget" class="text-center"><a id="{{ budget.id }}" class="btn btn-danger confirmModalBudget"><i class="glyphicon glyphicon-remove"></i> </a></td>                    
                                 </tr>
                             {% endfor %}   
                         {% endif %}    
@@ -67,6 +67,7 @@
                 </div> 
             </div>           
                 {% if demande.referenceDemande %} 
+                <form action="" method="post" {{ form_enctype(formBudget) }} id="form_ajouter_budget" >
                     <table class="table" id="champs-table-budget-add">
                         <thead>
                             <tr>
@@ -88,21 +89,18 @@
                                         </select>
                                      </center>
                                 </td>                             
-                                 <td>
+                                <td>
                                     <!-- DatetimePiker --> 
-                                    <div class="container"> 
-                                            <div class='col-sm-12'>
-                                                <input type='text' class="form-control input-md date textinput" id='date' name="date" required="true" />
-                                            </div>
-                                    </div>                         
-                                 </td>
-                                 <td><input type="number" min="0" step="0.01" data-number-to-fixed="2" data-number-stepfactor="100" id="montant" placeholder="Montant" class="form-control input-md textinput currency" name="montant" required="true"></td>
-                                 <td><textarea class="form-control input-md" rows="1" id="comment" placeholder="..." name="comment"></textarea></td>                            
-                                 <td class="text-center"><button type="submit" class="btn btn-success" id="add-budget"><i class="glyphicon glyphicon-check"></i></button></td>
-                             </tr>   
+                                    <input type='text' class="form-control input-md date textinput" id='date' name="date" required="true" />
+                                </td>
+                                <td><input type="number" min="0" step="0.01" data-number-to-fixed="2" data-number-stepfactor="100" id="montant" placeholder="Montant" class="form-control input-md textinput currency" name="montant" required="true"></td>
+                                <td><textarea class="form-control input-md" id="comment" placeholder="..." name="comment" cols=30 rows=3 ></textarea></td>                            
+                                <td class="text-center"><button type="submit" class="btn btn-success" id="add-budget"><i class="glyphicon glyphicon-check"></i></button></td>
+                            </tr>   
                         </tbody>   
                     </table>
-                {% endif %}
+                </form>    
+                {% endif %}             
             </div>
         </div>
     </div>    
@@ -140,9 +138,11 @@
     language:"fr"
     });  
 
+    $(function() {
 
-    $('#champs-table-budget-add tr #add-budget').on("click", function()
-    {
+    //$('#champs-table-budget-add tr #add-budget').on("click", function() {
+    $("#form_ajouter_budget").submit(function(){ 
+    
         var ipp = $("#champs-table-budget-add tr #IPP").val();
         var date = $("#champs-table-budget-add tr #date").val();
         var montant = $("#champs-table-budget-add tr #montant").val();
@@ -151,20 +151,23 @@
         $.ajax({
             type: 'post',
             url: "{% if demande.referenceDemande %}{{ path('demande_update_budget',{'reference': demande.referenceDemande}) }}{% endif %}",
-            data: {ipp: ipp, date: date, montant: montant, commentaires: commentaires},
+            //data: {ipp: ipp, date: date, montant: montant, commentaires: commentaires},
+            data: $('#form_ajouter_budget').serialize(),
             success: function()
-            {     
-                alert("Ajout effectué avec succès! (TEST)");
-
+            {
+                alert("Ajout5 effectué avec succès! (TEST)");
                 var url = document.location.href;
-                $(location).attr('href',url+"#budget");                
-                location.reload();
+                $(location).attr('href',url+"#budget");                 
+                location.reload();        
             },
             error: function(e) {
                console.log(e);
              }      
-        });       
+        });
+        return false;
     });
+});  
+
 
     /*
     $(document).ready(function() {

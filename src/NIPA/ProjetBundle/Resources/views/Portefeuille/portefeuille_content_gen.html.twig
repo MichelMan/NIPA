@@ -49,7 +49,7 @@
                       {{ form_label(form.nom, 'Nom'|trans) }}          
                     </label>  
                     <div class="">
-                       {{ form_widget(form.nom) }}
+                       {{ form_widget(form.nom, { 'attr': { 'readonly':'true'} }) }}
                     </div>                    
                 </div>
             </div>            

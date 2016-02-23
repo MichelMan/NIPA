@@ -24,6 +24,13 @@ class DemandeInstance
     /**
      * @var string
      *
+     * @ORM\Column(name="Reference", type="string", length=25)
+     */
+    private $reference;    
+    
+    /**
+     * @var string
+     *
      * @ORM\Column(name="Nom", type="string", length=25)
      */
     private $nom;
@@ -39,6 +46,30 @@ class DemandeInstance
         return $this->id;
     }
 
+    /**
+     * Set Reference
+     *
+     * @param string $reference
+     *
+     * @return DemandeStatut
+     */
+    public function setReference($reference)
+    {
+        $this->reference = $reference;
+
+        return $this;
+    }
+
+    /**
+     * Get Reference
+     *
+     * @return string
+     */
+    public function getReference()
+    {
+        return $this->reference;
+    }    
+    
     /**
      * Set nom
      *

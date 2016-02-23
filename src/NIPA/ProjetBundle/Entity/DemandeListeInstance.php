@@ -30,14 +30,14 @@ class DemandeListeInstance
     /**
      * @var \DateTime
      *
-     * @ORM\Column(name="DatePrev", type="string", length=25, nullable = true)
+     * @ORM\Column(name="DatePrev", type="date", nullable = true)
      */
     private $datePrev;
 
     /**
      * @var \DateTime
      *
-     * @ORM\Column(name="DateRev", type="string", length=25, nullable = true)
+     * @ORM\Column(name="DateRev", type="date", nullable = true)
      */
     private $dateRev;
 

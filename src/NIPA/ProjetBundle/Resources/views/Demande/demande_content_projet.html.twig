@@ -11,7 +11,8 @@
                 <div class="panel panel-danger" id="GDD">
                     <div class="panel-heading" id="GDD">
                         <h5 class="panel-title"> Informations liées au(x) Portefeuille(s)</h5>
-                        <div class="pull-right">              
+                        <div class="pull-right">
+                            {% if demande.referenceDemande %} <strong> {{ demande.getPortefeuillesToArray()|length }} Portefeuille(s) associé(s) </strong> {% endif %}
                             <span data-toggle="collapse" data-target="#collapseInfoPortefeuille" class="clickable collapsed" title="Afficher détails" data-container="body">
                                 <i class="glyphicon glyphicon-plus"></i>
                             </span>
@@ -65,7 +66,8 @@
                 <div class="panel panel-danger" id="GDD">
                     <div class="panel-heading" id="GDD">
                         <h5 class="panel-title"> Informations liées au(x) Projet(s)</h5>
-                        <div class="pull-right">              
+                        <div class="pull-right">  
+                            {% if demande.referenceDemande %} <strong> Demande(s) associée(s) </strong> {% endif %}
                             <span data-toggle="collapse" data-target="#collapseInfoProjet" class="clickable collapsed" title="Afficher détails" data-container="body">
                                 <i class="glyphicon glyphicon-plus"></i>
                             </span>

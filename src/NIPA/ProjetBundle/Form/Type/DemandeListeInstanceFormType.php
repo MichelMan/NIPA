@@ -13,10 +13,10 @@ class DemandeListeInstanceFormType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         // Ajoutez vos champs ici:
-        $builder->add('datePrev');        
-        $builder->add('dateRev', 'text', array('required' => false));        
-        $builder->add('validationEffective');
-        $builder->add('remarques', 'textarea', array('required' => false));
+        $builder->add('datePrev', 'text',array('required' => true));        
+        //$builder->add('dateRev', 'text', array('required' => false));        
+        //$builder->add('validationEffective');
+        $builder->add('remarques', 'textarea', array('required' => false, 'attr' => array('cols' => '60', 'rows' => '3')));
 
         /*******************************/
         

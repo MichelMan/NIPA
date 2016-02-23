@@ -40,8 +40,8 @@
                             <th>ID</th>
                             <th>Révisé le</th>
                             <th>Montant (en k€)</th>
-                            <th>Commentaires</th>
-                            <th>Action</th>     
+                            <th class="text-center">Commentaires</th>
+                            <th class="text-center">Action</th>     
                         </tr>
                     </thead>
                     <tbody>
@@ -52,8 +52,8 @@
                                 <td><h5><strong>{{ prev.nom }}</strong></h5></td>
                                 <td><h5>{{ prev.date|date('d/m/Y') }}</h5></td>
                                 <td><h5>{{ prev.montant|number_format(2, ',', ' ') }}</h5></td>
-                                <td><h5>{{ prev.commentaires }}</h5></td>
-                                <td><a href="{{ path('portefeuille_budget_prev_delete',{'id': prev.id})}}"  class="btn btn-danger confirmModalLink"><i class="glyphicon glyphicon-remove"></i> </a></td>                    
+                                <td><h5><textarea class="form-control" cols=30 rows=3 id="Commentaires" READONLY>{{ prev.commentaires }}</textarea></h5></td> 
+                                <td class="text-center"><a href="{{ path('portefeuille_budget_prev_delete',{'id': prev.id})}}"  class="btn btn-danger confirmModalLink"><i class="glyphicon glyphicon-remove"></i> </a></td>                    
                             </tr>
                         {% endfor %}   
                     {% endif %}    

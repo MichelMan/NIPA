@@ -4,6 +4,7 @@ namespace NIPA\ProjetBundle\Controller;
 
 use NIPA\ProjetBundle\Form\Type\DemandeFormType;
 use NIPA\ProjetBundle\Form\Type\SelectPortefeuilleModalType;
+use NIPA\ProjetBundle\Form\Type\DemandeBudgetFormType;
 use NIPA\ProjetBundle\Form\Type\DemandeListeInstanceFormType;
 
 use NIPA\ProjetBundle\Entity\Demande;
@@ -142,7 +143,10 @@ class DemandeController extends Controller
         $options2 = $formModal->get('portefeuille')->getConfig()->getOptions();
         $choices2 = $options2['choice_list']->getChoices();            
         /***************************************************************/
-       
+        // DemandeBudget Form
+        $DemandeBudget = new DemandeBudget();  
+        $formBudget = $this->createForm(new DemandeBudgetFormType(), $DemandeBudget);
+        
         //On récupère toutes les tuples du budget actuel
         $repository = $this->getDoctrine()->getManager()->getRepository('NIPAProjetBundle:DemandeBudget');
         $listDemandeBudget = $repository->findBy(array('demande' => $demande)); // Critere
@@ -160,6 +164,11 @@ class DemandeController extends Controller
         //On récupère liste des tuples instances de la Demande
         $repository = $this->getDoctrine()->getManager()->getRepository('NIPAProjetBundle:DemandeListeInstance');
         $listDemandeInstance = $repository->findBy(array('demande' => $demande)); // Critere
+        
+        // On trie les instances dans l'ordre CHRONO par date
+        usort($listDemandeInstance, function($a, $b) {
+          return ($a->getDatePrev() < $b->getDatePrev()) ? -1 : 1;
+        });        
         /***************************************************************/   
         
         
@@ -254,7 +263,7 @@ class DemandeController extends Controller
         }
 
         //return array();
-        return $this->render('NIPAProjetBundle:Demande:demande.html.twig', array('user' => $user, 'form' => $form->createView(), 'formModal' => $formModal->createView(), 'formInstance' => $formInstance->createView(), 'demande' => $demande, 'listDemande' => $listDemande,'choices' => $choices, 'choices2' => $choices2, 'listDemandeBudget' => $listDemandeBudget, 'listDemandeInstance' => $listDemandeInstance)); // On passe à Twig l'objet form et notre objet
+        return $this->render('NIPAProjetBundle:Demande:demande.html.twig', array('user' => $user, 'form' => $form->createView(), 'formModal' => $formModal->createView(), 'formInstance' => $formInstance->createView(), 'formBudget' => $formBudget->createView(), 'demande' => $demande, 'listDemande' => $listDemande,'choices' => $choices, 'choices2' => $choices2, 'listDemandeBudget' => $listDemandeBudget, 'listDemandeInstance' => $listDemandeInstance)); // On passe à Twig l'objet form et notre objet
 
     }    
     
@@ -329,6 +338,9 @@ class DemandeController extends Controller
         $options2 = $formModal->get('portefeuille')->getConfig()->getOptions();
         $choices2 = $options2['choice_list']->getChoices();            
         /***************************************************************/
+        // DemandeBudget Form
+        $DemandeBudget = new DemandeBudget();  
+        $formBudget = $this->createForm(new DemandeBudgetFormType(), $DemandeBudget);
         
         //On récupère toutes les tuples du budget actuel
         $repository = $this->getDoctrine()->getManager()->getRepository('NIPAProjetBundle:DemandeBudget');
@@ -347,6 +359,11 @@ class DemandeController extends Controller
         //On récupère liste des tuples instances de la Demande
         $repository = $this->getDoctrine()->getManager()->getRepository('NIPAProjetBundle:DemandeListeInstance');
         $listDemandeInstance = $repository->findBy(array('demande' => $demande)); // Critere
+        
+        // On trie les instances dans l'ordre CHRONO par date
+        usort($listDemandeInstance, function($a, $b) {
+          return ($a->getDatePrev() < $b->getDatePrev()) ? -1 : 1;
+        });                
         /***************************************************************/         
 
         $form->handleRequest($request);
@@ -372,7 +389,7 @@ class DemandeController extends Controller
         
         }
         //return array();
-        return $this->render('NIPAProjetBundle:Demande:demande.html.twig', array('user' => $user, 'form' => $form->createView(), 'formModal' => $formModal->createView(), 'formInstance' => $formInstance->createView(), 'demande' => $demande, 'listDemande' => $listDemande,'choices' => $choices, 'choices2' => $choices2, 'listDemandeBudget' => $listDemandeBudget, 'listDemandeInstance' => $listDemandeInstance)); // On passe à Twig l'objet form et notre objet
+        return $this->render('NIPAProjetBundle:Demande:demande.html.twig', array('user' => $user, 'form' => $form->createView(), 'formModal' => $formModal->createView(), 'formInstance' => $formInstance->createView(), 'formBudget' => $formBudget->createView(), 'demande' => $demande, 'listDemande' => $listDemande,'choices' => $choices, 'choices2' => $choices2, 'listDemandeBudget' => $listDemandeBudget, 'listDemandeInstance' => $listDemandeInstance)); // On passe à Twig l'objet form et notre objet
 
     }      
     
@@ -444,7 +461,10 @@ class DemandeController extends Controller
         $options2 = $formModal->get('portefeuille')->getConfig()->getOptions();
         $choices2 = $options2['choice_list']->getChoices();            
         /***************************************************************/
-       
+        // DemandeBudget Form
+        $DemandeBudget = new DemandeBudget();  
+        $formBudget = $this->createForm(new DemandeBudgetFormType(), $DemandeBudget);
+        
         //On récupère toutes les tuples du budget actuel
         $repository = $this->getDoctrine()->getManager()->getRepository('NIPAProjetBundle:DemandeBudget');
         $listDemandeBudget = $repository->findBy(array('demande' => $demande)); // Critere
@@ -462,6 +482,11 @@ class DemandeController extends Controller
         //On récupère liste des tuples instances de la Demande
         $repository = $this->getDoctrine()->getManager()->getRepository('NIPAProjetBundle:DemandeListeInstance');
         $listDemandeInstance = $repository->findBy(array('demande' => $demande)); // Critere
+        
+        // On trie les instances dans l'ordre CHRONO par date
+        usort($listDemandeInstance, function($a, $b) {
+          return ($a->getDatePrev() < $b->getDatePrev()) ? -1 : 1;
+        });        
         /***************************************************************/  
         
         // Si soumet le formulaire
@@ -497,7 +522,7 @@ class DemandeController extends Controller
             //}
         }
 
-        return $this->render('NIPAProjetBundle:Demande:demande.html.twig', array('user' => $user, 'form' => $form->createView(), 'formModal' => $formModal->createView(), 'formInstance' => $formInstance->createView(), 'demande' => $demande, 'listDemande' => $listDemande,'choices' => $choices, 'choices2' => $choices2, 'listDemandeBudget' => $listDemandeBudget, 'listDemandeInstance' => $listDemandeInstance)); // On passe à Twig l'objet form et notre objet
+        return $this->render('NIPAProjetBundle:Demande:demande.html.twig', array('user' => $user, 'form' => $form->createView(), 'formModal' => $formModal->createView(), 'formInstance' => $formInstance->createView(), 'formBudget' => $formBudget->createView(), 'demande' => $demande, 'listDemande' => $listDemande,'choices' => $choices, 'choices2' => $choices2, 'listDemandeBudget' => $listDemandeBudget, 'listDemandeInstance' => $listDemandeInstance)); // On passe à Twig l'objet form et notre objet
     }
     
     public function deletePortefeuillesAction(Request $request, $referencePortefeuille, $referenceDemande)
@@ -539,7 +564,10 @@ class DemandeController extends Controller
         $options2 = $formModal->get('portefeuille')->getConfig()->getOptions();
         $choices2 = $options2['choice_list']->getChoices();            
         /***************************************************************/
-       
+        // DemandeBudget Form
+        $DemandeBudget = new DemandeBudget();  
+        $formBudget = $this->createForm(new DemandeBudgetFormType(), $DemandeBudget);
+        
         //On récupère toutes les tuples du budget actuel
         $repository = $this->getDoctrine()->getManager()->getRepository('NIPAProjetBundle:DemandeBudget');
         $listDemandeBudget = $repository->findAll();  
@@ -636,7 +664,10 @@ class DemandeController extends Controller
         $options2 = $formModal->get('portefeuille')->getConfig()->getOptions();
         $choices2 = $options2['choice_list']->getChoices();            
         /***************************************************************/
-       
+        // DemandeBudget Form
+        $DemandeBudget = new DemandeBudget();  
+        $formBudget = $this->createForm(new DemandeBudgetFormType(), $DemandeBudget);
+        
         //On récupère toutes les tuples du budget actuel
         $repository = $this->getDoctrine()->getManager()->getRepository('NIPAProjetBundle:DemandeBudget');
         $listDemandeBudget = $repository->findBy(array('demande' => $demande)); // Critere
@@ -654,6 +685,11 @@ class DemandeController extends Controller
         //On récupère liste des tuples instances de la Demande
         $repository = $this->getDoctrine()->getManager()->getRepository('NIPAProjetBundle:DemandeListeInstance');
         $listDemandeInstance = $repository->findBy(array('demande' => $demande)); // Critere
+        
+        // On trie les instances dans l'ordre CHRONO par date
+        usort($listDemandeInstance, function($a, $b) {
+          return ($a->getDatePrev() < $b->getDatePrev()) ? -1 : 1;
+        });        
         /***************************************************************/ 
         
         // Si soumet le formulaire
@@ -689,7 +725,7 @@ class DemandeController extends Controller
             //}
         }
 
-        return $this->render('NIPAProjetBundle:Demande:demande.html.twig', array('user' => $user, 'form' => $form->createView(), 'formModal' => $formModal->createView(), 'formInstance' => $formInstance->createView(), 'demande' => $demande, 'listDemande' => $listDemande,'choices' => $choices, 'choices2' => $choices2, 'listDemandeBudget' => $listDemandeBudget, 'listDemandeInstance' => $listDemandeInstance)); // On passe à Twig l'objet form et notre objet
+        return $this->render('NIPAProjetBundle:Demande:demande.html.twig', array('user' => $user, 'form' => $form->createView(), 'formModal' => $formModal->createView(), 'formInstance' => $formInstance->createView(), 'formBudget' => $formBudget->createView(), 'demande' => $demande, 'listDemande' => $listDemande,'choices' => $choices, 'choices2' => $choices2, 'listDemandeBudget' => $listDemandeBudget, 'listDemandeInstance' => $listDemandeInstance)); // On passe à Twig l'objet form et notre objet
     }    
     
     /**
@@ -699,63 +735,72 @@ class DemandeController extends Controller
     public function editBudgetAction($reference)    
     {
         
-        /**********************DROIT SECTION************************/
-        $requests = Request::createFromGlobals();
-        $droit = $requests->query->get('droit');
-               
-        if ($droit == "denied") { // On test si user pour avoir accès à la section 
-            //throw new AccessDeniedException("Section autorisée uniquement pour les administrateurs!");
-            $this->get('session')->getFlashBag()->set('error', "Vous n'avez pas les droits requis pour accéder à cette section!");            
-        }        
-        /***********************************************************/        
-        
+        $request = $this->get('request');
+
         // On vérifie que l'objet existe
         if(!$demande = $this->get('nipa_demande.demande_manager')->loadDemande($reference)) {
             throw new NotFoundHttpException(
                 $this->get('translator')->trans('This demande does not exist.')
             );
         }
+     
+        /***************************************************************/
+        // DemandeBudget Form
+        $DemandeBudget = new DemandeBudget();  
+        $formBudget = $this->createForm(new DemandeBudgetFormType(), $DemandeBudget);
         
-        $request = $this->get('request');
+        //On récupère toutes les tuples du budget actuel
+        $repository = $this->getDoctrine()->getManager()->getRepository('NIPAProjetBundle:DemandeBudget');
+        $listDemandeBudget = $repository->findBy(array('demande' => $demande)); // Critere
+ 
+        // On trie les budgets dans l'ordre CHRONO par date
+        usort($listDemandeBudget, function($a, $b) {
+          return ($a->getDate() < $b->getDate()) ? -1 : 1;
+        });
+        /***************************************************************/     
         
         if ($request->isXmlHttpRequest()) {
             //return new JsonResponse(array('message' => 'You can access this only using Ajax!'), 200);
-                            
+            
+            $formBudget->handleRequest($request);
+            if ('POST' == $request->getMethod()) { // Si on a posté le formulaire
+                
                 $data = $request->request->all();
-
-                $ipp= $data["ipp"];
-                $var= $data["date"];
+                //\Doctrine\Common\Util\Debug::dump($data);
+ 
+                $ipp = $data["IPP"];
+                $var = $data["date"];
                 $date = str_replace('/', '-', $var);
                 $format = date('Y-m-d', strtotime($date));     
                 $time = new \DateTime($format);
-               
-                $montant= $data["montant"];
-                $commentaire= $data["commentaires"];
+                $montant =$data["montant"];
+                $comment=$data["comment"];
                 
-                $entity = new DemandeBudget();
-                $entity->setIPP($ipp);
-                $entity->setDate($time);
-                $entity->setMontant($montant);
-                $entity->setCommentaires($commentaire);
-                $entity->setDemande($demande);
+                $DemandeBudget->setIPP($ipp);
+                $DemandeBudget->setDate($time);
+                $DemandeBudget->setMontant($montant);
+                $DemandeBudget->setCommentaires($comment);
+                $DemandeBudget->setDemande($demande);
 
                 $em = $this->getDoctrine()->getManager();
-                $em->persist($entity);
+                $em->persist($DemandeBudget);
                 $em->flush();
 
-                $this->get('session')->getFlashBag()->add('success','Mise à jour budget actuel effectuée');  
- 
+                $this->get('session')->getFlashBag()->add('success','Ajout Budget effectué');  
+
                 return new JsonResponse(array('message' => 'Success!'), 200);
 
                 $response = new JsonResponse(array('message' => 'Error'), 400);
 
-                return $response; 
+                return $response;   
+            }
         }
+        
     }          
     
     
    /**
-    *  DELETE Budget actu
+    *  DELETE Budget actu of a Demande
     * 
     */
     public function deleteBudgetAction($reference)    
@@ -801,83 +846,17 @@ class DemandeController extends Controller
     */
     public function addInstanceAction($reference)    
     {
-        
-         /**********************DROIT SECTION************************/
-        $requests = Request::createFromGlobals();
-        $droit = $requests->query->get('droit');
-               
-        if ($droit == "denied") { // On test si user pour avoir accès à la section 
-            //throw new AccessDeniedException("Section autorisée uniquement pour les administrateurs!");
-            $this->get('session')->getFlashBag()->set('error', "Vous n'avez pas les droits requis pour accéder à cette section!");            
-        }        
-        /***********************************************************/
-        
-        $droit = 0;
-        $user = $this->getUser();
-        
+   
         $request = $this->get('request');
             
-        foreach($user->getGroupesToArray() as $groupe) // Pour chaque Groupe affilié au user
-        {
-            if($groupe->getPermission() != null) // Test si le groupe a des permissions
-            {
-                if(($groupe->getPermission()->getCMSPortefeuille() == 1) || ($groupe->getPermission()->getLPortefeuille() == 1)) // Si oui on test les droits d'accès
-                {
-                    $droit++;           
-                }
-            }
-        }
-        
-        if ($droit == 0) {
-            //return $this->render($this->getRequest()->server->get('HTTP_REFERER'), array('droit' => $droit));
-            $droit = "denied";
-            $referer = $this->getRequest()->server->get('HTTP_REFERER');
-            return $this->redirect($referer."?droit=".$droit);  
-        }
-
-        
         // On vérifie que l'objet existe
         if(!$demande = $this->get('nipa_demande.demande_manager')->loadDemande($reference)) {
             throw new NotFoundHttpException(
                 $this->get('translator')->trans('This demande does not exist.')
             );
         }
-    
-        /***************DATA TREE*******************/
-        //return array() List ALL Demandes;
-        $listDemande = $this->get('nipa_demande.demande_manager')->loadAllDemande();
-        //On trie la liste des demandes
-        usort($listDemande, function ($a, $b) {
-            return strnatcmp($a->getReferenceDemande(), $b->getReferenceDemande());
-        });         
-                  
-        /************************************/
-        
-        $form = $this->createForm(new DemandeFormType(), $demande);
-         
-        $options = $form->get('portefeuille')->getConfig()->getOptions();
-        $choices = $options['choice_list']->getChoices(); 
-        
-        /***************Formulaire select Portefeuilles****************/
-        $portefeuilleManager = $this->get('nipa_portefeuille.portefeuille_manager');
-        $portefeuilles = $portefeuilleManager->loadAllPortefeuille(); // on accède aux service et on récupère les méthodes dans portefeuilleManager
-        
-        $formModal = $this->get('form.factory')->create(new SelectPortefeuilleModalType(), $portefeuilles);        
-        
-        $options2 = $formModal->get('portefeuille')->getConfig()->getOptions();
-        $choices2 = $options2['choice_list']->getChoices();            
-        /***************************************************************/
-       
-        //On récupère toutes les tuples du budget actuel
-        $repository = $this->getDoctrine()->getManager()->getRepository('NIPAProjetBundle:DemandeBudget');
-        $listDemandeBudget = $repository->findBy(array('demande' => $demande)); // Critere
  
-        // On trie les budgets dans l'ordre CHRONO par date
-        usort($listDemandeBudget, function($a, $b) {
-          return ($a->getDate() < $b->getDate()) ? -1 : 1;
-        });
         /***************************************************************/
-        
         // DemandeInstance Form
         $DemandeListeInstance = new DemandeListeInstance();  
         $formInstance = $this->createForm(new DemandeListeInstanceFormType(), $DemandeListeInstance);
@@ -885,6 +864,11 @@ class DemandeController extends Controller
         //On récupère liste des tuples instances de la Demande
         $repository = $this->getDoctrine()->getManager()->getRepository('NIPAProjetBundle:DemandeListeInstance');
         $listDemandeInstance = $repository->findBy(array('demande' => $demande)); // Critere
+        
+        // On trie les instances dans l'ordre CHRONO par date
+        usort($listDemandeInstance, function($a, $b) {
+          return ($a->getDatePrev() < $b->getDatePrev()) ? -1 : 1;
+        });        
         /***************************************************************/        
         
         if ($request->isXmlHttpRequest()) {
@@ -899,12 +883,15 @@ class DemandeController extends Controller
                 $repository = $this->getDoctrine()->getManager()->getRepository('NIPAProjetBundle:DemandeInstance');            
                 $instance = $repository->findOneBy(array('id' => $data["nipa_projet_demande_instance"]["instance"]));
                 
-                $datePrev=$data["nipa_projet_demande_instance"]["datePrev"];
-                $dateRev=$data["nipa_projet_demande_instance"]["dateRev"];
-                if (isset($data["nipa_projet_demande_instance"]["validationEffective"])){
+                $var = $data["nipa_projet_demande_instance"]["datePrev"];
+                $date = str_replace('/', '-', $var);
+                $format = date('Y-m-d', strtotime($date));     
+                $datePrev = new \DateTime($format);
+                //$dateRev=$data["nipa_projet_demande_instance"]["dateRev"];
+                /*if (isset($data["nipa_projet_demande_instance"]["validationEffective"])){
                     $validationEffective=$data["nipa_projet_demande_instance"]["validationEffective"];
                     $DemandeListeInstance->setValidationEffective($validationEffective);
-                }
+                }*/
                 $remarques=$data["nipa_projet_demande_instance"]["remarques"];
                 
                 $repository = $this->getDoctrine()->getManager()->getRepository('NIPAProjetBundle:DemandeStatutInstance');            
@@ -912,7 +899,7 @@ class DemandeController extends Controller
                                 
                 $DemandeListeInstance->setInstance($instance);
                 $DemandeListeInstance->setDatePrev($datePrev);
-                $DemandeListeInstance->setDateRev($dateRev);
+                //$DemandeListeInstance->setDateRev($dateRev);
                 $DemandeListeInstance->setRemarques($remarques);
                 $DemandeListeInstance->setStatut($statut);
                 $DemandeListeInstance->setDemande($demande);
@@ -921,7 +908,7 @@ class DemandeController extends Controller
                 $em->persist($DemandeListeInstance);
                 $em->flush();
 
-                $this->get('session')->getFlashBag()->add('success','Ajout instance effectuée');  
+                $this->get('session')->getFlashBag()->add('success','Ajout instance effectué');  
 
                 return new JsonResponse(array('message' => 'Success!'), 200);
 
@@ -930,9 +917,6 @@ class DemandeController extends Controller
                 return $response;   
             }
         }
-        
-        //return array();
-        return $this->render('NIPAProjetBundle:Demande:demande.html.twig', array('user' => $user, 'form' => $form->createView(), 'formModal' => $formModal->createView(), 'formInstance' => $formInstance->createView(), 'demande' => $demande, 'listDemande' => $listDemande,'choices' => $choices, 'choices2' => $choices2, 'listDemandeBudget' => $listDemandeBudget, 'listDemandeInstance' => $listDemandeInstance)); // On passe à Twig l'objet form et notre objet
 
     }    
     
