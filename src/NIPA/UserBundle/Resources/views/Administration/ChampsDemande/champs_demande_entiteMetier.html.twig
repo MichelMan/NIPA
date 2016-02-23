@@ -1,0 +1,232 @@
+{% trans_default_domain 'NIPAUserBundle' %}
+
+{% block nipa_users_champs_EM %}       
+    
+    <!-- MODAL EDIT ENTITE METIER -->
+    <div id="myModalEditEM" class="modal fade in" style="">
+        <div class="modal-dialog"  style="width: 800px;">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                    <h3 id="myModalLabel"><span class="glyphicon glyphicon-edit"></span> Administration</h3>
+                </div>
+                
+                <div class="modal-body">
+                    <!--  <div id="jsGrid"></div> -->      
+                    <!-- <input type="text" name="Id" id="Id" value=""/> -->
+
+                    <!-- PANEL -->          
+                    <div class="panel panel-success">
+                        <div class="panel-heading">               
+                            <h3 class="panel-title"><i class="glyphicon glyphicon-share-alt"></i> Champ "Entité Métier"</h3>
+                            <div class="pull-right">              
+                                <span class="clickable filter" data-toggle="tooltip" title="Afficher détails" data-container="body">
+                                    <i class="glyphicon glyphicon-plus"></i>
+                                </span>
+                            </div>                
+                        </div>        
+                        <div class="panel-body" style="display: none;">
+
+                            <table class="table table-hover" id="champs-table-EM">
+                                <thead>
+                                    <tr>
+                                        <th>N°</th>
+                                        <th>ID</th>                                        
+                                        <th>Valeur</th>
+                                        <th>Edition</th>                                        
+                                        <th>Suppression</th>                                           
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% if listEntiteMetiers is empty %}
+                                        <center><p>(Aucune donnée)</p></center>
+                                    {% else %}    
+                                        {% for em in listEntiteMetiers %}
+                                            <tr data-id="{{ loop.index }}">
+                                                <td>{{ loop.index }}</td>
+                                                <td data-field="id" class="id">{{ em.id }}</td>                                            
+                                                <td data-field="nom" class="nom">{{ em.nom }}</td>
+                                                <td>
+                                                    <a class="button button-small edit" title="Edit"><i class="glyphicon glyphicon-pencil"></i></a>
+                                                    <!-- <a class="button button-small cancel" title="Annuler"><i class="glyphicon glyphicon-remove"></i></a> -->                                                
+                                                </td>                                            
+                                                <td id="delete-EM" class="text-center"><a id="{{ em.id }}" class="button button-small" title="Supprimer"><i class="glyphicon glyphicon-trash"></i> </a></td>                    
+                                            </tr>
+                                        {% endfor %}  
+                                    {% endif%}    
+                                </tbody>
+                            </table>
+
+                        </div>  
+                        <table class="table" id="champs-table-EM-add">
+                            <thead>
+                                <tr>
+                                    <th class="text-center">Nouvelle valeur</th>
+                                    <th class="text-center">Action</th>                    
+                                </tr>
+                            </thead>                   
+                            <tbody>
+                                <tr>                             
+                                     <td><input type="text" class="form-control input-md textinput" id="nom" name="nom" required="true"></td>
+                                     <td class="text-center" id="add-EM"><button type="submit" title="Ajouter" class="btn btn-success"><i class="glyphicon glyphicon-check"></i></button></td>
+                                 </tr>   
+                            </tbody>   
+                        </table>
+                    </div>
+
+                    
+                </div>
+
+                <div class="modal-footer">
+                    <a href="#" class="btn btn-danger" id="confirmModalEditEMNo">Fermer</a>
+                </div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal-dalog -->
+    </div><!-- /.modal -->    
+    
+    <script>
+
+        $(document).ready(function () {
+            var theHREF;
+
+            $(".confirmModalEditEM").click(function(e) {
+                e.preventDefault();
+                theHREF = $(this).attr("href");          
+                $("#myModalEditEM").modal("show");
+                //var Id = $(this).data('id');
+                //$(".modal-body #Id").val( Id );              
+            });
+
+            $("#confirmModalEditEMNo").click(function(e) {
+                $("#myModalEditEM").modal("hide");
+            });
+        });
+    
+
+    /*********Entité Métier*************/
+
+    $('#champs-table-EM tr').editable({
+
+      // enable keyboard support
+      keyboard: true,
+
+      // double click to start editing
+      dblclick: true,
+
+      // enable edit buttons
+      button: true,
+
+      // CSS selector for edit buttons
+      buttonSelector: ".edit",
+
+      // uses select dropdown instead of input field
+      dropdowns: {},
+
+      // maintains column width when editing
+      maintainWidth: true,
+
+      // callbacks for edit, save and cancel actions
+      edit: function(values) {
+            $(".cancel i", this)
+            .show();
+
+            $(".edit i", this)
+            .removeClass('glyphicon-pencil')
+            .addClass('glyphicon-save')
+            .attr('title', 'Save');  
+        },
+
+      save: function(values) {
+            $(".cancel i", this)
+            .hide();     
+
+            $(".edit i", this)
+            .removeClass('glyphicon-save')
+            .addClass('glyphicon-pencil')
+            .attr('title', 'Edit');  
+
+
+            /* Test contre les valeurs dupliquées */
+             var chemin =  $(".nom", this); 
+             var boolean = 0;
+             $('#champs-table-EM').find("tbody").find("tr").each(function(){
+               var identifiant= $(this).find(".id").text();
+               var nom= $(this).find(".nom").text();
+               
+               /*Pour enlever les espaces qui empechent la comparaison*/
+               var nom_X = nom.replace(/ /g, '_');
+               var nom_Y = values["nom"].replace(/ /g, '_');
+               //console.log(nom_X);
+               //console.log(nom_Y);
+
+                if(nom_X == nom_Y && identifiant != values["id"])
+                {
+                    boolean = 1;
+                }
+            });
+            
+            if(boolean == 1)
+            {
+                alert("Entité Métier déjà existante!");
+                chemin.html("");
+                return;                  
+            }
+            else
+            {
+                /* Si ok on post*/
+                var id = $(this).data('id');
+                $.post('{{ path('administration_demande_champ_EM_edit')}}', values);        
+            } 
+
+        },
+
+      cancel: function(values) {
+            $(".edit i", this)
+            .removeClass('glyphicon-save')
+            .addClass('glyphicon-pencil')
+            .attr('title', 'Edit');  
+        }
+
+    });
+
+    $('#champs-table-EM tr #delete-EM').on("click", function()
+    {
+        var identifiant = $("a", this).attr("id");
+
+        if(confirm("Etes-vous sûr de vouloir supprimer l'item?")==true)
+        {    
+            $(this).parent().remove();      
+
+            $.post("{{ path('administration_demande_champ_EM_delete')}}", { id: identifiant})
+              .done(function(data) {
+                alert("Suppression effectuée avec succès!");
+            });
+        }
+
+    });
+
+    $('#champs-table-EM-add tr #add-EM').on("click", function()
+    {
+        var nom = $("#champs-table-EM-add tr #nom").val();
+
+        $.ajax({
+            type: 'post',
+            url: "{{ path('administration_demande_champ_EM_add') }}",
+            data: {nom: nom},
+            success: function()
+            {
+                alert("Ajout effectué avec succès!");
+                //var url = document.location.href;
+                //$(location).attr('href',url+"#budget");                 
+                //location.reload();        
+            },
+            error: function(e) {
+                alert("Cette Entité Métier existe déjà!");                
+               console.log(e);
+             }      
+        });
+
+    });    
+    </script>
+    
+{% endblock %}

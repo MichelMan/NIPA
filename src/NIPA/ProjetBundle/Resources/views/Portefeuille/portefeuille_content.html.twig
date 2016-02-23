@@ -33,24 +33,7 @@
                                         {% else %}
                                             <li><a  href="{% if pf.referencePortefeuille %} {{ path('portefeuille_edit',{'reference': pf.referencePortefeuille})}}{% endif %}" title="{{pf.getPortefeuilleEnveloppe() ? pf.getPortefeuilleEnveloppe().getNom() }}: {{ pf.referencePortefeuille }}">{{ pf.nom }}</a>
                                         {% endif %}    
-                                            <!--
-                                            <ul>                                    
-                                                <li><a href="#">Demandes</a>
-                                                    <ul>
-                                                        <li><a href="#">MC-0001</a></li>
-                                                        <li><a href="#">MC-0002</a>
-                                                            <ul>
-                                                                <li><a href="#">Projet: MC-0002-1</a></li>
-                                                                <li><a href="#">Projet: MC-0002-2</a></li>
-                                                            </ul>
-                                                        </li>
-                                                        <li>MC-0003</li>
-                                                    </ul>
-                                                </li>
-                                            </ul>
-                                            -->
-                                        </li> 
-
+                                            </li> 
                                     {% endif %}
                                 {% endfor %}                                                                    
                             </ul>

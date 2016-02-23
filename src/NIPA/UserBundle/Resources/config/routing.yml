@@ -59,39 +59,87 @@ administration_groupe_delete:
 
 administration_champ_enveloppe_add:
     path: champ/enveloppe/add
-    defaults: { _controller: NIPAUserBundle:Administration:addChampEnveloppe }
+    defaults: { _controller: NIPAUserBundle:AdministrationChampsPortefeuille:addChampEnveloppe }
 
 administration_champ_enveloppe_edit:
     path: champ/enveloppe/edit
-    defaults: { _controller: NIPAUserBundle:Administration:editChampEnveloppe }
+    defaults: { _controller: NIPAUserBundle:AdministrationChampsPortefeuille:editChampEnveloppe }
 
 administration_champ_enveloppe_delete:
     path: champ/enveloppe/delete
-    defaults: { _controller: NIPAUserBundle:Administration:deleteChampEnveloppe }
+    defaults: { _controller: NIPAUserBundle:AdministrationChampsPortefeuille:deleteChampEnveloppe }
 
 administration_champ_annee_add:
     path: champ/annee/add
-    defaults: { _controller: NIPAUserBundle:Administration:addChampAnnee }
+    defaults: { _controller: NIPAUserBundle:AdministrationChampsPortefeuille:addChampAnnee }
 
 administration_champ_annee_edit:
     path: champ/annee/edit
-    defaults: { _controller: NIPAUserBundle:Administration:editChampAnnee }
+    defaults: { _controller: NIPAUserBundle:AdministrationChampsPortefeuille:editChampAnnee }
 
 administration_champ_annee_delete:
     path: champ/annee/delete
-    defaults: { _controller: NIPAUserBundle:Administration:deleteChampAnnee }
+    defaults: { _controller: NIPAUserBundle:AdministrationChampsPortefeuille:deleteChampAnnee }
 
 administration_champ_statut_add:
     path: champ/statut/add
-    defaults: { _controller: NIPAUserBundle:Administration:addChampStatut }
+    defaults: { _controller: NIPAUserBundle:AdministrationChampsPortefeuille:addChampStatut }
 
 administration_champ_statut_edit:
     path: champ/statut/edit
-    defaults: { _controller: NIPAUserBundle:Administration:editChampStatut }
+    defaults: { _controller: NIPAUserBundle:AdministrationChampsPortefeuille:editChampStatut }
 
 administration_champ_statut_delete:
     path: champ/statut/delete
-    defaults: { _controller: NIPAUserBundle:Administration:deleteChampStatut }
+    defaults: { _controller: NIPAUserBundle:AdministrationChampsPortefeuille:deleteChampStatut }
+
+administration_demande_champ_direction_add:
+    path: champ/direction/add
+    defaults: { _controller: NIPAUserBundle:AdministrationChampsDemande:addChampDirection }
+
+administration_demande_champ_direction_edit:
+    path: champ/direction/edit
+    defaults: { _controller: NIPAUserBundle:AdministrationChampsDemande:editChampDirection }
+
+administration_demande_champ_direction_delete:
+    path: champ/direction/delete
+    defaults: { _controller: NIPAUserBundle:AdministrationChampsDemande:deleteChampDirection }
+
+administration_demande_champ_divers_add:
+    path: champ/divers/add
+    defaults: { _controller: NIPAUserBundle:AdministrationChampsDemande:addChampDivers }
+
+administration_demande_champ_divers_edit:
+    path: champ/divers/edit
+    defaults: { _controller: NIPAUserBundle:AdministrationChampsDemande:editChampDivers }
+
+administration_demande_champ_divers_delete:
+    path: champ/divers/delete
+    defaults: { _controller: NIPAUserBundle:AdministrationChampsDemande:deleteChampDivers }
+
+administration_demande_champ_EM_add:
+    path: champ/EM/add
+    defaults: { _controller: NIPAUserBundle:AdministrationChampsDemande:addChampEM }
+
+administration_demande_champ_EM_edit:
+    path: champ/EM/edit
+    defaults: { _controller: NIPAUserBundle:AdministrationChampsDemande:editChampEM }
+
+administration_demande_champ_EM_delete:
+    path: champ/EM/delete
+    defaults: { _controller: NIPAUserBundle:AdministrationChampsDemande:deleteChampEM }
+
+administration_demande_champ_instance_add:
+    path: champ/instance/add
+    defaults: { _controller: NIPAUserBundle:AdministrationChampsDemande:addChampInstance }
+
+administration_demande_champ_instance_edit:
+    path: champ/instance/edit
+    defaults: { _controller: NIPAUserBundle:AdministrationChampsDemande:editChampInstance }
+
+administration_demande_champ_instance_delete:
+    path: champ/instance/delete
+    defaults: { _controller: NIPAUserBundle:AdministrationChampsDemande:deleteChampInstance }
 
 groupe_permission_add:
     path: groupe/permission/add/{groupeId}

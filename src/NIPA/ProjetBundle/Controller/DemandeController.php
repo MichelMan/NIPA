@@ -59,12 +59,30 @@ class DemandeController extends Controller
         }
 
         /***************DATA TREE*******************/
+        //return array() List ALL Portefeuille;
+        $listPortefeuille = $this->get('nipa_portefeuille.portefeuille_manager')->loadAllPortefeuille();
+        //On trie la liste des portefeuilles
+        usort($listPortefeuille, function ($a, $b) {
+            return strnatcmp($a->getReferencePortefeuille(), $b->getReferencePortefeuille());
+        });        
+        
+        //On récupère tous les enveloppes
+        $repository = $this->getDoctrine()->getManager()->getRepository('NIPAProjetBundle:PortefeuilleEnveloppe');
+        $listPortefeuilleEnveloppe = $repository->findAll();     
+        //On récupère toutes les années
+        $repository = $this->getDoctrine()->getManager()->getRepository('NIPAProjetBundle:PortefeuilleAnnee');
+        $listPortefeuilleAnnee = $repository->findAll();         
+         //On récupère tous les status
+        $repository = $this->getDoctrine()->getManager()->getRepository('NIPAProjetBundle:PortefeuilleStatut');
+        $listPortefeuilleStatut = $repository->findAll(); 
+        
         //return array() List ALL Demandes;
         $listDemande = $this->get('nipa_demande.demande_manager')->loadAllDemande();
         //On trie la liste des demandes
         usort($listDemande, function ($a, $b) {
             return strnatcmp($a->getReferenceDemande(), $b->getReferenceDemande());
-        });              
+        });   
+        
         /************************************/
         $demande = new Demande(); // On créé notre objet      
         $form = $this->get('form.factory')->create(new DemandeFormType(), $demande); // On bind l'objet à notre formulaire 
@@ -75,7 +93,16 @@ class DemandeController extends Controller
        
         
         //return array();
-        return $this->render('NIPAProjetBundle:Demande:demande.html.twig', array('user' => $user, 'form' => $form->createView(), 'demande' => $demande, 'listDemande' => $listDemande,'choices' => $choices)); // On passe à Twig l'objet form et notre objet
+        return $this->render('NIPAProjetBundle:Demande:demande.html.twig', array(
+            'user' => $user, 
+            'form' => $form->createView(), 
+            'demande' => $demande, 
+            'listDemande' => $listDemande,
+            'choices' => $choices,
+            'listPortefeuille' => $listPortefeuille, 
+            'listPortefeuilleEnveloppe' => $listPortefeuilleEnveloppe, 
+            'listPortefeuilleAnnee' => $listPortefeuilleAnnee, 
+            'listPortefeuilleStatut' => $listPortefeuilleStatut)); 
     
     } 
 
@@ -120,12 +147,29 @@ class DemandeController extends Controller
         $request = $this->get('request'); // On récupère l'objet request via le service container
         
         /***************DATA TREE*******************/
+        //return array() List ALL Portefeuille;
+        $listPortefeuille = $this->get('nipa_portefeuille.portefeuille_manager')->loadAllPortefeuille();
+        //On trie la liste des portefeuilles
+        usort($listPortefeuille, function ($a, $b) {
+            return strnatcmp($a->getReferencePortefeuille(), $b->getReferencePortefeuille());
+        });        
+        
+        //On récupère tous les enveloppes
+        $repository = $this->getDoctrine()->getManager()->getRepository('NIPAProjetBundle:PortefeuilleEnveloppe');
+        $listPortefeuilleEnveloppe = $repository->findAll();     
+        //On récupère toutes les années
+        $repository = $this->getDoctrine()->getManager()->getRepository('NIPAProjetBundle:PortefeuilleAnnee');
+        $listPortefeuilleAnnee = $repository->findAll();         
+         //On récupère tous les status
+        $repository = $this->getDoctrine()->getManager()->getRepository('NIPAProjetBundle:PortefeuilleStatut');
+        $listPortefeuilleStatut = $repository->findAll(); 
+        
         //return array() List ALL Demandes;
         $listDemande = $this->get('nipa_demande.demande_manager')->loadAllDemande();
         //On trie la liste des demandes
         usort($listDemande, function ($a, $b) {
             return strnatcmp($a->getReferenceDemande(), $b->getReferenceDemande());
-        });         
+        });   
         
         /************************************/
         $demande = new Demande(); // On créé notre objet      
@@ -181,7 +225,7 @@ class DemandeController extends Controller
                 // Conversion de PF-15-01 --> PF1501
                 $refPortefeuille = str_replace('-', '', $referencePortefeuille);
 
-                \Doctrine\Common\Util\Debug::dump($refPortefeuille);                
+                //\Doctrine\Common\Util\Debug::dump($refPortefeuille);                
             
                 // On requete pour rechercher (LIKE) les références Demande similaire à celle du Portefeuille
                 $refs = $this->getDoctrine()->getManager()
@@ -189,7 +233,7 @@ class DemandeController extends Controller
                         ->setParameter('ipp', '%'.$refPortefeuille.'%')
                         ->getResult();        
                 
-            \Doctrine\Common\Util\Debug::dump($refs);
+                //\Doctrine\Common\Util\Debug::dump($refs);
                 
                 $indice = 0;
                 // On boucle pour chercher la ref xxxx-001 -> 001 
@@ -202,7 +246,7 @@ class DemandeController extends Controller
                     }
                 }
                          
-                \Doctrine\Common\Util\Debug::dump($indice);
+                //\Doctrine\Common\Util\Debug::dump($indice);
                 
                 //Mettre au bon format: pour les exceptions type 100 ou 10, 20, 30...
                 if(substr($indice, -2) == '00')
@@ -216,7 +260,7 @@ class DemandeController extends Controller
                     $indice = str_replace('0', '', $pre).substr($indice,-1, 1);
                 }
                 
-                \Doctrine\Common\Util\Debug::dump($indice);
+                //\Doctrine\Common\Util\Debug::dump($indice);
 
                 if(strlen($indice) == 1)
                 {
@@ -234,7 +278,7 @@ class DemandeController extends Controller
                 }
                 
                 $reference = $refPortefeuille.'-'.$number_ref;
-                \Doctrine\Common\Util\Debug::dump($reference);
+                //\Doctrine\Common\Util\Debug::dump($reference);
 
                 $demande->setReferenceDemande($reference);
                 /**************************************************************/
@@ -263,7 +307,22 @@ class DemandeController extends Controller
         }
 
         //return array();
-        return $this->render('NIPAProjetBundle:Demande:demande.html.twig', array('user' => $user, 'form' => $form->createView(), 'formModal' => $formModal->createView(), 'formInstance' => $formInstance->createView(), 'formBudget' => $formBudget->createView(), 'demande' => $demande, 'listDemande' => $listDemande,'choices' => $choices, 'choices2' => $choices2, 'listDemandeBudget' => $listDemandeBudget, 'listDemandeInstance' => $listDemandeInstance)); // On passe à Twig l'objet form et notre objet
+        return $this->render('NIPAProjetBundle:Demande:demande.html.twig', array(
+            'user' => $user, 
+            'form' => $form->createView(), 
+            'formModal' => $formModal->createView(), 
+            'formInstance' => $formInstance->createView(), 
+            'formBudget' => $formBudget->createView(), 
+            'demande' => $demande,
+            'listDemande' => $listDemande,
+            'choices' => $choices, 
+            'choices2' => $choices2, 
+            'listDemandeBudget' => $listDemandeBudget, 
+            'listDemandeInstance' => $listDemandeInstance,
+            'listPortefeuille' => $listPortefeuille, 
+            'listPortefeuilleEnveloppe' => $listPortefeuilleEnveloppe, 
+            'listPortefeuilleAnnee' => $listPortefeuilleAnnee, 
+            'listPortefeuilleStatut' => $listPortefeuilleStatut)); 
 
     }    
     
@@ -315,12 +374,29 @@ class DemandeController extends Controller
         }
     
         /***************DATA TREE*******************/
+        //return array() List ALL Portefeuille;
+        $listPortefeuille = $this->get('nipa_portefeuille.portefeuille_manager')->loadAllPortefeuille();
+        //On trie la liste des portefeuilles
+        usort($listPortefeuille, function ($a, $b) {
+            return strnatcmp($a->getReferencePortefeuille(), $b->getReferencePortefeuille());
+        });        
+        
+        //On récupère tous les enveloppes
+        $repository = $this->getDoctrine()->getManager()->getRepository('NIPAProjetBundle:PortefeuilleEnveloppe');
+        $listPortefeuilleEnveloppe = $repository->findAll();     
+        //On récupère toutes les années
+        $repository = $this->getDoctrine()->getManager()->getRepository('NIPAProjetBundle:PortefeuilleAnnee');
+        $listPortefeuilleAnnee = $repository->findAll();         
+         //On récupère tous les status
+        $repository = $this->getDoctrine()->getManager()->getRepository('NIPAProjetBundle:PortefeuilleStatut');
+        $listPortefeuilleStatut = $repository->findAll(); 
+        
         //return array() List ALL Demandes;
         $listDemande = $this->get('nipa_demande.demande_manager')->loadAllDemande();
         //On trie la liste des demandes
         usort($listDemande, function ($a, $b) {
             return strnatcmp($a->getReferenceDemande(), $b->getReferenceDemande());
-        });         
+        });   
                   
         /************************************/
         
@@ -389,8 +465,22 @@ class DemandeController extends Controller
         
         }
         //return array();
-        return $this->render('NIPAProjetBundle:Demande:demande.html.twig', array('user' => $user, 'form' => $form->createView(), 'formModal' => $formModal->createView(), 'formInstance' => $formInstance->createView(), 'formBudget' => $formBudget->createView(), 'demande' => $demande, 'listDemande' => $listDemande,'choices' => $choices, 'choices2' => $choices2, 'listDemandeBudget' => $listDemandeBudget, 'listDemandeInstance' => $listDemandeInstance)); // On passe à Twig l'objet form et notre objet
-
+        return $this->render('NIPAProjetBundle:Demande:demande.html.twig', array(
+            'user' => $user, 
+            'form' => $form->createView(), 
+            'formModal' => $formModal->createView(), 
+            'formInstance' => $formInstance->createView(), 
+            'formBudget' => $formBudget->createView(), 
+            'demande' => $demande,
+            'listDemande' => $listDemande,
+            'choices' => $choices, 
+            'choices2' => $choices2, 
+            'listDemandeBudget' => $listDemandeBudget, 
+            'listDemandeInstance' => $listDemandeInstance,
+            'listPortefeuille' => $listPortefeuille, 
+            'listPortefeuilleEnveloppe' => $listPortefeuilleEnveloppe, 
+            'listPortefeuilleAnnee' => $listPortefeuilleAnnee, 
+            'listPortefeuilleStatut' => $listPortefeuilleStatut)); 
     }      
     
     
@@ -438,12 +528,29 @@ class DemandeController extends Controller
         $demande = $this->get('nipa_demande.demande_manager')->loadDemande($reference);
    
         /***************DATA TREE*******************/
+        //return array() List ALL Portefeuille;
+        $listPortefeuille = $this->get('nipa_portefeuille.portefeuille_manager')->loadAllPortefeuille();
+        //On trie la liste des portefeuilles
+        usort($listPortefeuille, function ($a, $b) {
+            return strnatcmp($a->getReferencePortefeuille(), $b->getReferencePortefeuille());
+        });        
+        
+        //On récupère tous les enveloppes
+        $repository = $this->getDoctrine()->getManager()->getRepository('NIPAProjetBundle:PortefeuilleEnveloppe');
+        $listPortefeuilleEnveloppe = $repository->findAll();     
+        //On récupère toutes les années
+        $repository = $this->getDoctrine()->getManager()->getRepository('NIPAProjetBundle:PortefeuilleAnnee');
+        $listPortefeuilleAnnee = $repository->findAll();         
+         //On récupère tous les status
+        $repository = $this->getDoctrine()->getManager()->getRepository('NIPAProjetBundle:PortefeuilleStatut');
+        $listPortefeuilleStatut = $repository->findAll(); 
+        
         //return array() List ALL Demandes;
         $listDemande = $this->get('nipa_demande.demande_manager')->loadAllDemande();
         //On trie la liste des demandes
         usort($listDemande, function ($a, $b) {
             return strnatcmp($a->getReferenceDemande(), $b->getReferenceDemande());
-        });         
+        });        
                   
         /************************************/
         
@@ -522,7 +629,22 @@ class DemandeController extends Controller
             //}
         }
 
-        return $this->render('NIPAProjetBundle:Demande:demande.html.twig', array('user' => $user, 'form' => $form->createView(), 'formModal' => $formModal->createView(), 'formInstance' => $formInstance->createView(), 'formBudget' => $formBudget->createView(), 'demande' => $demande, 'listDemande' => $listDemande,'choices' => $choices, 'choices2' => $choices2, 'listDemandeBudget' => $listDemandeBudget, 'listDemandeInstance' => $listDemandeInstance)); // On passe à Twig l'objet form et notre objet
+        return $this->render('NIPAProjetBundle:Demande:demande.html.twig', array(
+            'user' => $user, 
+            'form' => $form->createView(), 
+            'formModal' => $formModal->createView(), 
+            'formInstance' => $formInstance->createView(), 
+            'formBudget' => $formBudget->createView(), 
+            'demande' => $demande,
+            'listDemande' => $listDemande,
+            'choices' => $choices, 
+            'choices2' => $choices2, 
+            'listDemandeBudget' => $listDemandeBudget, 
+            'listDemandeInstance' => $listDemandeInstance,
+            'listPortefeuille' => $listPortefeuille, 
+            'listPortefeuilleEnveloppe' => $listPortefeuilleEnveloppe, 
+            'listPortefeuilleAnnee' => $listPortefeuilleAnnee, 
+            'listPortefeuilleStatut' => $listPortefeuilleStatut)); 
     }
     
     public function deletePortefeuillesAction(Request $request, $referencePortefeuille, $referenceDemande)
@@ -541,12 +663,29 @@ class DemandeController extends Controller
         $demande = $this->get('nipa_demande.demande_manager')->loadDemande($referenceDemande);
 
         /***************DATA TREE*******************/
+        //return array() List ALL Portefeuille;
+        $listPortefeuille = $this->get('nipa_portefeuille.portefeuille_manager')->loadAllPortefeuille();
+        //On trie la liste des portefeuilles
+        usort($listPortefeuille, function ($a, $b) {
+            return strnatcmp($a->getReferencePortefeuille(), $b->getReferencePortefeuille());
+        });        
+        
+        //On récupère tous les enveloppes
+        $repository = $this->getDoctrine()->getManager()->getRepository('NIPAProjetBundle:PortefeuilleEnveloppe');
+        $listPortefeuilleEnveloppe = $repository->findAll();     
+        //On récupère toutes les années
+        $repository = $this->getDoctrine()->getManager()->getRepository('NIPAProjetBundle:PortefeuilleAnnee');
+        $listPortefeuilleAnnee = $repository->findAll();         
+         //On récupère tous les status
+        $repository = $this->getDoctrine()->getManager()->getRepository('NIPAProjetBundle:PortefeuilleStatut');
+        $listPortefeuilleStatut = $repository->findAll(); 
+        
         //return array() List ALL Demandes;
         $listDemande = $this->get('nipa_demande.demande_manager')->loadAllDemande();
         //On trie la liste des demandes
         usort($listDemande, function ($a, $b) {
             return strnatcmp($a->getReferenceDemande(), $b->getReferenceDemande());
-        });         
+        });          
                   
         /************************************/
         
@@ -592,7 +731,7 @@ class DemandeController extends Controller
         
         $this->get('session')->getFlashBag()->add('success', 'Demande '.$demande->getReferenceDemande().' retiré du Portefeuille '.$portefeuille->getNom().' ('.$portefeuille->getReferencePortefeuille().')');
         
-        // On redirige vers la page de modification du portefeuille
+        // On redirige vers la page de modification de la demande
         return new RedirectResponse($this->generateUrl('demande_edit', array(
           'reference' => $demande->getReferenceDemande()
        )));        
@@ -641,12 +780,29 @@ class DemandeController extends Controller
         $demande = $this->get('nipa_demande.demande_manager')->loadDemande($reference);
    
         /***************DATA TREE*******************/
+        //return array() List ALL Portefeuille;
+        $listPortefeuille = $this->get('nipa_portefeuille.portefeuille_manager')->loadAllPortefeuille();
+        //On trie la liste des portefeuilles
+        usort($listPortefeuille, function ($a, $b) {
+            return strnatcmp($a->getReferencePortefeuille(), $b->getReferencePortefeuille());
+        });        
+        
+        //On récupère tous les enveloppes
+        $repository = $this->getDoctrine()->getManager()->getRepository('NIPAProjetBundle:PortefeuilleEnveloppe');
+        $listPortefeuilleEnveloppe = $repository->findAll();     
+        //On récupère toutes les années
+        $repository = $this->getDoctrine()->getManager()->getRepository('NIPAProjetBundle:PortefeuilleAnnee');
+        $listPortefeuilleAnnee = $repository->findAll();         
+         //On récupère tous les status
+        $repository = $this->getDoctrine()->getManager()->getRepository('NIPAProjetBundle:PortefeuilleStatut');
+        $listPortefeuilleStatut = $repository->findAll(); 
+        
         //return array() List ALL Demandes;
         $listDemande = $this->get('nipa_demande.demande_manager')->loadAllDemande();
         //On trie la liste des demandes
         usort($listDemande, function ($a, $b) {
             return strnatcmp($a->getReferenceDemande(), $b->getReferenceDemande());
-        });         
+        });      
                   
         /************************************/
         
@@ -725,7 +881,22 @@ class DemandeController extends Controller
             //}
         }
 
-        return $this->render('NIPAProjetBundle:Demande:demande.html.twig', array('user' => $user, 'form' => $form->createView(), 'formModal' => $formModal->createView(), 'formInstance' => $formInstance->createView(), 'formBudget' => $formBudget->createView(), 'demande' => $demande, 'listDemande' => $listDemande,'choices' => $choices, 'choices2' => $choices2, 'listDemandeBudget' => $listDemandeBudget, 'listDemandeInstance' => $listDemandeInstance)); // On passe à Twig l'objet form et notre objet
+        return $this->render('NIPAProjetBundle:Demande:demande.html.twig', array(
+            'user' => $user, 
+            'form' => $form->createView(), 
+            'formModal' => $formModal->createView(), 
+            'formInstance' => $formInstance->createView(), 
+            'formBudget' => $formBudget->createView(), 
+            'demande' => $demande,
+            'listDemande' => $listDemande,
+            'choices' => $choices, 
+            'choices2' => $choices2, 
+            'listDemandeBudget' => $listDemandeBudget, 
+            'listDemandeInstance' => $listDemandeInstance,
+            'listPortefeuille' => $listPortefeuille, 
+            'listPortefeuilleEnveloppe' => $listPortefeuilleEnveloppe, 
+            'listPortefeuilleAnnee' => $listPortefeuilleAnnee, 
+            'listPortefeuilleStatut' => $listPortefeuilleStatut)); 
     }    
     
     /**

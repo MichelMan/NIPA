@@ -1,0 +1,103 @@
+{% trans_default_domain 'NIPAUserBundle' %}
+
+{% block nipa_users_div %}
+    
+    <!-- Container table filter -->
+    <div class="col-md-12">
+        
+        <br>
+        
+        <!-- PANEL -->          
+        <div class="panel panel-primary">
+            <div class="panel-heading">
+                <h3 class="panel-title">Champs personnalisés Demande</h3>
+                <div class="pull-right">
+                    <span class="clickable filter" data-toggle="tooltip" title="Filtre" data-container="body">
+                        <i class="glyphicon glyphicon-filter"></i>
+                    </span>
+                </div>
+            </div>
+             <div class="panel-body">
+                <input type="text" class="form-control" id="champs-table-filter" data-action="filter" data-filters="#champs-table" placeholder="Filtres champs" />
+            </div>
+            
+            {% set fields = ["Direction", "Divers", "Entite Métier", "Instance", "Interlocuteur MOA", "Offres", "Porteur Métier", "Priorité", "SDM", "Statut", "Statut Instance", "Type Projet"] %}
+            <table class="table table-hover" id="champs-table">
+                <thead>
+                    <tr>
+                        <th>Nom</th>
+                        <th>Format</th>
+                        <th>Editer</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for var in fields %}
+                    <tr>
+                        <td>{{ var }}</td>
+                        <td>Liste</td>
+                        <td>
+                            {% if loop.index - 1 == 0  %}
+                                <a href="#" data-id="{{ loop.index - 1 }}" class="confirmModalEditDirection" href=""><span class="glyphicon glyphicon-edit icon-edit"></span></a>
+                                {% include "NIPAUserBundle:Administration:ChampsDemande/champs_demande_direction.html.twig" %}
+                            {% elseif loop.index - 1 == 1  %}
+                                <a href="#" data-id="{{ loop.index - 1 }}" class="confirmModalEditDivers" href=""><span class="glyphicon glyphicon-edit icon-edit"></span></a>
+                                {% include "NIPAUserBundle:Administration:ChampsDemande/champs_demande_divers.html.twig" %}
+                            {% elseif loop.index - 1 == 2  %}
+                                <a href="#" data-id="{{ loop.index - 1 }}" class="confirmModalEditEM" href=""><span class="glyphicon glyphicon-edit icon-edit"></span></a>                            
+                                {% include "NIPAUserBundle:Administration:ChampsDemande/champs_demande_entiteMetier.html.twig" %}
+                            {% elseif loop.index - 1 == 3  %}
+                                <a href="#" data-id="{{ loop.index - 1 }}" class="confirmModalEditInstance" href=""><span class="glyphicon glyphicon-edit icon-edit"></span></a>                            
+                                {% include "NIPAUserBundle:Administration:ChampsDemande/champs_demande_instance.html.twig" %}
+                            {% elseif loop.index - 1 == 4  %}
+                                <a href="#" data-id="{{ loop.index - 1 }}" class="confirmModalEditStatut" href=""><span class="glyphicon glyphicon-edit icon-edit"></span></a>                            
+                            {% elseif loop.index - 1 == 5  %}
+                                <a href="#" data-id="{{ loop.index - 1 }}" class="confirmModalEditStatut" href=""><span class="glyphicon glyphicon-edit icon-edit"></span></a>                            
+                            {% elseif loop.index - 1 == 6  %}
+                                <a href="#" data-id="{{ loop.index - 1 }}" class="confirmModalEditStatut" href=""><span class="glyphicon glyphicon-edit icon-edit"></span></a>                            
+                            {% elseif loop.index - 1 == 7  %}
+                                <a href="#" data-id="{{ loop.index - 1 }}" class="confirmModalEditStatut" href=""><span class="glyphicon glyphicon-edit icon-edit"></span></a>                            
+                            {% elseif loop.index - 1 == 8  %}
+                                <a href="#" data-id="{{ loop.index - 1 }}" class="confirmModalEditStatut" href=""><span class="glyphicon glyphicon-edit icon-edit"></span></a>                            
+                            {% elseif loop.index - 1 == 9  %}
+                                <a href="#" data-id="{{ loop.index - 1 }}" class="confirmModalEditStatut" href=""><span class="glyphicon glyphicon-edit icon-edit"></span></a>                            
+                            {% elseif loop.index - 1 == 10  %}
+                                <a href="#" data-id="{{ loop.index - 1 }}" class="confirmModalEditStatut" href=""><span class="glyphicon glyphicon-edit icon-edit"></span></a>                            
+                            {% elseif loop.index - 1 == 11  %}
+                                <a href="#" data-id="{{ loop.index - 1 }}" class="confirmModalEditStatut" href=""><span class="glyphicon glyphicon-edit icon-edit"></span></a>                            
+                            {% endif  %}
+                        
+                        </td>
+                        
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        
+        <!-- PAGINATION -->  
+        <nav>
+          <ul class="pagination">
+            <li class="disabled">
+              <a href="#" aria-label="Previous">
+                <span aria-hidden="true">&laquo;</span>
+                <span class="sr-only">Previous</span>
+              </a>
+            </li>
+            <li class="active">
+              <a href="#">1 <span class="sr-only">(current)</span></a>
+            </li>
+            <li><a href="#">2</a></li>
+            <li><a href="#">3</a></li>
+            <li>
+              <a href="#" aria-label="Next">
+                <span aria-hidden="true">&raquo;</span>
+                <span class="sr-only">Next</span>
+              </a>
+            </li>
+          </ul>
+        </nav>            
+        
+    </div>
+  
+
+{% endblock nipa_users_div %}

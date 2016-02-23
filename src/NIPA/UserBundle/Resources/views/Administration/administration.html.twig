@@ -74,7 +74,8 @@
             <div class="col-md-3">
                 <ul class="nav nav-pills nav-stacked admin-menu">
                     <li class="active"><a href="" data-target-id="projet"><i class="fa fa-book fa-fw"></i>Projets</a></li>
-                    <li><a href="#" data-target-id="champs"><i class="fa fa-pencil-square fa-fw"></i>Champs personnalisés</a></li>                                   
+                    <li><a href="#" data-target-id="champs_P"><i class="fa fa-pencil-square fa-fw"></i>Champs personnalisés Portefeuille</a></li>                                   
+                    <li><a href="#" data-target-id="champs_D"><i class="fa fa-pencil-square fa-fw"></i>Champs personnalisés Demande</a></li>
                     <li><a href="#" data-target-id="user"><i class="fa fa-users fa-fw"></i>Utilisateurs</a></li>
                     <li><a href="#" data-target-id="groupe"><i class="fa fa-list-alt fa-fw"></i>Groupes</a></li>
                 </ul>
@@ -83,9 +84,12 @@
             <div class="col-md-9 well admin-content" id="projet">
                 {% include "NIPAUserBundle:Administration:administration_content_projets.html.twig" %}
             </div>
-            <div class="col-md-9 well admin-content" id="champs">
-                {% include "NIPAUserBundle:Administration:administration_content_champs.html.twig" %}
-            </div>            
+            <div class="col-md-9 well admin-content" id="champs_P">
+                {% include "NIPAUserBundle:Administration:administration_content_champs_portefeuille.html.twig" %}
+            </div>  
+            <div class="col-md-9 well admin-content" id="champs_D">
+                {% include "NIPAUserBundle:Administration:administration_content_champs_demande.html.twig" %}
+            </div> 
             <div class="col-md-9 well admin-content" id="user">
                 {% include "NIPAUserBundle:Administration:administration_content_users.html.twig" %}
             </div>
