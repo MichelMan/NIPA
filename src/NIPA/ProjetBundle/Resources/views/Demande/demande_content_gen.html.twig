@@ -34,6 +34,16 @@
         
     </style>    
   
+    {# TEST LES DROITS USER#}
+    {% set droit = 0 %}
+    {% for groupe in user.getGroupesToArray() %} 
+        {% if groupe.getPermission() %} {# Test si le groupe a des permissions #}
+            {% if (groupe.getPermission().getCMSDemande() == 1) %} {# Si oui on test les droits d'accès #}
+                {% set droit = droit + 1 %}  
+            {% endif %}    
+        {% endif %}
+    {% endfor %}     
+    
     {% if demande.referenceDemande %}                
         <h4 class=""><span class='glyphicon glyphicon-edit'></span> {{ 'Mise à jour Demande'|trans }} </h4>            
     {% else %}
@@ -162,7 +172,12 @@
             {% if portefeuille.referencePortefeuille is defined %}                
                 <a href="{{ path('portefeuille_delete', {'reference': portefeuille.referencePortefeuille}) }}" class="confirmModalLinkPortefeuille btn btn-danger"><span class="glyphicon glyphicon-trash"></span> Supprimer </a>                                                
             {% endif %}
-            <button class="btn btn-success" type="submit"><span class='glyphicon glyphicon-check'></span> Valider</button>           
+            
+            {% if droit != 0 %}
+                <button class="btn btn-success" type="submit"><span class='glyphicon glyphicon-check'></span> Valider</button>           
+            {% else %}
+                <button class="btn btn-success" type="submit" DISABLED><span class='glyphicon glyphicon-check'></span> Valider</button>           
+            {% endif %}
         </div> 
             <p>* Champs obligatoire</p>        
             

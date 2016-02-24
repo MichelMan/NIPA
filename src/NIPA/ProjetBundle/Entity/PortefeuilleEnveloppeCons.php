@@ -45,7 +45,7 @@ class PortefeuilleEnveloppeCons
     /**
      * @var string
      *
-     * @ORM\Column(name="Commentaires", type="string", length=500)
+     * @ORM\Column(name="Commentaires", type="string", length=2500)
      */
     private $commentaires;
 

@@ -57,7 +57,7 @@ class DemandeListeInstance
     /**
      * @var string
      *
-     * @ORM\Column(name="Remarques", type="string", length=255, nullable = true)
+     * @ORM\Column(name="Remarques", type="string", length=2500, nullable = true)
      */
     private $remarques;
 

@@ -7,6 +7,16 @@
         text-align:center;
         }       
     </style>
+
+    {# TEST LES DROITS USER#}
+    {% set droit = 0 %}
+    {% for groupe in user.getGroupesToArray() %} 
+        {% if groupe.getPermission() %} {# Test si le groupe a des permissions #}
+            {% if (groupe.getPermission().getCMSDemande() == 1) %} {# Si oui on test les droits d'accès #}
+                {% set droit = droit + 1 %}  
+            {% endif %}    
+        {% endif %}
+    {% endfor %}    
     
     <h4 class=""><span class='glyphicon glyphicon-usd'></span> {{ 'Budget actuel '|trans }} </h4>        
         
@@ -57,7 +67,11 @@
                                     <td><h5>{{ budget.date|date('d/m/Y') }}</h5></td>
                                     <td><h5>{{ budget.montant|number_format(2, ',', ' ') }}</h5></td>
                                     <td><h5><textarea class="form-control" cols=30 rows=3 id="Commentaires" READONLY>{{ budget.commentaires }}</textarea></h5></td> 
-                                    <td id="delete-budget" class="text-center"><a id="{{ budget.id }}" class="btn btn-danger confirmModalBudget"><i class="glyphicon glyphicon-remove"></i> </a></td>                    
+                                    {% if droit != 0 %}
+                                        <td id="delete-budget" class="text-center"><a id="{{ budget.id }}" class="btn btn-danger confirmModalBudget"><i class="glyphicon glyphicon-remove"></i> </a></td>                    
+                                    {% else %}
+                                        <td id="delete-budget" class="text-center"><a id="{{ budget.id }}" class="btn btn-danger confirmModalBudget" DISABLED><i class="glyphicon glyphicon-remove"></i> </a></td>                    
+                                    {% endif %}
                                 </tr>
                             {% endfor %}   
                         {% endif %}    
@@ -95,7 +109,11 @@
                                 </td>
                                 <td><input type="number" min="0" step="0.01" data-number-to-fixed="2" data-number-stepfactor="100" id="montant" placeholder="Montant" class="form-control input-md textinput currency" name="montant" required="true"></td>
                                 <td><textarea class="form-control input-md" id="comment" placeholder="..." name="comment" cols=30 rows=3 ></textarea></td>                            
-                                <td class="text-center"><button type="submit" class="btn btn-success" id="add-budget"><i class="glyphicon glyphicon-check"></i></button></td>
+                                {% if droit != 0 %}
+                                    <td class="text-center"><button type="submit" class="btn btn-success" id="add-budget"><i class="glyphicon glyphicon-check"></i></button></td>
+                                {% else %}
+                                    <td class="text-center"><button type="submit" class="btn btn-success" id="add-budget" DISABLED><i class="glyphicon glyphicon-check"></i></button></td>
+                                {% endif %}
                             </tr>   
                         </tbody>   
                     </table>

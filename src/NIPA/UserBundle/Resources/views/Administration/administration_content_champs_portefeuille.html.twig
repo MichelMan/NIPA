@@ -153,7 +153,7 @@
                                 <thead>
                                     <tr>
                                         <th>N°</th>
-                                        <th>ID</th>                                        
+                                        <th style="display: none;">ID</th>                                        
                                         <th>Valeur</th>
                                         <th>Edition</th>                                        
                                         <th>Suppression</th>                                           
@@ -163,7 +163,7 @@
                                     {% for enveloppe in listEnveloppes %}
                                         <tr data-id="{{ loop.index }}">
                                             <td>{{ loop.index }}</td>
-                                            <td data-field="id" class="id">{{ enveloppe.id }}</td>                                            
+                                            <td data-field="id" class="id" style="display: none;">{{ enveloppe.id }}</td>                                            
                                             <td data-field="nom" class="nom">{{ enveloppe.nom }}</td>
                                             <td>
                                                 <a class="button button-small edit" title="Edit"><i class="glyphicon glyphicon-pencil"></i></a>
@@ -231,7 +231,7 @@
                                 <thead>
                                     <tr>
                                         <th>N°</th>
-                                        <th>ID</th>                                        
+                                        <th style="display: none;">ID</th>                                        
                                         <th>Valeur</th>
                                         <th>Edition</th>                                        
                                         <th>Suppression</th>                                           
@@ -241,7 +241,7 @@
                                     {% for annee in listAnnees %}
                                         <tr data-id="{{ loop.index }}">
                                             <td>{{ loop.index }}</td>
-                                            <td data-field="id" class="id">{{ annee.id }}</td>                                            
+                                            <td data-field="id" class="id" style="display: none;">{{ annee.id }}</td>                                            
                                             <td data-field="valeur" class="valeur">{{ annee.valeur }}</td>
                                             <td>
                                                 <a class="button button-small edit" title="Edit"><i class="glyphicon glyphicon-pencil"></i></a>
@@ -308,7 +308,7 @@
                                 <thead>
                                     <tr>
                                         <th>N°</th>
-                                        <th>ID</th>                                        
+                                        <th style="display: none;">ID</th>                                        
                                         <th>Nom</th>
                                         <th>Edition</th>                                        
                                         <th>Suppression</th>                                           
@@ -318,7 +318,7 @@
                                     {% for statut in listStatuts %}
                                         <tr data-id="{{ loop.index }}">
                                             <td>{{ loop.index }}</td>
-                                            <td data-field="id" class="id">{{ statut.id }}</td>                                            
+                                            <td data-field="id" class="id" style="display: none;">{{ statut.id }}</td>                                            
                                             <td data-field="nom" class="nom">{{ statut.nom }}</td>
                                             <td>
                                                 <a class="button button-small edit" title="Edit"><i class="glyphicon glyphicon-pencil"></i></a>

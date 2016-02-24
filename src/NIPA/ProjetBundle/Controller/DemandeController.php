@@ -44,7 +44,7 @@ class DemandeController extends Controller
         {
             if($groupe->getPermission() != null) // Test si le groupe a des permissions
             {
-                if(($groupe->getPermission()->getCMSPortefeuille() == 1) || ($groupe->getPermission()->getLPortefeuille() == 1)) // Si oui on test les droits d'accès
+                if(($groupe->getPermission()->getCMSDemande() == 1) || ($groupe->getPermission()->getLDemande() == 1)) // Si oui on test les droits d'accès
                 {
                     $droit++;           
                 }
@@ -130,7 +130,7 @@ class DemandeController extends Controller
         {
             if($groupe->getPermission() != null) // Test si le groupe a des permissions
             {
-                if(($groupe->getPermission()->getCMSPortefeuille() == 1) || ($groupe->getPermission()->getLPortefeuille() == 1)) // Si oui on test les droits d'accès
+                if(($groupe->getPermission()->getCMSDemande() == 1) || ($groupe->getPermission()->getLDemande() == 1)) // Si oui on test les droits d'accès
                 {
                     $droit++;           
                 }
@@ -351,7 +351,7 @@ class DemandeController extends Controller
         {
             if($groupe->getPermission() != null) // Test si le groupe a des permissions
             {
-                if(($groupe->getPermission()->getCMSPortefeuille() == 1) || ($groupe->getPermission()->getLPortefeuille() == 1)) // Si oui on test les droits d'accès
+                if(($groupe->getPermission()->getCMSDemande() == 1) || ($groupe->getPermission()->getLDemande() == 1)) // Si oui on test les droits d'accès
                 {
                     $droit++;           
                 }
@@ -508,7 +508,7 @@ class DemandeController extends Controller
         {
             if($groupe->getPermission() != null) // Test si le groupe a des permissions
             {
-                if(($groupe->getPermission()->getCMSPortefeuille() == 1) || ($groupe->getPermission()->getLPortefeuille() == 1)) // Si oui on test les droits d'accès
+                if(($groupe->getPermission()->getCMSDemande() == 1) || ($groupe->getPermission()->getLDemande() == 1)) // Si oui on test les droits d'accès
                 {
                     $droit++;           
                 }
@@ -762,7 +762,7 @@ class DemandeController extends Controller
         {
             if($groupe->getPermission() != null) // Test si le groupe a des permissions
             {
-                if(($groupe->getPermission()->getCMSPortefeuille() == 1) || ($groupe->getPermission()->getLPortefeuille() == 1)) // Si oui on test les droits d'accès
+                if(($groupe->getPermission()->getCMSDemande() == 1) || ($groupe->getPermission()->getLDemande() == 1)) // Si oui on test les droits d'accès
                 {
                     $droit++;           
                 }

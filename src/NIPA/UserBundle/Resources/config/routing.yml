@@ -141,6 +141,102 @@ administration_demande_champ_instance_delete:
     path: champ/instance/delete
     defaults: { _controller: NIPAUserBundle:AdministrationChampsDemande:deleteChampInstance }
 
+administration_demande_champ_interlocuteurMOA_add:
+    path: champ/interlocuteur/add
+    defaults: { _controller: NIPAUserBundle:AdministrationChampsDemande:addChampInterlocuteurMOA }
+
+administration_demande_champ_interlocuteurMOA_edit:
+    path: champ/interlocuteur/edit
+    defaults: { _controller: NIPAUserBundle:AdministrationChampsDemande:editChampInterlocuteurMOA }
+
+administration_demande_champ_interlocuteurMOA_delete:
+    path: champ/interlocuteur/delete
+    defaults: { _controller: NIPAUserBundle:AdministrationChampsDemande:deleteChampInterlocuteurMOA }
+
+administration_demande_champ_offres_add:
+    path: champ/offres/add
+    defaults: { _controller: NIPAUserBundle:AdministrationChampsDemande:addChampOffres }
+
+administration_demande_champ_offres_edit:
+    path: champ/offres/edit
+    defaults: { _controller: NIPAUserBundle:AdministrationChampsDemande:editChampOffres }
+
+administration_demande_champ_offres_delete:
+    path: champ/offres/delete
+    defaults: { _controller: NIPAUserBundle:AdministrationChampsDemande:deleteChampOffres }
+
+administration_demande_champ_PM_add:
+    path: champ/PM/add
+    defaults: { _controller: NIPAUserBundle:AdministrationChampsDemande:addChampPM }
+
+administration_demande_champ_PM_edit:
+    path: champ/PM/edit
+    defaults: { _controller: NIPAUserBundle:AdministrationChampsDemande:editChampPM }
+
+administration_demande_champ_PM_delete:
+    path: champ/PM/delete
+    defaults: { _controller: NIPAUserBundle:AdministrationChampsDemande:deleteChampPM }
+
+administration_demande_champ_priorite_add:
+    path: champ/priorite/add
+    defaults: { _controller: NIPAUserBundle:AdministrationChampsDemande:addChampPriorite }
+
+administration_demande_champ_priorite_edit:
+    path: champ/priorite/edit
+    defaults: { _controller: NIPAUserBundle:AdministrationChampsDemande:editChampPriorite }
+
+administration_demande_champ_priorite_delete:
+    path: champ/priorite/delete
+    defaults: { _controller: NIPAUserBundle:AdministrationChampsDemande:deleteChampPriorite }
+
+administration_demande_champ_SDM_add:
+    path: champ/SDM/add
+    defaults: { _controller: NIPAUserBundle:AdministrationChampsDemande:addChampSDM }
+
+administration_demande_champ_SDM_edit:
+    path: champ/SDM/edit
+    defaults: { _controller: NIPAUserBundle:AdministrationChampsDemande:editChampSDM }
+
+administration_demande_champ_SDM_delete:
+    path: champ/SDM/delete
+    defaults: { _controller: NIPAUserBundle:AdministrationChampsDemande:deleteChampSDM }
+
+administration_demande_champ_demande_statut_add:
+    path: champ/demande_statut/add
+    defaults: { _controller: NIPAUserBundle:AdministrationChampsDemande:addChampStatut }
+
+administration_demande_champ_demande_statut_edit:
+    path: champ/demande_statut/edit
+    defaults: { _controller: NIPAUserBundle:AdministrationChampsDemande:editChampStatut }
+
+administration_demande_champ_demande_statut_delete:
+    path: champ/demande_statut/deadministration_demande_champ_SDM_deletelete
+    defaults: { _controller: NIPAUserBundle:AdministrationChampsDemande:deleteChampStatut }
+
+administration_demande_champ_statut_instance_add:
+    path: champ/statut_instance/add
+    defaults: { _controller: NIPAUserBundle:AdministrationChampsDemande:addChampStatutInstance }
+
+administration_demande_champ_statut_instance_edit:
+    path: champ/statut_instance/edit
+    defaults: { _controller: NIPAUserBundle:AdministrationChampsDemande:editChampStatutInstance }
+
+administration_demande_champ_statut_instance_delete:
+    path: champ/statut_instance/deadministration_demande_champ_SDM_deletelete
+    defaults: { _controller: NIPAUserBundle:AdministrationChampsDemande:deleteChampStatutInstance }
+
+administration_demande_champ_type_projet_add:
+    path: champ/type_projet/add
+    defaults: { _controller: NIPAUserBundle:AdministrationChampsDemande:addChampTypeProjet }
+
+administration_demande_champ_type_projet_edit:
+    path: champ/type_projet/edit
+    defaults: { _controller: NIPAUserBundle:AdministrationChampsDemande:editChampTypeProjet }
+
+administration_demande_champ_type_projet_delete:
+    path: champ/type_projet/deadministration_demande_champ_SDM_deletelete
+    defaults: { _controller: NIPAUserBundle:AdministrationChampsDemande:deleteChampTypeProjet }
+
 groupe_permission_add:
     path: groupe/permission/add/{groupeId}
     defaults: { _controller: NIPAUserBundle:Groupe:addPermissionGroupe }

@@ -2,6 +2,16 @@
 		
 {% block body %}   
 
+    {# TEST LES DROITS USER#}
+    {% set droit = 0 %}
+    {% for groupe in user.getGroupesToArray() %} 
+        {% if groupe.getPermission() %} {# Test si le groupe a des permissions #}
+            {% if (groupe.getPermission().getCMSDemande() == 1) %} {# Si oui on test les droits d'accès #}
+                {% set droit = droit + 1 %}  
+            {% endif %}    
+        {% endif %}
+    {% endfor %}     
+    
     <h4 class=""><i class="fa fa-pencil-square fa-fw"></i> {{ 'Description & Enjeux Business'|trans }} </h4>        
 
     <div class="container">                   
@@ -72,9 +82,14 @@
         {{ form_widget(form._token) }}        
         {{form_errors(form)}}
 
-        <br>  
+        <br>
+        
         <div class="pull-right">
-            <button class="btn btn-success" type="submit"><span class='glyphicon glyphicon-check'></span> Valider</button>           
+            {% if droit != 0 %}
+                <button class="btn btn-success" type="submit"><span class='glyphicon glyphicon-check'></span> Valider</button>           
+            {% else %}
+                <button class="btn btn-success" type="submit" DISABLED><span class='glyphicon glyphicon-check'></span> Valider</button>           
+            {% endif %}
         </div> 
             
 {% endblock %}            

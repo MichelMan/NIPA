@@ -347,7 +347,7 @@ class PortefeuilleController extends Controller
                 $this->get('nipa_portefeuille.portefeuille_manager')->savePortefeuille($portefeuille); // On utilise notre Manager pour gérer la sauvegarde de l'objet
                 
                 $this->get('session')->getFlashBag()->set('success',
-                $this->get('translator')->trans('Portefeuille mise à jour')
+                $this->get('translator')->trans('Portefeuille mis à jour')
                 );
                 
                  // On redirige vers la page de modification du portefeuille

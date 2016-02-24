@@ -7,7 +7,17 @@
         text-align:center;
         }       
     </style>
-    
+
+    {# TEST LES DROITS USER#}
+    {% set droit = 0 %}
+    {% for groupe in user.getGroupesToArray() %} 
+        {% if groupe.getPermission() %} {# Test si le groupe a des permissions #}
+            {% if (groupe.getPermission().getCMSDemande() == 1) %} {# Si oui on test les droits d'accès #}
+                {% set droit = droit + 1 %}  
+            {% endif %}    
+        {% endif %}
+    {% endfor %}  
+
     <h4 class=""><i class="fa fa-users fa-fw"></i> {{ 'Instances '|trans }} </h4>        
         
         <div class="row col-md-13">
@@ -19,7 +29,7 @@
                         Informations sur les instances passées
                     </h3>
                     <div class="pull-right">  
-                        {% if demande.referenceDemande %} Instance actuelle: <strong> {{ listDemandeInstance[listDemandeInstance|length-1].getInstance().getNom() }} </strong> {% endif %}
+                        {% if demande.referenceDemande %} Instance actuelle: <strong> {{listDemandeInstance ? listDemandeInstance[listDemandeInstance|length-1].getInstance().getNom() }} </strong> {% endif %}
                         <span data-toggle="collapse" data-target="#collapseInstances" class="clickable collapsed" title="Afficher détails" data-container="body">
                             <i class="glyphicon glyphicon-plus"></i>
                         </span>
@@ -36,7 +46,7 @@
                                {# <th>Date rév.</th>
                                 <th>Validation effective</th>#}
                                 <th class="text-center">Remarques</th>
-                                <th>Statut</th>
+                                <th class="text-center">Statut</th>
                                 <th>Action</th>     
                             </tr>
                         </thead>
@@ -53,8 +63,12 @@
                                         <td><h5>NOK</h5></td>
                                     {% endif %} #}
                                     <td><h5><textarea class="form-control" cols=30 rows=3 id="Remarques" READONLY>{{ instance.remarques }}</textarea></h5></td> 
-                                    <td><h5>{{ instance.getStatut().getNom() }}</h5></td>
-                                    <td id="delete-instance"><a id="{{ instance.id }}" class="btn btn-danger confirmModalBudget"><i class="glyphicon glyphicon-remove"></i> </a></td>                    
+                                    <td class="text-center"><h5>{{ instance.getStatut().getNom() }}</h5></td>
+                                    {% if droit != 0 %}
+                                        <td id="delete-instance"><a id="{{ instance.id }}" class="btn btn-danger confirmModalBudget"><i class="glyphicon glyphicon-remove"></i> </a></td>                    
+                                    {% else %}
+                                        <td id="delete-instance"><a id="{{ instance.id }}" class="btn btn-danger confirmModalBudget" DISABLED><i class="glyphicon glyphicon-remove"></i> </a></td>                    
+                                    {% endif %}
                                 </tr>
                             {% endfor %}                        
                         {% endif %}
@@ -85,7 +99,11 @@
                                 <td class="text-center">{{ form_widget(formInstance.validationEffective) }}</td>#}
                                 <td>{{ form_widget(formInstance.remarques) }}</td>
                                 <td>{{ form_widget(formInstance.statut) }}</td>
-                                <td class="text-center"><button type="submit" class="btn btn-success" id="add-instance"><i class="glyphicon glyphicon-plus"></i></button></td>
+                                {% if droit != 0 %}
+                                    <td class="text-center"><button type="submit" class="btn btn-success" id="add-instance"><i class="glyphicon glyphicon-plus"></i></button></td>
+                                {% else %}
+                                    <td class="text-center"><button type="submit" class="btn btn-success" id="add-instance" DISABLED><i class="glyphicon glyphicon-plus"></i></button></td>
+                                {% endif %}
                             </tr>   
                             {# Pour l'erreur: "Le jeton CSRF est invalide" #}
                             {{ form_widget(form._token) }}        

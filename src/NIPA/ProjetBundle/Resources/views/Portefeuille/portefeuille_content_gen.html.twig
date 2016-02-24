@@ -2,6 +2,17 @@
 		
 {% block body %}
        
+    {# TEST LES DROITS USER#}
+    {% set droit = 0 %}
+    {% for groupe in user.getGroupesToArray() %} 
+        {% if groupe.getPermission() %} {# Test si le groupe a des permissions #}
+            {% if ((groupe.getPermission().getCMSPortefeuille() == 1)) %} {# Si oui on test les droits d'accès #}
+                {% set droit = droit + 1 %}  
+            {% endif %}    
+        {% endif %}
+    {% endfor %}
+    
+    
     {# Calcul budget prev et cons #}
     {% set prev = 0 %}
     {% if portefeuille.referencePortefeuille and listPortefeuilleEnveloppePrev|length > 0 %}  
@@ -57,8 +68,9 @@
                 <div class="col-md-12">
                     <label class="control-label" for="textarea">
                       {{ form_errors(form.description) }}
-                      {{ form_label(form.description, 'Description'|trans) }}          
-                    </label>  
+                      {{ form_label(form.description, 'Description'|trans) }}        
+                    </label> 
+                    <i>(Champ facultatif)</i>   
                     <div class="">
                        {{ form_widget(form.description) }}
                     </div>                    
@@ -103,14 +115,23 @@
         {{ form_widget(form._token) }}        
         {{form_errors(form)}}
 
-        <br>  
-        <div class="pull-right">
-            {% if portefeuille.referencePortefeuille %}                
-                <a href="{{ path('portefeuille_delete', {'reference': portefeuille.referencePortefeuille}) }}" class="confirmModalLinkPortefeuille btn btn-danger"><span class="glyphicon glyphicon-trash"></span> Supprimer </a>                                                
-            {% endif %}
-            <button class="btn btn-success" type="submit"><span class='glyphicon glyphicon-check'></span> Valider</button>           
-        </div> 
-            
+        <br>
+        
+        {% if droit != 0 %}
+            <div class="pull-right">
+                {% if portefeuille.referencePortefeuille %}                
+                    <a href="{{ path('portefeuille_delete', {'reference': portefeuille.referencePortefeuille}) }}" class="confirmModalLinkPortefeuille btn btn-danger"><span class="glyphicon glyphicon-trash"></span> Supprimer </a>                                                
+                {% endif %}
+                <button class="btn btn-success" type="submit"><span class='glyphicon glyphicon-check'></span> Valider</button>           
+            </div>
+        {% else %}
+            <div class="pull-right">
+                {% if portefeuille.referencePortefeuille %}                
+                    <a href="{{ path('portefeuille_delete', {'reference': portefeuille.referencePortefeuille}) }}" class="confirmModalLinkPortefeuille btn btn-danger" DISABLED><span class="glyphicon glyphicon-trash"></span> Supprimer </a>                                                
+                {% endif %}
+                <button class="btn btn-success" type="submit" DISABLED><span class='glyphicon glyphicon-check'></span> Valider</button>           
+            </div>
+        {% endif %}    
     </form>    
 
     <!-- MODAL DELETE -->

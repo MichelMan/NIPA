@@ -45,7 +45,7 @@ class Demande
     /**
      * @var string
      *
-     * @ORM\Column(name="Commentaires", type="string", length=255, nullable=true)
+     * @ORM\Column(name="Commentaires", type="string", length=2500, nullable=true)
      */
     private $commentaires;
 
@@ -170,28 +170,28 @@ class Demande
     /**
      * @var string
      *
-     * @ORM\Column(name="Contexte", type="string", length=500, nullable= true)
+     * @ORM\Column(name="Contexte", type="string", length=2500, nullable= true)
      */
     private $contexte;
 
     /**
      * @var string
      *
-     * @ORM\Column(name="Enjeux", type="string", length=500, nullable= true)
+     * @ORM\Column(name="Enjeux", type="string", length=2500, nullable= true)
      */
     private $enjeux;
 
     /**
      * @var string
      *
-     * @ORM\Column(name="Remarques", type="string", length=500, nullable= true)
+     * @ORM\Column(name="Remarques", type="string", length=2500, nullable= true)
      */
     private $remarques;
 
     /**
      * @var string
      *
-     * @ORM\Column(name="Description", type="string", length=500, nullable= true)
+     * @ORM\Column(name="Description", type="string", length=2500, nullable= true)
      */
     private $description;
 

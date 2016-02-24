@@ -31,7 +31,7 @@
                                 <thead>
                                     <tr>
                                         <th>N°</th>
-                                        <th>ID</th>                                        
+                                        <th style="display: none;">ID</th>                                        
                                         <th>Valeur</th>
                                         <th>Edition</th>                                        
                                         <th>Suppression</th>                                           
@@ -44,7 +44,7 @@
                                         {% for direction in listDirections %}
                                             <tr data-id="{{ loop.index }}">
                                                 <td>{{ loop.index }}</td>
-                                                <td data-field="id" class="id">{{ direction.id }}</td>                                            
+                                                <td data-field="id" class="id" style="display: none;">{{ direction.id }}</td>                                            
                                                 <td data-field="nom" class="nom">{{ direction.nom }}</td>
                                                 <td>
                                                     <a class="button button-small edit" title="Edit"><i class="glyphicon glyphicon-pencil"></i></a>

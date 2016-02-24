@@ -1,9 +1,10 @@
+{# empty Twig template #}
 {% trans_default_domain 'NIPAUserBundle' %}
 
-{% block nipa_users_champs_divers %}       
+{% block nipa_users_champs_porteur_metier %}       
     
-    <!-- MODAL EDIT DIVERS -->
-    <div id="myModalEditDivers" class="modal fade in" style="">
+    <!-- MODAL EDIT PORTEUR METIER -->
+    <div id="myModalEditPM" class="modal fade in" style="">
         <div class="modal-dialog"  style="width: 800px;">
             <div class="modal-content">
                 <div class="modal-header">
@@ -18,7 +19,7 @@
                     <!-- PANEL -->          
                     <div class="panel panel-success">
                         <div class="panel-heading">               
-                            <h3 class="panel-title"><i class="glyphicon glyphicon-share-alt"></i> Champ "Divers"</h3>
+                            <h3 class="panel-title"><i class="glyphicon glyphicon-share-alt"></i> Champ "Porteur Métier"</h3>
                             <div class="pull-right">              
                                 <span class="clickable filter" data-toggle="tooltip" title="Afficher détails" data-container="body">
                                     <i class="glyphicon glyphicon-plus"></i>
@@ -27,7 +28,7 @@
                         </div>        
                         <div class="panel-body" style="display: none;">
 
-                            <table class="table table-hover" id="champs-table-divers">
+                            <table class="table table-hover" id="champs-table-PM">
                                 <thead>
                                     <tr>
                                         <th>N°</th>
@@ -38,19 +39,19 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    {% if listDivers is empty %}
+                                    {% if listPorteurs is empty %}
                                         <center><p>(Aucune donnée)</p></center>
                                     {% else %}    
-                                        {% for divers in listDivers %}
+                                        {% for pm in listPorteurs %}
                                             <tr data-id="{{ loop.index }}">
                                                 <td>{{ loop.index }}</td>
-                                                <td data-field="id" class="id" style="display: none;">{{ divers.id }}</td>                                            
-                                                <td data-field="valeur" class="valeur">{{ divers.valeur }}</td>
+                                                <td data-field="id" class="id" style="display: none;">{{ pm.id }}</td>                                            
+                                                <td data-field="nom" class="nom">{{ pm.nom }}</td>
                                                 <td>
                                                     <a class="button button-small edit" title="Edit"><i class="glyphicon glyphicon-pencil"></i></a>
                                                     <!-- <a class="button button-small cancel" title="Annuler"><i class="glyphicon glyphicon-remove"></i></a> -->                                                
                                                 </td>                                            
-                                                <td id="delete-divers" class="text-center"><a id="{{ divers.id }}" class="button button-small" title="Supprimer"><i class="glyphicon glyphicon-trash"></i> </a></td>                    
+                                                <td id="delete-PM" class="text-center"><a id="{{ pm.id }}" class="button button-small" title="Supprimer"><i class="glyphicon glyphicon-trash"></i> </a></td>                    
                                             </tr>
                                         {% endfor %}  
                                     {% endif%}    
@@ -58,7 +59,7 @@
                             </table>
 
                         </div>  
-                        <table class="table" id="champs-table-divers-add">
+                        <table class="table" id="champs-table-PM-add">
                             <thead>
                                 <tr>
                                     <th class="text-center">Nouvelle valeur</th>
@@ -67,8 +68,8 @@
                             </thead>                   
                             <tbody>
                                 <tr>                             
-                                     <td><input type="text" class="form-control input-md textinput" id="valeur" name="valeur" required="true"></td>
-                                     <td class="text-center" id="add-divers"><button type="submit" title="Ajouter" class="btn btn-success"><i class="glyphicon glyphicon-check"></i></button></td>
+                                     <td><input type="text" class="form-control input-md textinput" id="nom" name="nom" required="true"></td>
+                                     <td class="text-center" id="add-PM"><button type="submit" title="Ajouter" class="btn btn-success"><i class="glyphicon glyphicon-check"></i></button></td>
                                  </tr>   
                             </tbody>   
                         </table>
@@ -78,7 +79,7 @@
                 </div>
 
                 <div class="modal-footer">
-                    <a href="#" class="btn btn-danger" id="confirmModalEditDiversNo">Fermer</a>
+                    <a href="#" class="btn btn-danger" id="confirmModalEditPMNo">Fermer</a>
                 </div>
             </div><!-- /.modal-content -->
         </div><!-- /.modal-dalog -->
@@ -89,23 +90,23 @@
         $(document).ready(function () {
             var theHREF;
 
-            $(".confirmModalEditDivers").click(function(e) {
+            $(".confirmModalEditPM").click(function(e) {
                 e.preventDefault();
                 theHREF = $(this).attr("href");          
-                $("#myModalEditDivers").modal("show");
+                $("#myModalEditPM").modal("show");
                 //var Id = $(this).data('id');
                 //$(".modal-body #Id").val( Id );              
             });
 
-            $("#confirmModalEditDiversNo").click(function(e) {
-                $("#myModalEditDivers").modal("hide");
+            $("#confirmModalEditPMNo").click(function(e) {
+                $("#myModalEditPM").modal("hide");
             });
         });
     
 
-    /*********Divers*************/
+    /*********Porteur Métier*************/
 
-    $('#champs-table-divers tr').editable({
+    $('#champs-table-PM tr').editable({
 
       // enable keyboard support
       keyboard: true,
@@ -147,19 +148,19 @@
 
 
             /* Test contre les valeurs dupliquées */
-             var chemin =  $(".valeur", this); 
+             var chemin =  $(".nom", this); 
              var boolean = 0;
-             $('#champs-table-divers').find("tbody").find("tr").each(function(){
+             $('#champs-table-PM').find("tbody").find("tr").each(function(){
                var identifiant= $(this).find(".id").text();
-               var valeur= $(this).find(".valeur").text();
+               var nom= $(this).find(".nom").text();
                
                /*Pour enlever les espaces qui empechent la comparaison*/
-               var valeur_X = valeur.replace(/ /g, '_');
-               var valeur_Y = values["valeur"].replace(/ /g, '_');
-               //console.log(valeur_X);
-               //console.log(valeur_Y);
+               var nom_X = nom.replace(/ /g, '_');
+               var nom_Y = values["nom"].replace(/ /g, '_');
+               //console.log(nom_X);
+               //console.log(nom_Y);
 
-                if(valeur_X == valeur_Y && identifiant != values["id"])
+                if(nom_X == nom_Y && identifiant != values["id"])
                 {
                     boolean = 1;
                 }
@@ -167,7 +168,7 @@
             
             if(boolean == 1)
             {
-                alert("Valeur déjà existante!");
+                alert("Porteur Métier déjà existant!");
                 chemin.html("");
                 return;                  
             }
@@ -175,7 +176,7 @@
             {
                 /* Si ok on post*/
                 var id = $(this).data('id');
-                $.post('{{ path('administration_demande_champ_divers_edit')}}', values);        
+                $.post('{{ path('administration_demande_champ_PM_edit')}}', values);        
             } 
 
         },
@@ -189,7 +190,7 @@
 
     });
 
-    $('#champs-table-divers tr #delete-divers').on("click", function()
+    $('#champs-table-PM tr #delete-PM').on("click", function()
     {
         var identifiant = $("a", this).attr("id");
 
@@ -197,7 +198,7 @@
         {    
             $(this).parent().remove();      
 
-            $.post("{{ path('administration_demande_champ_divers_delete')}}", { id: identifiant})
+            $.post("{{ path('administration_demande_champ_PM_delete')}}", { id: identifiant})
               .done(function(data) {
                 alert("Suppression effectuée avec succès!");
             });
@@ -205,14 +206,14 @@
 
     });
 
-    $('#champs-table-divers-add tr #add-divers').on("click", function()
+    $('#champs-table-PM-add tr #add-PM').on("click", function()
     {
-        var valeur = $("#champs-table-divers-add tr #valeur").val();
+        var nom = $("#champs-table-PM-add tr #nom").val();
 
         $.ajax({
             type: 'post',
-            url: "{{ path('administration_demande_champ_divers_add') }}",
-            data: {valeur: valeur},
+            url: "{{ path('administration_demande_champ_PM_add') }}",
+            data: {nom: nom},
             success: function()
             {
                 alert("Ajout effectué avec succès!");
@@ -221,7 +222,7 @@
                 //location.reload();        
             },
             error: function(e) {
-                alert("Cette valeur existe déjà!");                
+                alert("Ce Porteur Métier existe déjà!");                
                console.log(e);
              }      
         });

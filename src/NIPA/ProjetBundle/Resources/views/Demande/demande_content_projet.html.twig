@@ -2,6 +2,16 @@
 
 {% block body %}   
 
+    {# TEST LES DROITS USER#}
+    {% set droit = 0 %}
+    {% for groupe in user.getGroupesToArray() %} 
+        {% if groupe.getPermission() %} {# Test si le groupe a des permissions #}
+            {% if (groupe.getPermission().getCMSDemande() == 1) %} {# Si oui on test les droits d'accès #}
+                {% set droit = droit + 1 %}  
+            {% endif %}    
+        {% endif %}
+    {% endfor %}      
+    
         <h4 class=""><span class='glyphicon glyphicon-list-alt'></span> {{ 'Portefeuille(s) & Projet(s)'|trans }} </h4>        
  
         <div class="container">                   
@@ -21,10 +31,17 @@
                 <div id="collapseInfoPortefeuille" class="panel-collapse collapse">                                
                     <div class="panel-body">
  
-                    <!-- BOUTON ADD -->  
-                    <div class="btn-toolbar">
-                        <a data-toggle="modal" title="Ajouter portefeuilles" class="btn btn-success" href="#ModalAddPortefeuilles"><i class="glyphicon glyphicon-plus-sign"></i> Ajouter Portefeuille</a>
-                    </div>
+                    {% if droit != 0 %}
+                        <!-- BOUTON ADD -->  
+                        <div class="btn-toolbar">
+                            <a data-toggle="modal" title="Ajouter portefeuilles" class="btn btn-success" href="#ModalAddPortefeuilles"><i class="glyphicon glyphicon-plus-sign"></i> Ajouter Portefeuille</a>
+                        </div>
+                    {% else %}
+                        <!-- BOUTON ADD -->  
+                        <div class="btn-toolbar">
+                            <a data-toggle="modal" title="Ajouter portefeuilles" class="btn btn-success" href="#ModalAddPortefeuilles" DISABLED><i class="glyphicon glyphicon-plus-sign"></i> Ajouter Portefeuille</a>
+                        </div>
+                    {% endif %}
                     <br>                           
                         
                         <table class="table table-hover" id="champs-table GDD">
@@ -48,8 +65,12 @@
                                        {# On bloque la suppression du postefeuille de BASE (le premier affilié à la Demande)#}
                                        {% if demande.getReferenceDemande()|striptags|slice(2, 2)|raw == portefeuille.getReferencePortefeuille()|striptags|slice(3, 2)|raw  %} 
                                            <a href="#" ><span class="glyphicon glyphicon-lock" style="color:yellow;"></span></a>                               
-                                       {% else %}    
-                                           <a href="{{ path('demande_delete_portefeuilles', {'referencePortefeuille': portefeuille.referencePortefeuille, 'referenceDemande': demande.referenceDemande}) }}" class="confirmModalLink"><span class="glyphicon glyphicon-remove" style="color:red;"></span></a>                               
+                                       {% else %}
+                                            {% if droit != 0 %}
+                                                <a href="{{ path('demande_delete_portefeuilles', {'referencePortefeuille': portefeuille.referencePortefeuille, 'referenceDemande': demande.referenceDemande}) }}" class="confirmModalLink"><span class="glyphicon glyphicon-remove" style="color:red;"></span></a>                               
+                                            {% else %}
+                                                <a href="#" DISABLED><span class="glyphicon glyphicon-remove" style="color:red;"></span></a>                               
+                                            {% endif %}                           
                                        {% endif %}                           
                                    </td>                               
                                 </tr>
@@ -67,7 +88,7 @@
                     <div class="panel-heading" id="GDD">
                         <h5 class="panel-title"> Informations liées au(x) Projet(s)</h5>
                         <div class="pull-right">  
-                            {% if demande.referenceDemande %} <strong> Demande(s) associée(s) </strong> {% endif %}
+                            {% if demande.referenceDemande %} <strong> 0 Projet(s) associé(s) </strong> {% endif %}
                             <span data-toggle="collapse" data-target="#collapseInfoProjet" class="clickable collapsed" title="Afficher détails" data-container="body">
                                 <i class="glyphicon glyphicon-plus"></i>
                             </span>
@@ -183,7 +204,11 @@
 
         <br>  
         <div class="pull-right">
-            <button class="btn btn-success" type="submit"><span class='glyphicon glyphicon-check'></span> Valider</button>           
+            {% if droit != 0 %}
+                <button class="btn btn-success" type="submit"><span class='glyphicon glyphicon-check'></span> Valider</button>           
+            {% else %}
+                <button class="btn btn-success" type="submit" DISABLED><span class='glyphicon glyphicon-check'></span> Valider</button>           
+            {% endif %}
         </div> 
             <p>* Champs obligatoire</p>  
             
@@ -229,8 +254,8 @@
                                                                   <td><input type="radio"  name="idPortefeuilles[]" value="{{choices2[index].referencePortefeuille}}"></input></td>
                                                                   <td>{{ choices2[index].referencePortefeuille }}</td>
                                                                   <td>{{ choices2[index].nom }}</td>
-                                                                  <td>{{ choices2[index].getPortefeuilleAnnee().getValeur() }}</td>
-                                                                  <td>{{ choices2[index].portefeuilleStatut.nom}}</td>                                                
+                                                                  <td>{{choices2[index].getPortefeuilleAnnee() ? choices2[index].getPortefeuilleAnnee().getValeur() }}</td>
+                                                                  <td>{{choices2[index].portefeuilleStatut ? choices2[index].portefeuilleStatut.nom}}</td>                                                
                                                                 </tr>
                                                         {% else %}
                                                             {% set isPresent = isPresent + 1 %}

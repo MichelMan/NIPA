@@ -73,6 +73,38 @@ class AdministrationController extends Controller
         //On récupère tous les EM
         $repository = $this->getDoctrine()->getManager()->getRepository('NIPAProjetBundle:DemandeEntiteMetier');
         $listEntiteMetiers = $repository->findAll(); 
+       
+        //On récupère tous les interlocuteurs MOA
+        $repository = $this->getDoctrine()->getManager()->getRepository('NIPAProjetBundle:DemandeInterlocuteurMOA');
+        $listInterlocuteurs = $repository->findAll();          
+
+        //On récupère toutes les Offres
+        $repository = $this->getDoctrine()->getManager()->getRepository('NIPAProjetBundle:DemandeOffres');
+        $listOffres = $repository->findAll();     
+        
+        //On récupère tous les porteurs métiers
+        $repository = $this->getDoctrine()->getManager()->getRepository('NIPAProjetBundle:DemandePorteurMetier');
+        $listPorteurs = $repository->findAll();   
+      
+        //On récupère toutes les priorités
+        $repository = $this->getDoctrine()->getManager()->getRepository('NIPAProjetBundle:DemandePriorite');
+        $listPriorites = $repository->findAll();         
+
+        //On récupère tous les SDM
+        $repository = $this->getDoctrine()->getManager()->getRepository('NIPAProjetBundle:DemandeSDM');
+        $listSDM = $repository->findAll();          
+
+        //On récupère tous les Statuts Demande
+        $repository = $this->getDoctrine()->getManager()->getRepository('NIPAProjetBundle:DemandeStatut');
+        $listDemandeStatuts = $repository->findAll();     
+        
+        //On récupère tous les Statuts Instance
+        $repository = $this->getDoctrine()->getManager()->getRepository('NIPAProjetBundle:DemandeStatutInstance');
+        $listStatutInstances = $repository->findAll();   
+      
+        //On récupère tous les types Projet
+        $repository = $this->getDoctrine()->getManager()->getRepository('NIPAProjetBundle:DemandeTypeProjet');
+        $listTypeProjets = $repository->findAll(); 
         
         /***********************************************************/
      
@@ -86,10 +118,18 @@ class AdministrationController extends Controller
           'listDivers' => $listDivers,
           'listInstances' => $listInstances,
           'listEntiteMetiers' => $listEntiteMetiers,
+          'listInterlocuteurs' => $listInterlocuteurs,
+          'listOffres' => $listOffres,
+          'listPorteurs' => $listPorteurs,
+          'listPriorites' => $listPriorites,
+          'listSDM' => $listSDM,
+          'listDemandeStatuts' => $listDemandeStatuts,
+          'listStatutInstances' => $listStatutInstances,
+          'listTypeProjets' => $listTypeProjets
           ));       
     }
     
-   public function deleteUserAction($identifiant)
+    public function deleteUserAction($identifiant)
     {
         /**********************DROIT SECTION************************/
         $requests = Request::createFromGlobals();

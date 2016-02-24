@@ -15,6 +15,17 @@
     {# Script JS pour reload table #}
     <script type="text/javascript" src="//cdn.datatables.net/plug-ins/1.10.10/api/fnReloadAjax.js"></script>
 
+    
+    {# TEST LES DROITS USER#}
+    {% set droit = 0 %}
+    {% for groupe in user.getGroupesToArray() %} 
+        {% if groupe.getPermission() %} {# Test si le groupe a des permissions #}
+            {% if (groupe.getPermission().getCMSPortefeuille() == 1) %} {# Si oui on test les droits d'accès #}
+                {% set droit = droit + 1 %}  
+            {% endif %}    
+        {% endif %}
+    {% endfor %}    
+    
     <div class="row col-md-13">
          
         <!-- PANEL -->          
@@ -53,7 +64,11 @@
                                 <td><h5>{{ prev.date|date('d/m/Y') }}</h5></td>
                                 <td><h5>{{ prev.montant|number_format(2, ',', ' ') }}</h5></td>
                                 <td><h5><textarea class="form-control" cols=30 rows=3 id="Commentaires" READONLY>{{ prev.commentaires }}</textarea></h5></td> 
-                                <td class="text-center"><a href="{{ path('portefeuille_budget_prev_delete',{'id': prev.id})}}"  class="btn btn-danger confirmModalLink"><i class="glyphicon glyphicon-remove"></i> </a></td>                    
+                                {% if droit != 0 %}
+                                    <td class="text-center"><a href="{{ path('portefeuille_budget_prev_delete',{'id': prev.id})}}"  class="btn btn-danger confirmModalLink"><i class="glyphicon glyphicon-remove"></i> </a></td>                    
+                                {% else %}
+                                    <td class="text-center"><a href="{{ path('portefeuille_budget_prev_delete',{'id': prev.id})}}"  class="btn btn-danger confirmModalLink" DISABLED><i class="glyphicon glyphicon-remove"></i> </a></td>                    
+                                {% endif %}    
                             </tr>
                         {% endfor %}   
                     {% endif %}    
@@ -85,8 +100,12 @@
                              <td><input type="text" class="form-control input-md date textinput" id="date" name="date" required="true"></td>
                              <td><input type="number" min="0" step="0.01" data-number-to-fixed="2" data-number-stepfactor="100" id="textinput" placeholder="Montant" class="form-control input-md textinput currency" name="montant" required="true"></td>
                              <td><textarea class="form-control input-md" rows="1" id="comment" placeholder="..." name="comment"></textarea></td>                            
-                             <td class="text-center"><button type="submit" class="btn btn-success"><i class="glyphicon glyphicon-check"></i></button></td>
-                         </tr>   
+                            {% if droit != 0 %}
+                                <td class="text-center"><button type="submit" class="btn btn-success"><i class="glyphicon glyphicon-check"></i></button></td>
+                            {% else %}
+                                <td class="text-center"><button type="submit" class="btn btn-success" DISABLED><i class="glyphicon glyphicon-check"></i></button></td>
+                            {% endif %}
+                        </tr>   
                     </tbody>   
                 </table>
             </form>                                
@@ -150,13 +169,21 @@
                                     <td class="text-center"><h5><strong class="text-success"></strong></h5></td>
                                 {% endif %}
                                 <td><textarea class="form-control input-sm" rows="1" id="comment" placeholder="..." name="champ3[]">{{ listPortefeuilleEnveloppeCons[ loop.index - 1 ].getCommentaires() }}</textarea></td>                                
-                                <td class="text-center"><a href="#" class="btn btn-danger btn-sm" id="reset" class="button"><span class="glyphicon glyphicon-minus-sign" data-toggle="tooltip" title="Reset ligne"></span> </a></td>                               
+                                {% if droit != 0 %}
+                                    <td class="text-center"><a href="#" class="btn btn-danger btn-sm" id="reset" class="button"><span class="glyphicon glyphicon-minus-sign" data-toggle="tooltip" title="Reset ligne"></span> </a></td>                               
+                                {% else %}
+                                    <td class="text-center"><a href="#" class="btn btn-danger btn-sm" id="reset" class="button" DISABLED><span class="glyphicon glyphicon-minus-sign" data-toggle="tooltip" title="Reset ligne"></span> </a></td>                               
+                                {% endif %}
                             {% endif %}    
                         </tr>
                         {% endfor %}              
                     </tbody>                 
                 </table>
-                    <button type="submit" class="btn btn-success"><i class="glyphicon glyphicon-check"></i> Enregistrer</button>
+                    {% if droit != 0 %}
+                        <button type="submit" class="btn btn-success"><i class="glyphicon glyphicon-check"></i> Enregistrer</button>
+                    {% else %}
+                        <button type="submit" class="btn btn-success" DISABLED><i class="glyphicon glyphicon-check"></i> Enregistrer</button>
+                    {% endif %}
                 </form>                                
             {% endif %}
             

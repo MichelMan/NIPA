@@ -2,46 +2,70 @@
 		
 {% block body %}
     
-    <!-- BOUTON ADD -->  
-    <center>
-        <div class="btn-toolbar">
-            <a data-toggle="modal" title="Créer un portfeuille" class="btn btn-success" href="{{ path('portefeuille_new') }}"><i class="glyphicon glyphicon-plus-sign"></i> Nouveau Portefeuille</a>
-            <a data-toggle="modal" title="Ajouter filtres" class="btn btn-info" href="#ModalAddUsers"><i class="glyphicon glyphicon-filter"></i> Filtres</a>        
-        </div>
-    </center>
+    {# TEST LES DROITS USER#}
+    {% set droit = 0 %}
+    {% for groupe in user.getGroupesToArray() %} 
+        {% if groupe.getPermission() %} {# Test si le groupe a des permissions #}
+            {% if (groupe.getPermission().getCMSPortefeuille() == 1) %} {# Si oui on test les droits d'accès #}
+                {% set droit = droit + 1 %}  
+            {% endif %}    
+        {% endif %}
+    {% endfor %}
     
+    {% if droit != 0 %}
+        <!-- BOUTON ADD -->  
+        <center>
+            <div class="btn-toolbar">
+                <a data-toggle="modal" title="Créer un portfeuille" class="btn btn-success" href="{{ path('portefeuille_new') }}"><i class="glyphicon glyphicon-plus-sign"></i> Nouveau Portefeuille</a>
+                <a data-toggle="modal" title="Ajouter filtres" class="btn btn-info" href="#ModalAddUsers"><i class="glyphicon glyphicon-filter"></i> Filtres</a>        
+            </div>
+        </center>
+    {% else %}   
+        <!-- BOUTON ADD -->  
+        <center>
+            <div class="btn-toolbar">
+                <a data-toggle="modal" title="Créer un portfeuille" class="btn btn-success" href="{{ path('portefeuille_new') }}" DISABLED><i class="glyphicon glyphicon-plus-sign"></i> Nouveau Portefeuille</a>
+                <a data-toggle="modal" title="Ajouter filtres" class="btn btn-info" href="#ModalAddUsers" DISABLED><i class="glyphicon glyphicon-filter"></i> Filtres</a>        
+            </div>
+        </center>
+    {% endif %}
+            
     <br><br>   
         
    
     <div id="jstreeportefeuille"> 
         
       <ul id="treeProjet"> 
-        {% for annee in listPortefeuilleAnnee|reverse %} {# On boucle sur les années existantes #}
-          <li class="jstree-open"><a href="#">{{ annee.valeur }}</a>
-              <ul>
-                {% for enveloppe in listPortefeuilleStatut %}  {# Puis sur les type d'enveloppe existantes #}                       
-                    {% if enveloppe.nom == "En cours" %}
-                        <li class="jstree-open"><a href="#">{{ enveloppe.nom }}</a>
-                    {% else %}
-                        <li><a href="#">{{ enveloppe.nom }}</a>                        
-                    {% endif %}
-                            <ul>
-                                {% for pf in listPortefeuille %} {# Puis on positionne chaque PF dans le bon chemin #}   
-                                    {% if (pf.getPortefeuilleAnnee() ? pf.getPortefeuilleAnnee().getValeur() == annee.valeur) and (pf.getPortefeuilleStatut() ? pf.getPortefeuilleStatut().getNom == enveloppe.nom) %}    
-                                        {% if portefeuille.referencePortefeuille == pf.referencePortefeuille %}    {# Si celui sélectionné -> on l'active #}                              
-                                            <li class="jstree-open"><a class="jstree-clicked" href="{% if pf.referencePortefeuille %} {{ path('portefeuille_edit',{'reference': pf.referencePortefeuille})}}{% endif %}" title="{{ pf.getPortefeuilleEnveloppe().getNom() }}: {{ pf.referencePortefeuille }}">{{ pf.nom }}</a>
-                                        {% else %}
-                                            <li><a  href="{% if pf.referencePortefeuille %} {{ path('portefeuille_edit',{'reference': pf.referencePortefeuille})}}{% endif %}" title="{{pf.getPortefeuilleEnveloppe() ? pf.getPortefeuilleEnveloppe().getNom() }}: {{ pf.referencePortefeuille }}">{{ pf.nom }}</a>
-                                        {% endif %}    
-                                            </li> 
-                                    {% endif %}
-                                {% endfor %}                                                                    
-                            </ul>
-                        </li>
-                {% endfor %}                                
-              </ul>
-          </li>
-        {% endfor %}     
+               
+        {% for enveloppe in listPortefeuilleStatut %}  {# Puis sur les type d'enveloppe existantes #}                       
+            {% if enveloppe.nom == "En cours" %} {# STATIQUE #}
+                <li class="jstree-open"><a href="#">{{ enveloppe.nom }}</a>
+            {% else %}
+                <li><a href="#">{{ enveloppe.nom }}</a>                        
+            {% endif %}
+                    <ul>
+                        {% for pf in listPortefeuille %} {# Puis on positionne chaque PF dans le bon chemin #}   
+                            {% if (pf.getPortefeuilleStatut() ? pf.getPortefeuilleStatut().getNom == enveloppe.nom) %}    
+                                {% if portefeuille.referencePortefeuille == pf.referencePortefeuille %}    {# Si celui sélectionné -> on l'active #}                              
+                                    <li class="jstree-open"><a class="jstree-clicked" href="{% if pf.referencePortefeuille %} {{ path('portefeuille_edit',{'reference': pf.referencePortefeuille})}}{% endif %}" title="{{pf.getPortefeuilleEnveloppe() ? pf.getPortefeuilleEnveloppe().getNom() }}: {{ pf.referencePortefeuille }}">{{ pf.nom }}</a>
+                                {% else %}
+                                    <li><a  href="{% if pf.referencePortefeuille %} {{ path('portefeuille_edit',{'reference': pf.referencePortefeuille})}}{% endif %}" title="{{pf.getPortefeuilleEnveloppe() ? pf.getPortefeuilleEnveloppe().getNom() }}: {{ pf.referencePortefeuille }}">{{ pf.nom }}</a>
+                                {% endif %}    
+                                    </li> 
+                            {% endif %}
+                        {% endfor %}                                                                    
+                    </ul>
+                </li>
+        {% endfor %}                                
+                <li><a href="#">Autres</a>
+                    <ul>
+                    {% for pf in listPortefeuille %}
+                        {% if (pf.getPortefeuilleStatut().getNom is not defined) %}    
+                            <li><a  href="{% if pf.referencePortefeuille %} {{ path('portefeuille_edit',{'reference': pf.referencePortefeuille})}}{% endif %}" title="{{pf.getPortefeuilleEnveloppe() ? pf.getPortefeuilleEnveloppe().getNom() }}: {{ pf.referencePortefeuille }}">{{ pf.nom }}</a></li>
+                        {% endif %}    
+                    {% endfor %} 
+                    </ul>
+                </li>      
       </ul>               
 
     </div>    

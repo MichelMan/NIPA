@@ -45,7 +45,7 @@ class DemandeBudget
     /**
      * @var string
      *
-     * @ORM\Column(name="Commentaires", type="string", length=500, nullable= true)
+     * @ORM\Column(name="Commentaires", type="string", length=2500, nullable= true)
      */
     private $commentaires;
 
