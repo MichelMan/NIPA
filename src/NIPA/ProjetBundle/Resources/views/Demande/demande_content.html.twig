@@ -17,7 +17,7 @@
         <center>
             <div class="btn-toolbar">
                 <a data-toggle="modal" title="Créer une Demande" class="btn btn-success" href="{{ path('demande_new') }}"><i class="glyphicon glyphicon-plus-sign"></i> Nouvelle Demande</a>
-                <a data-toggle="modal" title="Ajouter filtres" class="btn btn-info" href="#ModalAddUsers"><i class="glyphicon glyphicon-filter"></i> Filtres</a>        
+                <a data-toggle="modal" title="Ajouter filtres" class="btn btn-info" href="#ModalFiltresDemande"><i class="glyphicon glyphicon-filter"></i> Filtres</a>        
             </div>
         </center>
     {% else %}   
@@ -25,7 +25,7 @@
         <center>
             <div class="btn-toolbar">
                 <a data-toggle="modal" title="Créer une Demande" class="btn btn-success" href="{{ path('demande_new') }}" DISABLED><i class="glyphicon glyphicon-plus-sign"></i> Nouvelle Demande</a>
-                <a data-toggle="modal" title="Ajouter filtres" class="btn btn-info" href="#ModalAddUsers" DISABLED><i class="glyphicon glyphicon-filter"></i> Filtres</a>        
+                <a data-toggle="modal" title="Ajouter filtres" class="btn btn-info" href="#ModalFiltresDemande" DISABLED><i class="glyphicon glyphicon-filter"></i> Filtres</a>        
             </div>
         </center>
     {% endif %}     
@@ -83,13 +83,150 @@
 
     </div>    
 
-    <!-- <button>demo button</button> -->
+    <!-- MODAL FILTRE -->
+    <div id="ModalFiltresDemande" class="modal fade in">
+        <div class="modal-dialog"  style="width: 1200px;">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                    <h3 id="myModalLabel"><span class='glyphicon glyphicon-filter'></span> Filtres Demande </h3>
+                </div>
+                
+                <form name="filtre" class="form-horizontal well" data-async data-target="#ModalFiltresDemande" action="{{ path('update_filtres') }}" {{ form_enctype(formFiltres) }} method="POST">                       
+                    <div class="modal-body">
 
-    <script>
-        //$('#treeDemande').treed({openedClass : 'glyphicon-folder-open', closedClass : 'glyphicon-folder-close'});    
-    </script>
+                        <div class="container">
+                            <div class="row">
+                                <div class="col-md-12">
+                                 
+                                    <table class="table" id="filtre">
+                                        <thead>
+                                            <tr>
+                                                <th></th>
+                                                <th class="text-center">Liste</th>
+                                                <th></th>
+                                                <th class="text-center">Critères</th>                
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            
+                                            {% set fields = ["Reference", "Priorite", "Titre", "TypeEnveloppe", "StatutDemande", "Portefeuille", "Direction", "EM", "Offres", "TypeProjet", "Divers", "PM", "Interlocuteur", "SDM", "REX"] %}
+                                            <tr>
+                                                <td class="text-center"><input type="checkbox"  name="criteres[]" id='Reference' value="{{fields[0]}}"></input></td>
+                                                <td>Référence: </td>
+                                                <td><input type='text' class="form-control input-md textinput" id='Reference' name="Reference" onFocus="document.getElementById('Reference').checked = true" /></td>
+                                                
+                                                <td class="text-center"><input type="checkbox"  name="criteres[]" id='Priorite' value="{{fields[1]}}"></input></td>
+                                                <td>Priorité: </td>
+                                                <td>{{ form_widget(formFiltres.priorite, { 'attr': {'onFocus': "document.getElementById('Priorite').checked = true"} }) }}</td>                                    
+                                            </tr>                                              
+                                            <tr>
+                                                <td class="text-center"><input type="checkbox"  name="criteres[]" id='Titre' value="{{fields[2]}}"></input></td>
+                                                <td>Titre: </td>
+                                                <td><input type='text' class="form-control input-md textinput" id='Titre' name="Titre" onFocus="document.getElementById('Titre').checked = true"/></td>
+                                                
+                                                <td class="text-center"><input type="checkbox"  name="criteres[]" id='TypeEnveloppe' value="{{fields[3]}}"></input></td>
+                                                <td>Type Enveloppe: </td>
+                                                <td><input type='text' class="form-control input-md textinput" id='TypeEnveloppe' name="TypeEnveloppe" onFocus="document.getElementById('TypeEnveloppe').checked = true"/></td>                                    
+                                            </tr>  
+                                            <tr>
+                                                <td class="text-center"><input type="checkbox"  name="criteres[]" id='StatutDemande' value="{{fields[4]}}"></input></td>
+                                                <td>Statut: </td>
+                                                <td>{{ form_widget(formFiltres.demandeStatut, { 'attr': {'onFocus': "document.getElementById('StatutDemande').checked = true"} }) }}</td>
+                                                
+                                                <td class="text-center"><input type="checkbox"  name="criteres[]" id='Portefeuille' value="{{fields[5]}}"></input></td>
+                                                <td>Portefeuille: </td>
+                                                <td> (MARCHE PAS)
+                                                    <center>
+                                                        <select class="form-control" id="Portefeuille" name="Portefeuille" onFocus="document.getElementById('Portefeuille').checked = true"/>>
+                                                            {% for child in form.portefeuille %}
+                                                                {% set index = child.vars.value %}
+                                                                    <option value="{{choices[index].referencePortefeuille}}">{{ choices[index].nom }}</option>
+                                                            {% endfor %}
+                                                        </select>
+                                                    </center>
+                                                </td>                                    
+                                            </tr>   
+                                            <tr>
+                                                <td class="text-center"><input type="checkbox"  name="criteres[]" id='Direction' value="{{fields[6]}}"></input></td>
+                                                <td>Direction: </td>
+                                                <td>{{ form_widget(formFiltres.direction, { 'attr': {'onFocus': "document.getElementById('Direction').checked = true"} }) }}</td>
+                                                
+                                                <td class="text-center"><input type="checkbox"  name="criteres[]" id='EM' value="{{fields[7]}}"></input></td>
+                                                <td>Entité Métier: </td>
+                                                <td>{{ form_widget(formFiltres.entiteMetier, { 'attr': {'onFocus': "document.getElementById('EM').checked = true"} }) }}</td>                                    
+                                            </tr>   
+                                            <tr>
+                                                <td class="text-center"><input type="checkbox"  name="criteres[]" id='Offres' value="{{fields[8]}}"></input></td>
+                                                <td>Offres: </td>
+                                                <td>{{ form_widget(formFiltres.offres, { 'attr': {'onFocus': "document.getElementById('Offres').checked = true"} }) }}</td>
+                                                
+                                                <td class="text-center"><input type="checkbox"  name="criteres[]" id='TypeProjet' value="{{fields[9]}}"></input></td>
+                                                <td>Type Projet: </td>
+                                                <td>{{ form_widget(formFiltres.typeProjet, { 'attr': {'onFocus': "document.getElementById('TypeProjet').checked = true"} }) }}</td>                                    
+                                            </tr>   
+                                            <tr>
+                                                <td class="text-center"><input type="checkbox"  name="criteres[]" id='Divers' value="{{fields[10]}}"></input></td>
+                                                <td>Divers: </td>
+                                                <td>{{ form_widget(formFiltres.divers, { 'attr': {'onFocus': "document.getElementById('Divers').checked = true"} }) }}</td>
+                                                
+                                                <td class="text-center"><input type="checkbox"  name="criteres[]" id='PM' value="{{fields[11]}}"></input></td>
+                                                <td>Porteur Métier: </td>
+                                                <td>{{ form_widget(formFiltres.porteurMetier, { 'attr': {'onFocus': "document.getElementById('PM').checked = true"} }) }}</td>                                    
+                                            </tr>   
+                                            <tr>
+                                                <td class="text-center"><input type="checkbox"  name="criteres[]" id='interlocuteurMOA' value="{{fields[12]}}"></input></td>
+                                                <td>Interloctuteur MOA: </td>
+                                                <td>{{ form_widget(formFiltres.interlocuteurMOA, { 'attr': {'onFocus': "document.getElementById('interlocuteurMOA').checked = true"} }) }}</td>
+                                                
+                                                <td class="text-center"><input type="checkbox"  name="criteres[]" id='SDM' value="{{fields[13]}}"></input></td>
+                                                <td>SDM: </td>
+                                                <td>{{ form_widget(formFiltres.SDM, { 'attr': {'onFocus': "document.getElementById('SDM').checked = true"} }) }}</td>                                    
+                                            </tr>   
+                                            <tr>
+                                                <td class="text-center"><input type="checkbox"  name="criteres[]" id='REX' value="{{fields[14]}}"></input></td>
+                                                <td>REX: </td>
+                                                <td>{{ form_widget(formFiltres.REX, { 'attr': {'onFocus': "document.getElementById('REX').checked = true"} }) }}</td>
+                                            </tr>  
+                                            
+                                        </tbody>
+                                    </table>
+                                    
+                                </div>
+                            </div>
+                        </div>
 
+                    </div>
+                    <div class="modal-footer">
+                        Cocher/Décocher <input type="checkbox" onclick="return cocherOuDecocherTout(this);" />
+                        <button class="btn btn-primary" data-dismiss="modal" aria-hidden="true"> Annuler</button>
+                        <button class="btn btn-success" type="submit">Appliquer</button>
+                    </div> 
+                                              
+                </form>                                                  
+            </div>
+        </div>
+    </div>    
+                
+                
+                
     <script>
+    
+    /*************COCHER/DECOCHER ALL checkbox***************/
+    function cocherOuDecocherTout(cochePrincipale) {
+        var coches = document.getElementById('filtre')
+                                 .getElementsByTagName('input');
+        for(var i = 0 ; i < coches.length ; i++) {
+            var c = coches[i];
+            if(c.type.toUpperCase() == 'CHECKBOX'  & c != cochePrincipale) {
+                c.checked = cochePrincipale.checked;
+            }
+        }
+        return true;
+    }
+
+
+    /*************TREE JS***************/
     $(function () {
       // 6 create an instance when the DOM is ready
       $('#jstreedemande').jstree();

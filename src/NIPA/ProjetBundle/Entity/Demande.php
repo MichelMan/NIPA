@@ -45,6 +45,14 @@ class Demande
     /**
      * @var string
      *
+     * @ORM\Column(name="Type_Enveloppe", type="string", length=50, nullable=true)
+     */
+    private $typeEnveloppe; 
+    
+    
+    /**
+     * @var string
+     *
      * @ORM\Column(name="Commentaires", type="string", length=2500, nullable=true)
      */
     private $commentaires;
@@ -269,6 +277,30 @@ class Demande
     public function getNom()
     {
         return $this->nom;
+    }
+
+    /**
+     * Set typeEnveloppe
+     *
+     * @param string $typeEnveloppe
+     *
+     * @return Demande
+     */
+    public function setTypeEnveloppe($typeEnveloppe)
+    {
+        $this->typeEnveloppe = $typeEnveloppe;
+
+        return $this;
+    }
+
+    /**
+     * Get typeEnveloppe
+     *
+     * @return string
+     */
+    public function getTypeEnveloppe()
+    {
+        return $this->typeEnveloppe;
     }
     
     

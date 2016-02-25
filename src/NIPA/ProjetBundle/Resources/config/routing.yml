@@ -65,3 +65,7 @@ demande_add_instance:
 demande_delete_instance:
     path: demande/edit/{reference}/instance/delete
     defaults: { _controller: NIPAProjetBundle:Demande:deleteInstance }
+
+update_filtres:
+    path: demande/filtres/update
+    defaults: { _controller: NIPAProjetBundle:Demande:filtres }

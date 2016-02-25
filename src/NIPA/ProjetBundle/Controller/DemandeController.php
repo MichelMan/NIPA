@@ -87,6 +87,8 @@ class DemandeController extends Controller
         $demande = new Demande(); // On créé notre objet      
         $form = $this->get('form.factory')->create(new DemandeFormType(), $demande); // On bind l'objet à notre formulaire 
         
+        $formFiltres = $this->get('form.factory')->create(new DemandeFormType(), $demande); // Filtres Form
+        
         $options = $form->get('portefeuille')->getConfig()->getOptions();
         $choices = $options['choice_list']->getChoices();         
         /*************************************************/     
@@ -95,7 +97,8 @@ class DemandeController extends Controller
         //return array();
         return $this->render('NIPAProjetBundle:Demande:demande.html.twig', array(
             'user' => $user, 
-            'form' => $form->createView(), 
+            'form' => $form->createView(),
+            'formFiltres' => $formFiltres->createView(),
             'demande' => $demande, 
             'listDemande' => $listDemande,
             'choices' => $choices,
@@ -175,6 +178,8 @@ class DemandeController extends Controller
         $demande = new Demande(); // On créé notre objet      
         $form = $this->get('form.factory')->create(new DemandeFormType(), $demande); // On bind l'objet à notre formulaire 
         
+        $formFiltres = $this->get('form.factory')->create(new DemandeFormType(), $demande); // Filtres Form
+
         $options = $form->get('portefeuille')->getConfig()->getOptions();
         $choices = $options['choice_list']->getChoices();         
 
@@ -286,12 +291,15 @@ class DemandeController extends Controller
                //if ($form->isValid()) { // Si le formulaire est valide              
                 $em = $this->getDoctrine()->getEntityManager();
                     
-                    $this->get('nipa_demande.demande_manager')->saveDemande($demande); // On utilise notre Manager pour gérer la sauvegarde de l'objet
-                       
                     // On add la demande au portfeuille selectionné
                     $portefeuille = $this->get('nipa_portefeuille.portefeuille_manager')->loadPortefeuille($referencePortefeuille);
                     $portefeuille->addDemandes($demande);
 
+                    // On met a jour le typeEnveloppe
+                    $demande->setTypeEnveloppe($portefeuille->getPortefeuilleEnveloppe()->getNom());
+                    
+                    $this->get('nipa_demande.demande_manager')->saveDemande($demande); // On utilise notre Manager pour gérer la sauvegarde de l'objet
+                    
                     $em->flush();                    
                             
                     $this->get('session')->getFlashBag()->set('success',
@@ -310,6 +318,7 @@ class DemandeController extends Controller
         return $this->render('NIPAProjetBundle:Demande:demande.html.twig', array(
             'user' => $user, 
             'form' => $form->createView(), 
+            'formFiltres' => $formFiltres->createView(),
             'formModal' => $formModal->createView(), 
             'formInstance' => $formInstance->createView(), 
             'formBudget' => $formBudget->createView(), 
@@ -402,6 +411,9 @@ class DemandeController extends Controller
         
         $form = $this->createForm(new DemandeFormType(), $demande);
          
+        $demandeFiltres = new Demande(); // On créé notre objet      
+        $formFiltres = $this->get('form.factory')->create(new DemandeFormType(), $demandeFiltres); // Filtres Form
+        
         $options = $form->get('portefeuille')->getConfig()->getOptions();
         $choices = $options['choice_list']->getChoices(); 
         
@@ -450,7 +462,11 @@ class DemandeController extends Controller
            //if ($form->isValid()) { // Si le formulaire est valide
                 
                 $demande->setReferenceDemande($reference);
-                        
+                $referencePortefeuille=$this->getRequest()->request->get('referencePortefeuille');
+                $portefeuille = $this->get('nipa_portefeuille.portefeuille_manager')->loadPortefeuille($referencePortefeuille);
+                // On met a jour le typeEnveloppe
+                $demande->setTypeEnveloppe($portefeuille->getPortefeuilleEnveloppe()->getNom());
+                    
                 $this->get('nipa_demande.demande_manager')->saveDemande($demande); // On utilise notre Manager pour gérer la sauvegarde de l'objet
                 
                 $this->get('session')->getFlashBag()->set('success',
@@ -468,6 +484,7 @@ class DemandeController extends Controller
         return $this->render('NIPAProjetBundle:Demande:demande.html.twig', array(
             'user' => $user, 
             'form' => $form->createView(), 
+            'formFiltres' => $formFiltres->createView(),
             'formModal' => $formModal->createView(), 
             'formInstance' => $formInstance->createView(), 
             'formBudget' => $formBudget->createView(), 
@@ -556,6 +573,9 @@ class DemandeController extends Controller
         
         $form = $this->createForm(new DemandeFormType(), $demande);
          
+        $demandeFiltres = new Demande(); // On créé notre objet      
+        $formFiltres = $this->get('form.factory')->create(new DemandeFormType(), $demandeFiltres); // Filtres Form
+        
         $options = $form->get('portefeuille')->getConfig()->getOptions();
         $choices = $options['choice_list']->getChoices();  
         
@@ -632,6 +652,7 @@ class DemandeController extends Controller
         return $this->render('NIPAProjetBundle:Demande:demande.html.twig', array(
             'user' => $user, 
             'form' => $form->createView(), 
+            'formFiltres' => $formFiltres->createView(),
             'formModal' => $formModal->createView(), 
             'formInstance' => $formInstance->createView(), 
             'formBudget' => $formBudget->createView(), 
@@ -691,6 +712,9 @@ class DemandeController extends Controller
         
         $form = $this->createForm(new DemandeFormType(), $demande);
          
+        $demandeFiltres = new Demande(); // On créé notre objet      
+        $formFiltres = $this->get('form.factory')->create(new DemandeFormType(), $demandeFiltres); // Filtres Form
+        
         $options = $form->get('portefeuille')->getConfig()->getOptions();
         $choices = $options['choice_list']->getChoices();  
         
@@ -808,6 +832,9 @@ class DemandeController extends Controller
         
         $form = $this->createForm(new DemandeFormType(), $demande);
          
+        $demandeFiltres = new Demande(); // On créé notre objet      
+        $formFiltres = $this->get('form.factory')->create(new DemandeFormType(), $demandeFiltres); // Filtres Form
+        
         $options = $form->get('portefeuille')->getConfig()->getOptions();
         $choices = $options['choice_list']->getChoices();  
         
@@ -883,7 +910,8 @@ class DemandeController extends Controller
 
         return $this->render('NIPAProjetBundle:Demande:demande.html.twig', array(
             'user' => $user, 
-            'form' => $form->createView(), 
+            'form' => $form->createView(),
+            'formFiltres' => $formFiltres->createView(),
             'formModal' => $formModal->createView(), 
             'formInstance' => $formInstance->createView(), 
             'formBudget' => $formBudget->createView(), 
@@ -1130,5 +1158,264 @@ class DemandeController extends Controller
 
                 return $response; 
         }
-    }       
+    } 
+    
+    /**
+    *  ADD FILTRES
+    * 
+    */
+    public function filtresAction()
+    {
+        /**********************DROIT SECTION************************/
+        $requestDroit = Request::createFromGlobals();
+        $droit = $requestDroit->query->get('droit');
+               
+        if ($droit == "denied") { // On test si user pour avoir accès à la section 
+            //throw new AccessDeniedException("Section autorisée uniquement pour les administrateurs!");
+            $this->get('session')->getFlashBag()->set('error', "Vous n'avez pas les droits requis pour accéder à cette section!");            
+        }        
+        /***********************************************************/       
+        $request = $this->get('request');
+        
+        $droit = 0;
+        $user = $this->getUser();
+            
+        foreach($user->getGroupesToArray() as $groupe) // Pour chaque Groupe affilié au user
+        {
+            if($groupe->getPermission() != null) // Test si le groupe a des permissions
+            {
+                if(($groupe->getPermission()->getCMSDemande() == 1) || ($groupe->getPermission()->getLDemande() == 1)) // Si oui on test les droits d'accès
+                {
+                    $droit++;           
+                }
+            }
+        }
+        
+        if ($droit == 0) {
+            //return $this->render($this->getRequest()->server->get('HTTP_REFERER'), array('droit' => $droit));
+            $droit = "denied";
+            $referer = $this->getRequest()->server->get('HTTP_REFERER');
+            return $this->redirect($referer."?droit=".$droit);  
+        }  
+        
+        /*******************************************/
+
+        $criteres=$this->getRequest()->get('criteres');
+   
+        /***************DATA TREE*******************/
+        //return array() List ALL Portefeuille;
+        $listPortefeuille = $this->get('nipa_portefeuille.portefeuille_manager')->loadAllPortefeuille();
+        //On trie la liste des portefeuilles
+        usort($listPortefeuille, function ($a, $b) {
+            return strnatcmp($a->getReferencePortefeuille(), $b->getReferencePortefeuille());
+        });        
+        
+        //On récupère tous les enveloppes
+        $repository = $this->getDoctrine()->getManager()->getRepository('NIPAProjetBundle:PortefeuilleEnveloppe');
+        $listPortefeuilleEnveloppe = $repository->findAll();     
+        //On récupère toutes les années
+        $repository = $this->getDoctrine()->getManager()->getRepository('NIPAProjetBundle:PortefeuilleAnnee');
+        $listPortefeuilleAnnee = $repository->findAll();         
+         //On récupère tous les status
+        $repository = $this->getDoctrine()->getManager()->getRepository('NIPAProjetBundle:PortefeuilleStatut');
+        $listPortefeuilleStatut = $repository->findAll(); 
+        
+        //return array() List ALL Demandes;
+        $listDemande = $this->get('nipa_demande.demande_manager')->loadAllDemande();
+        //On trie la liste des demandes
+        usort($listDemande, function ($a, $b) {
+            return strnatcmp($a->getReferenceDemande(), $b->getReferenceDemande());
+        });        
+                  
+        /************************************/
+        
+        $demande = new Demande(); // On créé notre objet      
+        $form = $this->createForm(new DemandeFormType(), $demande);
+         
+        $demandeFiltres = new Demande(); // On créé notre objet      
+        $formFiltres = $this->get('form.factory')->create(new DemandeFormType(), $demandeFiltres); // Filtres Form
+        
+        $options = $form->get('portefeuille')->getConfig()->getOptions();
+        $choices = $options['choice_list']->getChoices();  
+        
+        /***************Formulaire select Portefeuilles****************/
+        $portefeuilleManager = $this->get('nipa_portefeuille.portefeuille_manager');
+        $portefeuilles = $portefeuilleManager->loadAllPortefeuille(); // on accède aux service et on récupère les méthodes dans portefeuilleManager
+        
+        $formModal = $this->get('form.factory')->create(new SelectPortefeuilleModalType(), $portefeuilles);        
+        
+        $options2 = $formModal->get('portefeuille')->getConfig()->getOptions();
+        $choices2 = $options2['choice_list']->getChoices();            
+        /***************************************************************/
+        // DemandeBudget Form
+        $DemandeBudget = new DemandeBudget();  
+        $formBudget = $this->createForm(new DemandeBudgetFormType(), $DemandeBudget);
+        
+        //On récupère toutes les tuples du budget actuel
+        $repository = $this->getDoctrine()->getManager()->getRepository('NIPAProjetBundle:DemandeBudget');
+        $listDemandeBudget = $repository->findBy(array('demande' => $demande)); // Critere
+ 
+        // On trie les budgets dans l'ordre CHRONO par date
+        usort($listDemandeBudget, function($a, $b) {
+          return ($a->getDate() < $b->getDate()) ? -1 : 1;
+        });
+        /***************************************************************/
+        
+        // DemandeInstance Form
+        $DemandeListeInstance = new DemandeListeInstance();  
+        $formInstance = $this->createForm(new DemandeListeInstanceFormType(), $DemandeListeInstance);
+        
+        //On récupère liste des tuples instances de la Demande
+        $repository = $this->getDoctrine()->getManager()->getRepository('NIPAProjetBundle:DemandeListeInstance');
+        $listDemandeInstance = $repository->findBy(array('demande' => $demande)); // Critere
+        
+        // On trie les instances dans l'ordre CHRONO par date
+        usort($listDemandeInstance, function($a, $b) {
+          return ($a->getDatePrev() < $b->getDatePrev()) ? -1 : 1;
+        });        
+        /***************************************************************/  
+        
+        // Si soumet le formulaire
+        if ('POST' == $request->getMethod()) {
+            
+           $formFiltres->submit($request->request->get($form->getName()));            
+           //$formModal->handleRequest($request);
+           //if ($formModal->isValid()) {
+                
+                $data = $request->request->all();
+                //\Doctrine\Common\Util\Debug::dump($criteres);
+                
+                $em = $this->getDoctrine()->getEntityManager();
+
+                $where = array();
+                for($i = 0;$i < count($criteres); $i++)
+                {
+                    //["Reference", "Priorite", "Titre", "TypeEnveloppe", "StatutDemande", "Portefeuille", "Direction", "EM", "Offres", "TypeProjet", "Divers", "PM", "Interlocuteur", "SDM", "REX"]
+                    if($criteres[$i] == "Reference")
+                    {
+                        $reference = $data["Reference"];
+                        $where["referenceDemande"] = $reference;
+                    }
+                    elseif ($criteres[$i] == "Priorite")
+                    {
+                        $priorite = $data["nipa_projet_demande"]["priorite"];
+                        $where["priorite"] = $priorite;
+                    }
+                    elseif ($criteres[$i] == "Titre")
+                    {
+                        $titre = $data["Titre"];
+                        $where["nom"] = $titre;
+                    }
+                    elseif ($criteres[$i] == "TypeEnveloppe")
+                    {
+                        $typeEnveloppe = $data["TypeEnveloppe"];
+                        $where["typeEnveloppe"] = $typeEnveloppe;
+                    }                    
+                    elseif ($criteres[$i] == "StatutDemande")
+                    {
+                        $statutDemande = $data["nipa_projet_demande"]["demandeStatut"];
+                        $where["demandeStatut"] = $statutDemande;
+                    }                    
+                    elseif ($criteres[$i] == "Portefeuille")
+                    {
+                        // A FAIRE GETDEMANDES OF THE PORTEFEUILLE SELECT
+                    }
+                    elseif ($criteres[$i] == "Direction")
+                    {
+                        $direction = $data["nipa_projet_demande"]["direction"];
+                        $where["direction"] = $direction;
+                    }                    
+                    elseif ($criteres[$i] == "EM")
+                    {
+                        $em = $data["nipa_projet_demande"]["entiteMetier"];
+                        $where["entiteMetier"] = $em;
+                    }                    
+                    elseif ($criteres[$i] == "Offres")
+                    {
+                        $offres = $data["nipa_projet_demande"]["offres"];
+                        $where["offres"] = $offres;
+                    }
+                    elseif ($criteres[$i] == "TypeProjet")
+                    {
+                        $typeProjet = $data["nipa_projet_demande"]["typeProjet"];
+                        $where["typeProjet"] = $typeProjet;
+                    }     
+                    elseif ($criteres[$i] == "Divers")
+                    {
+                        $divers = $data["nipa_projet_demande"]["divers"];
+                        $where["divers"] = $divers;
+                    }                    
+                    elseif ($criteres[$i] == "PM")
+                    {
+                        $pm = $data["nipa_projet_demande"]["porteurMetier"];
+                        $where["porteurMetier"] = $pm;
+                    }
+                    elseif ($criteres[$i] == "Interlocuteur")
+                    {
+                        $interlocuteur = $data["nipa_projet_demande"]["interlocuteurMOA"];
+                        $where["interlocuteurMOA"] = $interlocuteur;
+                    }                    
+                    elseif ($criteres[$i] == "SDM")
+                    {
+                        $sdm = $data["nipa_projet_demande"]["SDM"];
+                        $where["SDM"] = $sdm;
+                    }
+                    elseif ($criteres[$i] == "REX")
+                    {
+                        $REX = $data["nipa_projet_demande"]["REX"];
+                        $where["REX"] = $REX;
+                    }                    
+                }
+                    //\Doctrine\Common\Util\Debug::dump($where);
+
+                    $repository = $this->getDoctrine()->getManager()->getRepository('NIPAProjetBundle:Demande');
+                    $listDemande = $repository->findBy(
+                        $where,                                   // Critere
+                        array('referenceDemande' => 'asc')        // Tri
+                    );
+                    
+                //\Doctrine\Common\Util\Debug::dump($listDemande);
+                $this->get('session')->getFlashBag()->set('notice',
+                $this->get('translator')->trans('Filtres appliqués: '.sizeof($listDemande).' Demande(s)')
+                );
+                
+                // On redirige vers la page de modification du portefeuille
+                return $this->render('NIPAProjetBundle:Demande:demande.html.twig', array(
+                    'user' => $user, 
+                    'form' => $form->createView(), 
+                    'formFiltres' => $formFiltres->createView(),
+                    'formModal' => $formModal->createView(), 
+                    'formInstance' => $formInstance->createView(), 
+                    'formBudget' => $formBudget->createView(), 
+                    'demande' => $demande,
+                    'listDemande' => $listDemande,
+                    'choices' => $choices, 
+                    'choices2' => $choices2, 
+                    'listDemandeBudget' => $listDemandeBudget, 
+                    'listDemandeInstance' => $listDemandeInstance,
+                    'listPortefeuille' => $listPortefeuille, 
+                    'listPortefeuilleEnveloppe' => $listPortefeuilleEnveloppe, 
+                    'listPortefeuilleAnnee' => $listPortefeuilleAnnee, 
+                    'listPortefeuilleStatut' => $listPortefeuilleStatut)); 
+            //}
+        }
+
+        return $this->render('NIPAProjetBundle:Demande:demande.html.twig', array(
+            'user' => $user, 
+            'form' => $form->createView(), 
+            'formFiltres' => $formFiltres->createView(),
+            'formModal' => $formModal->createView(), 
+            'formInstance' => $formInstance->createView(), 
+            'formBudget' => $formBudget->createView(), 
+            'demande' => $demande,
+            'listDemande' => $listDemande,
+            'choices' => $choices, 
+            'choices2' => $choices2, 
+            'listDemandeBudget' => $listDemandeBudget, 
+            'listDemandeInstance' => $listDemandeInstance,
+            'listPortefeuille' => $listPortefeuille, 
+            'listPortefeuilleEnveloppe' => $listPortefeuilleEnveloppe, 
+            'listPortefeuilleAnnee' => $listPortefeuilleAnnee, 
+            'listPortefeuilleStatut' => $listPortefeuilleStatut)); 
+    }    
 }

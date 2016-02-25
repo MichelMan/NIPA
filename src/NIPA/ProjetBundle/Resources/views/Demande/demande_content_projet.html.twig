@@ -224,7 +224,7 @@
                     <h3 id="myModalLabel">Ajouter Portefeuille(s) </h3>
                 </div>
                 
-                <form class="form-horizontal well" data-async data-target="#ModalAddPortefeuilles" action="{{ path('demande_add_portefeuilles', {'reference':demande.referenceDemande}) }} {{ form_enctype(formModal) }}"  method="POST">                       
+                <form class="form-horizontal well" data-async data-target="#ModalAddPortefeuilles" action="{{ path('demande_add_portefeuilles', {'reference':demande.referenceDemande}) }}" {{ form_enctype(formModal) }}  method="POST">                       
                     <div class="modal-body">
 
                         <div class="container">
@@ -275,7 +275,8 @@
                                                   <td>{{ choices2[index].nom }}</td>
                                                   <td>{{ choices2[index].getPortefeuilleAnnee().getValeur() }}</td>
                                                   <td>{{ choices2[index].portefeuilleStatut.nom}}</td>                                                
-                                                </tr>                                                {% endif %}
+                                                </tr>                                              
+                                                {% endif %}
                                             {% else %}
                                                 <p>Aucun Portefeuille(s)</p>
                                             {% endfor %}
