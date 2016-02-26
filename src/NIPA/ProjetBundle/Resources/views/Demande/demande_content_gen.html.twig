@@ -59,9 +59,6 @@
                 <div class="panel panel-danger" id="GDD">
                     <div class="panel-heading" id="GDD">
                         <h5 class="panel-title"> Informations générales de la Demande <strong>{% if demande.referenceDemande %} {{ demande.referenceDemande }} ({{ demande.demandeStatut.getNom() }}) {% endif %}</strong></h5>
-                        <div class="pull-right">
-                            REX: {{ form_widget(form.REX) }}
-                        </div>
                     </div>   
                 <div id="collapseInfo" class="panel-collapse collapse-in">                                
                     <div class="panel-body">

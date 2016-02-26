@@ -64,12 +64,13 @@
                 {% if demande.referenceDemande %}                
                     <li role="presentation">
                         <a href="#description" aria-controls="enjeux" role="tab" data-toggle="tab"><i class="fa fa-pencil-square fa-fw"></i> Description</a>
-                    </li>                    <li role="presentation">
-                        <a href="#projets" aria-controls="projets" role="tab" data-toggle="tab"><i class="fa fa-list-alt fa-fw"></i> P&P</a>
                     </li>                    
                     <li role="presentation">
                         <a href="#budget" aria-controls="budget" role="tab" data-toggle="tab"><i class="fa fa-dollar fa-fw"></i> Budget</a>
-                    </li>
+                    </li>                  
+                    <li role="presentation">
+                        <a href="#projets" aria-controls="projets" role="tab" data-toggle="tab"><i class="fa fa-list-alt fa-fw"></i> P&P</a>
+                    </li>                    
                     <li role="presentation">
                         <a href="#instances" aria-controls="instances" role="tab" data-toggle="tab"><i class="fa fa-users fa-fw"></i> Instances</a>
                     </li> 
@@ -92,14 +93,14 @@
             <div role="tabpanel" class="col-md-9 well tab-pane" id="description">
                 {% include "NIPAProjetBundle:Demande:demande_content_description.html.twig" %}
             </div>
-            
-            <div role="tabpanel" class="col-md-9 well tab-pane" id="projets">
-                {% include "NIPAProjetBundle:Demande:demande_content_projet.html.twig" %}
-            </div>
 
             <div role="tabpanel" class="col-md-9 well tab-pane" id="budget">
                 {% include "NIPAProjetBundle:Demande:demande_content_budget.html.twig" %}                
             </div> 
+            
+            <div role="tabpanel" class="col-md-9 well tab-pane" id="projets">
+                {% include "NIPAProjetBundle:Demande:demande_content_projet.html.twig" %}
+            </div>
 
             <div role="tabpanel" class="col-md-9 well tab-pane" id="instances">
                 {% include "NIPAProjetBundle:Demande:demande_content_instance.html.twig" %}                

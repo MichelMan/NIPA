@@ -29,7 +29,7 @@
                         Informations sur les instances passées
                     </h3>
                     <div class="pull-right">  
-                        {% if demande.referenceDemande %} Instance actuelle: <strong> {{listDemandeInstance ? listDemandeInstance[listDemandeInstance|length-1].getInstance().getNom() }} </strong> {% endif %}
+                        {% if demande.referenceDemande %} Dernière instance: <strong> {{listDemandeInstance ? listDemandeInstance[listDemandeInstance|length-1].getInstance().getNom() }} </strong> | Statut: <strong> {{listDemandeInstance ? listDemandeInstance[listDemandeInstance|length-1].getStatut().getNom() }} </strong>{% endif %}
                         <span data-toggle="collapse" data-target="#collapseInstances" class="clickable collapsed" title="Afficher détails" data-container="body">
                             <i class="glyphicon glyphicon-plus"></i>
                         </span>
@@ -42,7 +42,7 @@
                         <thead>
                             <tr>
                                 <th>Instance</th>
-                                <th>Date prév.</th>
+                                <th>Date</th>
                                {# <th>Date rév.</th>
                                 <th>Validation effective</th>#}
                                 <th class="text-center">Remarques</th>

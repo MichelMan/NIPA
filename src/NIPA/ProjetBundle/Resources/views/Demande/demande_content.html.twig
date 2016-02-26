@@ -110,7 +110,7 @@
                                         </thead>
                                         <tbody>
                                             
-                                            {% set fields = ["Reference", "Priorite", "Titre", "TypeEnveloppe", "StatutDemande", "Portefeuille", "Direction", "EM", "Offres", "TypeProjet", "Divers", "PM", "Interlocuteur", "SDM", "REX"] %}
+                                            {% set fields = ["Reference", "Priorite", "Titre", "TypeEnveloppe", "StatutDemande", "Portefeuille", "Direction", "EM", "Offres", "TypeProjet", "Divers", "PM", "Interlocuteur", "SDM"] %}
                                             <tr>
                                                 <td class="text-center"><input type="checkbox"  name="criteres[]" id='Reference' value="{{fields[0]}}"></input></td>
                                                 <td>Référence: </td>
@@ -138,7 +138,7 @@
                                                 <td>Portefeuille: </td>
                                                 <td> (MARCHE PAS)
                                                     <center>
-                                                        <select class="form-control" id="Portefeuille" name="Portefeuille" onFocus="document.getElementById('Portefeuille').checked = true"/>>
+                                                        <select class="form-control" id="Portefeuille" name="Portefeuille" onFocus="document.getElementById('Portefeuille').checked = true"/>
                                                             {% for child in form.portefeuille %}
                                                                 {% set index = child.vars.value %}
                                                                     <option value="{{choices[index].referencePortefeuille}}">{{ choices[index].nom }}</option>
@@ -184,9 +184,9 @@
                                                 <td>{{ form_widget(formFiltres.SDM, { 'attr': {'onFocus': "document.getElementById('SDM').checked = true"} }) }}</td>                                    
                                             </tr>   
                                             <tr>
-                                                <td class="text-center"><input type="checkbox"  name="criteres[]" id='REX' value="{{fields[14]}}"></input></td>
-                                                <td>REX: </td>
-                                                <td>{{ form_widget(formFiltres.REX, { 'attr': {'onFocus': "document.getElementById('REX').checked = true"} }) }}</td>
+                                                <td class="text-center"><input type="checkbox" onclick="return cocherOuDecocherTout(this);" /></td>
+                                                <td>Cocher/Décocher</td>                                           
+                                                <td></td>
                                             </tr>  
                                             
                                         </tbody>
@@ -196,9 +196,12 @@
                             </div>
                         </div>
 
+                    {# Pour l'erreur: "Le jeton CSRF est invalide" #}
+                    {{ form_widget(formFiltres._token) }}        
+                    {{form_errors(formFiltres)}}              
+                    
                     </div>
                     <div class="modal-footer">
-                        Cocher/Décocher <input type="checkbox" onclick="return cocherOuDecocherTout(this);" />
                         <button class="btn btn-primary" data-dismiss="modal" aria-hidden="true"> Annuler</button>
                         <button class="btn btn-success" type="submit">Appliquer</button>
                     </div> 

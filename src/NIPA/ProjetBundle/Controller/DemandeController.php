@@ -1286,7 +1286,8 @@ class DemandeController extends Controller
                 //\Doctrine\Common\Util\Debug::dump($criteres);
                 
                 $em = $this->getDoctrine()->getEntityManager();
-
+                
+                $merge=0;
                 $where = array();
                 for($i = 0;$i < count($criteres); $i++)
                 {
@@ -1319,6 +1320,15 @@ class DemandeController extends Controller
                     elseif ($criteres[$i] == "Portefeuille")
                     {
                         // A FAIRE GETDEMANDES OF THE PORTEFEUILLE SELECT
+                        $portefeuille = $data["Portefeuille"];
+                        
+                        $repository = $this->getDoctrine()->getManager()->getRepository('NIPAProjetBundle:Portefeuille');
+                        $portefeuille = $repository->findBy(array('referencePortefeuille' => $portefeuille));                        
+                        
+                        $listeDemandes = $portefeuille[0]->getDemandesToArray();
+                        
+                        $merge = 1;
+                        //$where["portefeuilles"] = $portefeuille[0];
                     }
                     elseif ($criteres[$i] == "Direction")
                     {
@@ -1359,21 +1369,23 @@ class DemandeController extends Controller
                     {
                         $sdm = $data["nipa_projet_demande"]["SDM"];
                         $where["SDM"] = $sdm;
-                    }
-                    elseif ($criteres[$i] == "REX")
-                    {
-                        $REX = $data["nipa_projet_demande"]["REX"];
-                        $where["REX"] = $REX;
-                    }                    
+                    }                   
                 }
-                    //\Doctrine\Common\Util\Debug::dump($where);
+                
+                //\Doctrine\Common\Util\Debug::dump($where);
 
-                    $repository = $this->getDoctrine()->getManager()->getRepository('NIPAProjetBundle:Demande');
-                    $listDemande = $repository->findBy(
-                        $where,                                   // Critere
-                        array('referenceDemande' => 'asc')        // Tri
-                    );
+                $repository = $this->getDoctrine()->getManager()->getRepository('NIPAProjetBundle:Demande');
+                $listDemande = $repository->findBy(
+                    $where,                                   // Critere
+                    array('referenceDemande' => 'asc')        // Tri
+                );
                     
+                
+                if($merge == 1)
+                {
+                    $listDemande = array_merge($listeDemandes, $listDemande);        
+                }
+
                 //\Doctrine\Common\Util\Debug::dump($listDemande);
                 $this->get('session')->getFlashBag()->set('notice',
                 $this->get('translator')->trans('Filtres appliqués: '.sizeof($listDemande).' Demande(s)')

@@ -29,16 +29,19 @@
                 <div class="panel-heading">
                     <h3 class="panel-title">  
                         {% if demande.referenceDemande %} 
+                            {% set total = 0 %}
                             {% for portefeuille in demande.getPortefeuillesToArray() %}
                                 {% set counter = 0 %}
                                 {% for budget in listDemandeBudget %}
-                                    {% if budget.IPP == portefeuille.getPortefeuilleAnnee().getValeur() %}
+                                    {% if budget.IPP == portefeuille.getNom() %}
                                         {% set counter = budget.montant %}
                                     {% endif %}
                                 {% endfor %} 
-                                <strong>{{ portefeuille.getPortefeuilleAnnee().getValeur() }}</strong> <span class="glyphicon glyphicon-arrow-right"></span> {{ counter|number_format(2, ',', ' ') }} k€ /
-                            {% endfor %} 
-                        {% endif %} 
+                                <strong>{{ portefeuille.getNom() }}</strong> <span class="glyphicon glyphicon-arrow-right"></span> {{ counter|number_format(2, ',', ' ') }} k€ /
+                            {% set total = total + counter %}
+                            {% endfor %}
+                            <strong>Budget total </strong> <span class="glyphicon glyphicon-arrow-right"></span> {{ total|number_format(2, ',', ' ') }} k€ /
+                        {% endif %}                         
                     </h3>
                     <div class="pull-right">              
                         <span data-toggle="collapse" data-target="#collapseBudget" class="clickable collapsed" title="Afficher détails" data-container="body">
@@ -98,7 +101,7 @@
                                     <center>
                                         <select class="form-control" id="IPP" name="IPP">
                                         {% for portefeuille in demande.getPortefeuillesToArray() %}
-                                                <option value="{{portefeuille.getPortefeuilleAnnee().getValeur()}}">{{ portefeuille.getPortefeuilleAnnee().getValeur() }}</option>
+                                                <option value="{{portefeuille.getNom()}}">{{ portefeuille.getNom() }}</option>
                                         {% endfor %}
                                         </select>
                                      </center>
