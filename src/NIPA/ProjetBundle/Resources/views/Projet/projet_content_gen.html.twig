@@ -1,0 +1,237 @@
+{% trans_default_domain 'NIPAProjetBundle' %}
+		
+{% block body %}   
+ 
+    <style>
+        .panel#GDP {
+            margin-bottom: 0px;
+            background-color: #fff;
+            border-radius: 4px;
+        }        
+        
+        .panel-heading#GDP {
+            padding: 18px 15px;
+            border-bottom: 1px solid transparent;
+            border-top-left-radius: 3px;
+            border-top-right-radius: 3px;
+        }
+
+        .table#GDP {
+            width: 100%;
+            max-width: 100%;
+            margin-bottom: 0px; 
+        }   
+        
+        .area{
+            margin: 0px 0px 0px 0px;
+            //width: 285px;
+            //height: 54px;            
+        }
+        
+        .number{
+            width: 60px;
+        }
+        
+        #pull-right {
+            margin-top: -24px;
+            font-size: 15px;
+        }
+        
+    </style>    
+  
+    {# TEST LES DROITS USER#}
+    {% set droit = 0 %}
+    {% for groupe in user.getGroupesToArray() %} 
+        {% if groupe.getPermission() %} {# Test si le groupe a des permissions #}
+            {% if (groupe.getPermission().getCMSProjet() == 1) %} {# Si oui on test les droits d'accès #}
+                {% set droit = droit + 1 %}  
+            {% endif %}    
+        {% endif %}
+    {% endfor %}     
+    
+    {% if projet.referenceProjet %}                
+        <h4 class=""><span class='glyphicon glyphicon-edit'></span> {{ 'Mise à jour Projet'|trans }} </h4>            
+    {% else %}
+        <h4 class=""><span class='glyphicon glyphicon-plus-sign'></span> {{ 'Nouveau Projet'|trans }} </h4>        
+    {% endif %}      
+        
+    <form action="{% if projet.referenceProjet %}{{ path('projet_edit', {'reference': projet.referenceProjet}) }}{% else %}{{ path('projet_new') }}{% endif %}" method="post" {{ form_enctype(form) }} >
+                  
+        <div class="container">                   
+            <div class="row col-md-13">
+
+                <!-- PANEL -->          
+                <div class="panel panel-info" id="GDP">
+                    <div class="panel-heading" id="GDP">
+                        <h5 class="panel-title">  <strong>Référence Demande:</strong></h5>
+                        <div class="pull-right" id="pull-right">
+                            <select class="form-control" id="referenceDemande" name="referenceDemande">
+                               {% for demande in listDemande %}
+                                    <option value="{{demande.getReferenceDemande()}}">{{ demande.getReferenceDemande() }} ({{ demande.getNom() }})</option>
+                                {% endfor %}
+                            </select>
+                        </div> 
+                    </div>   
+                <div id="collapseInfo" class="panel-collapse collapse-in">                                
+                    <div class="panel-body">
+                        
+                        <!-- row 1-->          
+                        <table class="table table-hover" id="GDP">
+                            <thead>
+                                <tr>
+                                    <th>Référence</th>
+                                    <th class="text-center">Titre*</th>
+                                    <th class="text-center">Lot du Projet*</th>
+                                    <th class="text-center">Enveloppe Budgétaire</th>
+                                    <th class="text-center">Priorité</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><h4><strong></strong></h4></td>
+                                    <td>{{ form_widget(form.titre) }}</td>
+                                    <td>{{ form_widget(form.titreLot) }}</td>
+                                    <td>{{ form_widget(form.enveloppe) }}</td>
+                                    <td>{{ form_widget(form.priorite) }}</td>
+                                </tr>
+                            </tbody>
+                        </table>
+ 
+                        <!-- row 2 -->                                              
+                        <table class="table table-hover" id="GDP">
+                            <thead>
+                                <tr>
+                                    <th class="text-center">Direction émettrice</th>
+                                    <th class="text-center">Entité Métier</th>
+                                    <th class="text-center">Offre concernée</th>
+                                    <th class="text-center">Type de projet</th>
+                                    <th class="text-center">Divers</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>{{ form_widget(form.direction) }}</td>
+                                    <td>{{ form_widget(form.entiteMetier) }}</td>
+                                    <td>{{ form_widget(form.offres) }}</td>
+                                    <td>{{ form_widget(form.typeProjet) }}</td>
+                                    <td>{{ form_widget(form.divers) }}</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                                                      
+                        <!-- row 3 -->          
+                        <table class="table table-hover" id="GDP">
+                            <thead>
+                                <tr>
+                                    <th class="text-center">Interlocuteur MOA</th>
+                                    <th class="text-center">Porteur Métier</th>
+                                    <th class="text-center">SDM</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>{{ form_widget(form.interlocuteurMOA) }}</td>
+                                    <td>{{ form_widget(form.porteurMetier) }}</td>
+                                    <td>{{ form_widget(form.SDM) }}</td>
+                                </tr>
+                            </tbody>
+                        </table>                
+                                
+                    </div> 
+                </div>                    
+                </div>
+            </div>                    
+        </div>
+                                
+        {# Pour l'erreur: "Le jeton CSRF est invalide" #}
+        {{ form_widget(form._token) }}        
+        {{form_errors(form)}} 
+        
+        <br>  
+        <div class="pull-right">
+            
+            {% if droit != 0 %}
+                {% if projet.referenceProjet %} 
+                    <a href="{{ path('projet_delete', {'reference': projet.referenceProjet}) }}" class="confirmModalLinkProjet btn btn-danger"><span class="glyphicon glyphicon-trash"></span> Supprimer </a>                                                
+                {% endif %}
+                <button class="btn btn-success" type="submit"><span class='glyphicon glyphicon-check'></span> Valider</button>           
+            {% else %}
+                {% if projet.referenceProjet %} 
+                    <a href="{{ path('projet_delete', {'reference': projet.referenceProjet}) }}" class="confirmModalLinkProjet btn btn-danger" DISABLED><span class="glyphicon glyphicon-trash"></span> Supprimer </a>                                                
+                {% endif %}
+                <button class="btn btn-success" type="submit" DISABLED><span class='glyphicon glyphicon-check'></span> Valider</button>           
+            {% endif %}
+            
+        </div> 
+            <p>* Champs obligatoire</p>        
+            
+            
+    <!-- MODAL DELETE -->
+    <div id="myModalProjet" class="modal fade in">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                    <h3 id="myModalLabel">Confirmation</h3>
+                </div>
+                
+                <div class="modal-body">
+                    <p class="error-text">Etes vous sûr de vouloir supprimer le projet?</p>
+                </div>
+
+                <div class="modal-footer">
+                    <a href="#" class="btn btn-warning" id="confirmModalLinkProjetNo">Annuler</a>
+                    <a href="#" class="btn btn-danger" id="confirmModalLinkProjetYes">Supprimer</a>                  
+                </div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal-dalog -->
+    </div><!-- /.modal -->
+    
+<script>
+        
+        $(document).ready(function () {
+            var theHREF;
+
+            $(".confirmModalLinkProjet").click(function(e) {
+                e.preventDefault();
+                theHREF = $(this).attr("href");
+                $("#myModalProjet").modal("show");
+            });
+
+            $("#confirmModalLinkProjetNo").click(function(e) {
+                $("#myModalProjet").modal("hide");
+            });
+
+            $("#confirmModalLinkProjetYes").click(function(e) {
+                window.location.href = theHREF;
+            });
+        });
+
+
+    $(document).ready(function(){
+      $("#referenceDemande").change( function() {
+          
+        console.log($(this).val());
+  
+        $.post("{{ path('projet_load_demande') }}", { referenceDemande: $(this).val() },
+        function(data){
+            //  $("#mon_formulaire_lambda_departement_id").html(data);
+            //console.log(data.titre);
+            document.getElementById('nipa_projet_projet_titre').value = data.titre;
+            document.getElementById('nipa_projet_projet_enveloppe').value = data.typeEnveloppe;
+            document.getElementById('nipa_projet_projet_priorite').value = data.priorite;    
+            document.getElementById('nipa_projet_projet_direction').value = data.direction;
+            document.getElementById('nipa_projet_projet_entiteMetier').value = data.entiteMetier;
+            document.getElementById('nipa_projet_projet_offres').value = data.offres;
+            document.getElementById('nipa_projet_projet_typeProjet').value = data.typeProjet;
+            document.getElementById('nipa_projet_projet_interlocuteurMOA').value = data.interlocuteurMOA;
+            document.getElementById('nipa_projet_projet_porteurMetier').value = data.porteurMetier;
+            document.getElementById('nipa_projet_projet_SDM').value = data.SDM;
+        });
+      });
+    });
+    
+</script>
+
+</script>    
+{% endblock %}            

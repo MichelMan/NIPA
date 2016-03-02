@@ -100,7 +100,7 @@
                                         <center>
                                             <select class="form-control" id="referencePortefeuille" name="referencePortefeuille" {% if demande.referenceDemande %} READONLY {% endif %}>
                                             {% if demande.referenceDemande and demande.getPortefeuillesToArray() is not empty %}
-                                                <option value="{{ demande.getPortefeuillesToArray()[demande.getPortefeuillesToArray()|length-1].getReferencePortefeuille() }}">{{ demande.getPortefeuillesToArray()[demande.getPortefeuillesToArray()|length-1].getNom() }}</option>
+                                                <option value="{{ demande.getPortefeuillesToArray()[0].getReferencePortefeuille() }}">{{ demande.getPortefeuillesToArray()[0].getNom() }}</option>
                                             {% else %}
                                                 {% for child in form.portefeuille %}
                                                     {% set index = child.vars.value %}
@@ -166,21 +166,25 @@
         
         <br>  
         <div class="pull-right">
-            {% if portefeuille.referencePortefeuille is defined %}                
-                <a href="{{ path('portefeuille_delete', {'reference': portefeuille.referencePortefeuille}) }}" class="confirmModalLinkPortefeuille btn btn-danger"><span class="glyphicon glyphicon-trash"></span> Supprimer </a>                                                
-            {% endif %}
             
             {% if droit != 0 %}
+                {% if demande.referenceDemande %} 
+                    <a href="{{ path('demande_delete', {'reference': demande.referenceDemande}) }}" class="confirmModalLinkDemande btn btn-danger"><span class="glyphicon glyphicon-trash"></span> Supprimer </a>                                                
+                {% endif %}
                 <button class="btn btn-success" type="submit"><span class='glyphicon glyphicon-check'></span> Valider</button>           
             {% else %}
+                {% if demande.referenceDemande %} 
+                    <a href="{{ path('demande_delete', {'reference': demande.referenceDemande}) }}" class="confirmModalLinkDemande btn btn-danger" DISABLED><span class="glyphicon glyphicon-trash"></span> Supprimer </a>                                                
+                {% endif %}
                 <button class="btn btn-success" type="submit" DISABLED><span class='glyphicon glyphicon-check'></span> Valider</button>           
             {% endif %}
+        
         </div> 
             <p>* Champs obligatoire</p>        
             
             
     <!-- MODAL DELETE -->
-    <div id="myModalPortefeuille" class="modal fade in">
+    <div id="myModalDemande" class="modal fade in">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
@@ -189,12 +193,12 @@
                 </div>
                 
                 <div class="modal-body">
-                    <p class="error-text">Etes vous sûr de vouloir supprimer le portefeuille?</p>
+                    <p class="error-text">Etes vous sûr de vouloir supprimer la demande?</p>
                 </div>
 
                 <div class="modal-footer">
-                    <a href="#" class="btn btn-warning" id="confirmModalPortefeuilleNo">Annuler</a>
-                    <a href="#" class="btn btn-danger" id="confirmModalPortefeuilleYes">Supprimer</a>                  
+                    <a href="#" class="btn btn-warning" id="confirmModalLinkDemandeNo">Annuler</a>
+                    <a href="#" class="btn btn-danger" id="confirmModalLinkDemandeYes">Supprimer</a>                  
                 </div>
             </div><!-- /.modal-content -->
         </div><!-- /.modal-dalog -->
@@ -205,17 +209,17 @@
         $(document).ready(function () {
             var theHREF;
 
-            $(".confirmModalLinkPortefeuille").click(function(e) {
+            $(".confirmModalLinkDemande").click(function(e) {
                 e.preventDefault();
                 theHREF = $(this).attr("href");
-                $("#myModalPortefeuille").modal("show");
+                $("#myModalDemande").modal("show");
             });
 
-            $("#confirmModalPortefeuilleNo").click(function(e) {
-                $("#myModalPortefeuille").modal("hide");
+            $("#confirmModalLinkDemandeNo").click(function(e) {
+                $("#myModalDemande").modal("hide");
             });
 
-            $("#confirmModalPortefeuilleYes").click(function(e) {
+            $("#confirmModalLinkDemandeYes").click(function(e) {
                 window.location.href = theHREF;
             });
         });

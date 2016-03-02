@@ -101,7 +101,8 @@ class DemandeFormType extends AbstractType
                 array ('label' => 'SDM - Pilote technique (SI/Réseau)',
                        'class' => 'NIPAProjetBundle:DemandeSDM',
                        'property' => 'nom')
-        );            
+        );      
+        
     }
 
     public function getDefaultOptions(array $options)

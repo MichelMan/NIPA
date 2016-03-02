@@ -119,8 +119,12 @@
         
         {% if droit != 0 %}
             <div class="pull-right">
-                {% if portefeuille.referencePortefeuille %}                
-                    <a href="{{ path('portefeuille_delete', {'reference': portefeuille.referencePortefeuille}) }}" class="confirmModalLinkPortefeuille btn btn-danger"><span class="glyphicon glyphicon-trash"></span> Supprimer </a>                                                
+                {% if portefeuille.referencePortefeuille %} 
+                    {% if portefeuille.getDemandesToArray()|length == 0 %} {# On s'assure qu'il y a aucune demandes ou projets liés à ce portefeuille pour pouvoir le supprimer #}               
+                        <a href="{{ path('portefeuille_delete', {'reference': portefeuille.referencePortefeuille}) }}" class="confirmModalLinkPortefeuille btn btn-danger"><span class="glyphicon glyphicon-trash"></span> Supprimer </a>                                                
+                    {% else %}
+                        <a href="#" class="warningModalLinkPortefeuille btn btn-danger"><span class="glyphicon glyphicon-trash"></span> Supprimer </a>                                                
+                    {% endif %}
                 {% endif %}
                 <button class="btn btn-success" type="submit"><span class='glyphicon glyphicon-check'></span> Valider</button>           
             </div>
@@ -155,8 +159,43 @@
         </div><!-- /.modal-dalog -->
     </div><!-- /.modal -->
     
+    <!-- MODAL ERREUR DELETE -->
+    <div id="myModalError" class="modal fade in">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                    <h3 id="myModalLabel"><i class="glyphicon glyphicon-warning-sign"></i> Attention</h3>
+                </div>
+                
+                <div class="modal-body">
+                    <p class="error-text">Aucune demandes ou projets ne doivent être liés au portefeuille!!!</p>
+                </div>
+
+                <div class="modal-footer">
+                    <a href="#" class="btn btn-warning" id="warningModalLinkPortefeuilleNo">Fermer</a>
+                </div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal-dalog -->
+    </div><!-- /.modal -->        
+    
 <script>
         
+        $(document).ready(function () {
+            var theHREF;
+
+            $(".warningModalLinkPortefeuille").click(function(e) {
+                e.preventDefault();
+                theHREF = $(this).attr("href");
+                $("#myModalError").modal("show");
+            });
+
+            $("#warningModalLinkPortefeuilleNo").click(function(e) {
+                $("#myModalError").modal("hide");
+            });
+        });
+
+
         $(document).ready(function () {
             var theHREF;
 
@@ -174,6 +213,6 @@
                 window.location.href = theHREF;
             });
         });
-
+        
 </script>    
 {% endblock %}

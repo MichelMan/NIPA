@@ -18,17 +18,22 @@ use FOS\UserBundle\Model\User as BaseUser;
  * @ORM\Entity(repositoryClass="NIPA\UserBundle\Repository\UtilisateurRepository")
  * @UniqueEntity(fields="Identifiant", message="Cet identifiant existe déjà...")
  * @ORM\AttributeOverrides({
- *     @ORM\AttributeOverride(name="email",
+ *      @ORM\AttributeOverride(name="email",
  *          column=@ORM\Column(
+ *              name     = "email",
+ *              type     = "string",
+ *              length   = 255,
  *              nullable = true
  *          )
  *      ),
- *     @ORM\AttributeOverride(name="emailCanonical",
+ *      @ORM\AttributeOverride(name="emailCanonical",
  *          column=@ORM\Column(
- *              name = "email_canonical",
+ *              name     = "email_canonical",
+ *              type     = "string",
+ *              length   = 255,
  *              nullable = true
  *          )
- *      )
+ *      ),
  * })
  */
 

@@ -501,6 +501,64 @@ class DemandeController extends Controller
     }      
     
     
+    public function deleteDemandeAction($reference)
+    {
+        /**********************DROIT SECTION************************/
+        $requests = Request::createFromGlobals();
+        $droit = $requests->query->get('droit');
+               
+        if ($droit == "denied") { // On test si user pour avoir accès à la section 
+            //throw new AccessDeniedException("Section autorisée uniquement pour les administrateurs!");
+            $this->get('session')->getFlashBag()->set('error', "Vous n'avez pas les droits requis pour accéder à cette section!");            
+        }        
+        /***********************************************************/        
+        
+        // On vérifie que la demande existe
+        if(!$demande = $this->get('nipa_demande.demande_manager')->loadDemande($reference)) {
+            throw new NotFoundHttpException(
+                $this->get('translator')->trans('This demande does not exist.')
+            );
+        }
+        
+        $em = $this->getDoctrine()->getEntityManager();
+
+        //On récupère tous le budget         
+        $repository = $this->getDoctrine()->getManager()->getRepository('NIPAProjetBundle:DemandeBudget');
+        $listDemandeBudget = $repository->findByDemande($demande);           
+
+        //On récupère toutes les instances
+        $repository = $this->getDoctrine()->getManager()->getRepository('NIPAProjetBundle:DemandeListeInstance');
+        $listDemandeListeInstance = $repository->findByDemande($demande); 
+        
+        // On supprime AVANT les éléments des tables où le portefeuille (id) est une clé étrangère
+        foreach($listDemandeBudget as $budget)
+        {
+            $em->remove($budget);
+        }
+        foreach($listDemandeListeInstance as $instance)
+        {
+            $em->remove($instance);
+        }
+        
+        // On supprimer tous les portefeuilles liés à la Demande
+        $listPortefeuilles = $demande->getPortefeuillesToArray();
+        foreach($listPortefeuilles as $portefeuille)
+        {
+            $portfeuilleManager = $this->get('nipa_portefeuille.portefeuille_manager');
+            $portefeuille->removeDemandes($demande);
+        }
+
+        $em->flush();
+
+        // On peut maintenant supprimer la demande même
+        $this->get('nipa_demande.demande_manager')->deleteDemande($demande);     
+        
+        $this->get('session')->getFlashBag()->add('success','Suppression effectuée');  
+        return new RedirectResponse($this->generateUrl('demande'));                     
+    }        
+    
+    
+    
     /**
     *  ADD a Portefeuille to a Demande
     * 
@@ -1288,10 +1346,11 @@ class DemandeController extends Controller
                 $em = $this->getDoctrine()->getEntityManager();
                 
                 $merge=0;
+                $search=0;
                 $where = array();
                 for($i = 0;$i < count($criteres); $i++)
                 {
-                    //["Reference", "Priorite", "Titre", "TypeEnveloppe", "StatutDemande", "Portefeuille", "Direction", "EM", "Offres", "TypeProjet", "Divers", "PM", "Interlocuteur", "SDM", "REX"]
+                    //["Reference", "Priorite", "Titre", "TypeEnveloppe", "StatutDemande", "Portefeuille", "Direction", "EM", "Offres", "TypeProjet", "Divers", "PM", "Interlocuteur", "SDM", "Search"]
                     if($criteres[$i] == "Reference")
                     {
                         $reference = $data["Reference"];
@@ -1319,16 +1378,14 @@ class DemandeController extends Controller
                     }                    
                     elseif ($criteres[$i] == "Portefeuille")
                     {
-                        // A FAIRE GETDEMANDES OF THE PORTEFEUILLE SELECT
                         $portefeuille = $data["Portefeuille"];
                         
                         $repository = $this->getDoctrine()->getManager()->getRepository('NIPAProjetBundle:Portefeuille');
                         $portefeuille = $repository->findBy(array('referencePortefeuille' => $portefeuille));                        
                         
                         $listeDemandes = $portefeuille[0]->getDemandesToArray();
-                        
+                      
                         $merge = 1;
-                        //$where["portefeuilles"] = $portefeuille[0];
                     }
                     elseif ($criteres[$i] == "Direction")
                     {
@@ -1369,26 +1426,57 @@ class DemandeController extends Controller
                     {
                         $sdm = $data["nipa_projet_demande"]["SDM"];
                         $where["SDM"] = $sdm;
-                    }                   
+                    }
+                    elseif ($criteres[$i] == "Search") 
+                    {
+                        $listSearch = $data["Search"];
+                        // On requete pour rechercher (LIKE) les références Demande en fct du NOM
+                        $listDemandeSearch = $this->getDoctrine()->getManager()
+                                ->createQuery('Select d from NIPAProjetBundle:Demande d Where d.nom LIKE :search')
+                                ->setParameter('search', '%'.$listSearch.'%')
+                                ->getResult();    
+                        
+                        $search = 1;               
+                    }   
                 }
                 
                 //\Doctrine\Common\Util\Debug::dump($where);
-
-                $repository = $this->getDoctrine()->getManager()->getRepository('NIPAProjetBundle:Demande');
-                $listDemande = $repository->findBy(
-                    $where,                                   // Critere
-                    array('referenceDemande' => 'asc')        // Tri
-                );
-                    
-                
-                if($merge == 1)
+                if($search == 0) // Si recherche globale, pas besoin de filtrer
                 {
-                    $listDemande = array_merge($listeDemandes, $listDemande);        
+                    $repository = $this->getDoctrine()->getManager()->getRepository('NIPAProjetBundle:Demande');
+                    $listDemande = $repository->findBy(
+                        $where,                                   // Critere
+                        array('referenceDemande' => 'asc')        // Tri
+                    );
+                } 
+                //\Doctrine\Common\Util\Debug::dump(sizeof($listDemande));
+                
+                $listDemandeFiltres = array();
+                if($merge == 1) // Si on filtre sur portefeuille --> on applique les demandes trouvées (via requêtes) sur les demandes du portefeuille selectionné
+                {                    
+                    for($i=0; $i < sizeof($listeDemandes); $i++)
+                    {
+                        for($z=0; $z < sizeof($listDemande); $z++)
+                        {
+                            if($listeDemandes[$i]->getReferenceDemande() == $listDemande[$z]->getReferenceDemande())
+                            {
+                                $listDemandeFiltres[sizeof($listDemandeFiltres)] = $listeDemandes[$i];
+                            }
+                        }
+                    }
                 }
+                else if($search == 1) // Si recherche globale
+                {
+                    $listDemandeFiltres = $listDemandeSearch;
+                }
+                else // Sinon on renvoie juste les demande trouvées (via requêtes)
+                {
+                    $listDemandeFiltres = $listDemande;
+                }
+                    
 
-                //\Doctrine\Common\Util\Debug::dump($listDemande);
                 $this->get('session')->getFlashBag()->set('notice',
-                $this->get('translator')->trans('Filtres appliqués: '.sizeof($listDemande).' Demande(s)')
+                $this->get('translator')->trans('Filtres appliqués: '.sizeof($listDemandeFiltres).' Demande(s)')
                 );
                 
                 // On redirige vers la page de modification du portefeuille
@@ -1400,7 +1488,7 @@ class DemandeController extends Controller
                     'formInstance' => $formInstance->createView(), 
                     'formBudget' => $formBudget->createView(), 
                     'demande' => $demande,
-                    'listDemande' => $listDemande,
+                    'listDemande' => $listDemandeFiltres,
                     'choices' => $choices, 
                     'choices2' => $choices2, 
                     'listDemandeBudget' => $listDemandeBudget, 

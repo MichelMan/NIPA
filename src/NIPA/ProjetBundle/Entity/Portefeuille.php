@@ -322,7 +322,6 @@ class Portefeuille
     {
         return $this->demande->toArray();                
     }
-        
     
 }
 

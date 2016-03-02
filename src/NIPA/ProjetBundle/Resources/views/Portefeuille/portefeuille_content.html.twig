@@ -17,7 +17,6 @@
         <center>
             <div class="btn-toolbar">
                 <a data-toggle="modal" title="Créer un portfeuille" class="btn btn-success" href="{{ path('portefeuille_new') }}"><i class="glyphicon glyphicon-plus-sign"></i> Nouveau Portefeuille</a>
-                <a data-toggle="modal" title="Ajouter filtres" class="btn btn-info" href="#ModalAddUsers"><i class="glyphicon glyphicon-filter"></i> Filtres</a>        
             </div>
         </center>
     {% else %}   
@@ -25,7 +24,6 @@
         <center>
             <div class="btn-toolbar">
                 <a data-toggle="modal" title="Créer un portfeuille" class="btn btn-success" href="{{ path('portefeuille_new') }}" DISABLED><i class="glyphicon glyphicon-plus-sign"></i> Nouveau Portefeuille</a>
-                <a data-toggle="modal" title="Ajouter filtres" class="btn btn-info" href="#ModalAddUsers" DISABLED><i class="glyphicon glyphicon-filter"></i> Filtres</a>        
             </div>
         </center>
     {% endif %}

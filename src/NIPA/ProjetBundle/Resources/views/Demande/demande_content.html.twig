@@ -25,7 +25,7 @@
         <center>
             <div class="btn-toolbar">
                 <a data-toggle="modal" title="Créer une Demande" class="btn btn-success" href="{{ path('demande_new') }}" DISABLED><i class="glyphicon glyphicon-plus-sign"></i> Nouvelle Demande</a>
-                <a data-toggle="modal" title="Ajouter filtres" class="btn btn-info" href="#ModalFiltresDemande" DISABLED><i class="glyphicon glyphicon-filter"></i> Filtres</a>        
+                <a data-toggle="modal" title="Ajouter filtres" class="btn btn-info" href="#ModalFiltresDemande"><i class="glyphicon glyphicon-filter"></i> Filtres</a>        
             </div>
         </center>
     {% endif %}     
@@ -99,18 +99,21 @@
                             <div class="row">
                                 <div class="col-md-12">
                                  
-                                    <table class="table" id="filtre">
+                                    {# Liste des critères #}
+                                    {% set fields = ["Reference", "Priorite", "Titre", "TypeEnveloppe", "StatutDemande", "Portefeuille", "Direction", "EM", "Offres", "TypeProjet", "Divers", "PM", "Interlocuteur", "SDM","Search", "filtres"] %}
+
+                                    <table class="table">
                                         <thead>
                                             <tr>
-                                                <th></th>
                                                 <th class="text-center">Liste</th>
+                                                <th>Critères</th> 
                                                 <th></th>
-                                                <th class="text-center">Critères</th>                
+                                                <th class="text-center"><input type="checkbox"  name="criteres[]" id='Search' value="{{fields[14]}}"></input></th>
+                                                <th>Recherche globale</th>
+                                                <th class="text-center"><input type='text' placeholder="Tapez votre recherche..." class="form-control input-md textinput" id='Search' name="Search" onFocus="document.getElementById('Search').checked = true" /></th>
                                             </tr>
                                         </thead>
-                                        <tbody>
-                                            
-                                            {% set fields = ["Reference", "Priorite", "Titre", "TypeEnveloppe", "StatutDemande", "Portefeuille", "Direction", "EM", "Offres", "TypeProjet", "Divers", "PM", "Interlocuteur", "SDM"] %}
+                                        <tbody  id="filtre">
                                             <tr>
                                                 <td class="text-center"><input type="checkbox"  name="criteres[]" id='Reference' value="{{fields[0]}}"></input></td>
                                                 <td>Référence: </td>
@@ -136,12 +139,12 @@
                                                 
                                                 <td class="text-center"><input type="checkbox"  name="criteres[]" id='Portefeuille' value="{{fields[5]}}"></input></td>
                                                 <td>Portefeuille: </td>
-                                                <td> (MARCHE PAS)
+                                                <td>
                                                     <center>
                                                         <select class="form-control" id="Portefeuille" name="Portefeuille" onFocus="document.getElementById('Portefeuille').checked = true"/>
                                                             {% for child in form.portefeuille %}
                                                                 {% set index = child.vars.value %}
-                                                                    <option value="{{choices[index].referencePortefeuille}}">{{ choices[index].nom }}</option>
+                                                                    <option value="{{choices[index].referencePortefeuille}}">{{ choices[index].nom }} ({{choices[index].referencePortefeuille}})</option>
                                                             {% endfor %}
                                                         </select>
                                                     </center>
@@ -187,6 +190,10 @@
                                                 <td class="text-center"><input type="checkbox" onclick="return cocherOuDecocherTout(this);" /></td>
                                                 <td>Cocher/Décocher</td>                                           
                                                 <td></td>
+                                                
+                                                <td class="text-center"><input type="checkbox"  name="criteres[]" id='filtres' value="{{fields[15]}}"></input></td>
+                                                <td>Filtres: </td>
+                                                <td></td>                                    
                                             </tr>  
                                             
                                         </tbody>
@@ -202,8 +209,9 @@
                     
                     </div>
                     <div class="modal-footer">
-                        <button class="btn btn-primary" data-dismiss="modal" aria-hidden="true"> Annuler</button>
-                        <button class="btn btn-success" type="submit">Appliquer</button>
+                        <button class="btn btn-success"><span class='glyphicon glyphicon-floppy-save'></span> Sauvegarder</button>
+                        <button class="btn btn-danger" data-dismiss="modal" aria-hidden="true"><span class='glyphicon glyphicon-remove'></span> Annuler</button>
+                        <button class="btn btn-info" type="submit"><span class='glyphicon glyphicon-filter'></span> Appliquer</button>
                     </div> 
                                               
                 </form>                                                  
@@ -214,7 +222,7 @@
                 
                 
     <script>
-    
+        
     /*************COCHER/DECOCHER ALL checkbox***************/
     function cocherOuDecocherTout(cochePrincipale) {
         var coches = document.getElementById('filtre')

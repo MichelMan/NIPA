@@ -1,78 +1,105 @@
 {% trans_default_domain 'NIPAProjetBundle' %}
 		
 {% block body %}
-     
-        <div id="jstree">                
-          <ul id="treeProjet">
-              <li class="jstree-open"><a href="#">Portfeuilles</a>
-                  <ul>   
-
-                      <li class="jstree-open"><a href="#">IPP 2015</a>
-                          <ul>
-
-                              <li class="jstree-open"><a href="#">Demandes</a>
-                                  <ul>
-                                      <li class="jstree-open"><a href="#">MC-0001</a></li>
-                                      <li class="jstree-open"><a href="#">MC-0002</a>
-                                          <ul>
-                                              <li class="jstree-open"><a href="#" class="jstree-clicked">Projet: MC-0002-1</a></li>
-                                              <li class="jstree-open"><a href="#">Projet: MC-0002-2</a></li>
-                                          </ul>
-                                      </li>
-                                      <li class="jstree-open">MC-0003</li>
-                                  </ul>
-                              </li>
-
-                          </ul>
-                      </li>
-
-                      <li class="jstree-open"><a href="#">IPP 2016</a>
-                          <ul>
-
-                              <li class="jstree-open"><a href="#">Demandes</a>
-                                  <ul>
-                                      <li class="jstree-open"><a href="#">MC-0001</a></li>
-                                      <li class="jstree-open"><a href="#">MC-0002</a>
-                                          <ul>
-                                              <li class="jstree-open"><a href="#" >Projet: MC-0002-1</a></li>
-                                              <li class="jstree-open"><a href="#">Projet: MC-0002-2</a></li>
-                                          </ul>
-                                      </li>
-                                      <li class="jstree-open">MC-0003</li>
-                                  </ul>
-                              </li>
-
-                          </ul>
-                      </li>
-
-                   </ul>   
-              </li>
-          </ul>               
-
-        </div>
-
-        <button>demo button</button>
-
     
-    <script>
-        //$('#treeProjet').treed({openedClass : 'glyphicon-folder-open', closedClass : 'glyphicon-folder-close'});    
-    </script>
+    {# TEST LES DROITS USER#}
+    {% set droit = 0 %}
+    {% for groupe in user.getGroupesToArray() %} 
+        {% if groupe.getPermission() %} {# Test si le groupe a des permissions #}
+            {% if (groupe.getPermission().getCMSProjet() == 1) %} {# Si oui on test les droits d'accès #}
+                {% set droit = droit + 1 %}  
+            {% endif %}    
+        {% endif %}
+    {% endfor %}
+    
+    {% if droit != 0 %}
+        <!-- BOUTON ADD -->  
+        <center>
+            <div class="btn-toolbar">
+                <a data-toggle="modal" title="Créer un Projet" class="btn btn-success" href="{{ path('projet_new') }}"><i class="glyphicon glyphicon-plus-sign"></i> Nouveau Projet</a>
+                <a data-toggle="modal" title="Ajouter filtres" class="btn btn-info" href=""><i class="glyphicon glyphicon-filter"></i> Filtres</a>        
+            </div>
+        </center>
+    {% else %}   
+        <!-- BOUTON ADD -->  
+        <center>
+            <div class="btn-toolbar">
+                <a data-toggle="modal" title="Créer un Projet" class="btn btn-success" href="{{ path('projet_new') }}" DISABLED><i class="glyphicon glyphicon-plus-sign"></i> Nouveau Projet</a>
+                <a data-toggle="modal" title="Ajouter filtres" class="btn btn-info" href=""><i class="glyphicon glyphicon-filter"></i> Filtres</a>        
+            </div>
+        </center>
+    {% endif %}     
+    
+    <br><br>   
+    
+     <div id="jstreeprojet"> 
+        
+        <ul id="treeProjet"> 
+                
+        {% for enveloppe in listPortefeuilleStatut %}  {# Puis sur les type d'enveloppe existantes #}                       
+            {% if enveloppe.nom == "En cours" %}
+                <li class="jstree-open"><a href="#">{{ enveloppe.nom }}</a>
+            {% else %}
+                <li><a href="#">{{ enveloppe.nom }}</a>                        
+            {% endif %}
+                    <ul>
+                        {% for pf in listPortefeuille %} {# Puis on positionne chaque PF dans le bon chemin #}   
+                            {% if (pf.getPortefeuilleStatut() ? pf.getPortefeuilleStatut().getNom == enveloppe.nom) %}    
+                                {# {% if portefeuille.referencePortefeuille == pf.referencePortefeuille %} #}  {# Si celui sélectionné -> on l'active #}                              
+                                {#    <li class="jstree-open"><a class="jstree-clicked" href="{% if pf.referencePortefeuille %} {{ path('portefeuille_edit',{'reference': pf.referencePortefeuille})}}{% endif %}" title="{{ pf.getPortefeuilleEnveloppe().getNom() }}: {{ pf.referencePortefeuille }}">{{ pf.nom }}</a>
+                                {% else %} #}
+                                    <li><a  href="{% if pf.referencePortefeuille %} {{ path('portefeuille_edit',{'reference': pf.referencePortefeuille})}}{% endif %}" title="{{pf.getPortefeuilleEnveloppe() ? pf.getPortefeuilleEnveloppe().getNom() }}: {{ pf.referencePortefeuille }}">{{ pf.nom }}</a>
+                                {# {% endif %}    #}
+                                        <ul>
+                                            {% for de in listDemande %} {# Puis on positionne chaque DE dans le bon chemin #}   
+                                                {% for pf2De in de.getPortefeuillesToArray() %}
+                                                    {% if (pf2De.getReferencePortefeuille() ==  pf.getReferencePortefeuille()) %}    
+                                                        {# {% if portefeuille.referencePortefeuille == pf.referencePortefeuille %} #}  {# Si celui sélectionné -> on l'active #}                              
+                                                        {#    <li class="jstree-open"><a class="jstree-clicked" href="{% if pf.referencePortefeuille %} {{ path('portefeuille_edit',{'reference': pf.referencePortefeuille})}}{% endif %}" title="{{ pf.getPortefeuilleEnveloppe().getNom() }}: {{ pf.referencePortefeuille }}">{{ pf.nom }}</a>
+                                                        {% else %} #}
+                                                            <li><a  href="{% if de.referenceDemande %} {{ path('demande_edit',{'reference': de.referenceDemande}) }} {% endif %}" title="{% if de.referenceDemande %}  {{ de.referenceDemande }} {% endif %}">{{ de.nom }}</a>
+                                                        {# {% endif %}    #}
+                                                            </li> 
+                                                    {% endif %}
+                                                {% endfor %}
+                                            {% endfor %}                                                                    
+                                        </ul>                                        
+                                    </li> 
+                            {% endif %}
+                        {% endfor %}                                                                    
+                    </ul>
+                </li>
+        {% endfor %}                                
+                <li><a href="#">Autres</a>
+                    <ul>
+                    {% for pf in listPortefeuille %}
+                        {% if (pf.getPortefeuilleStatut().getNom is not defined) %}    
+                            <li><a  href="{% if pf.referencePortefeuille %} {{ path('portefeuille_edit',{'reference': pf.referencePortefeuille})}}{% endif %}" title="{{pf.getPortefeuilleEnveloppe() ? pf.getPortefeuilleEnveloppe().getNom() }}: {{ pf.referencePortefeuille }}">{{ pf.nom }}</a></li>
+                        {% endif %}    
+                    {% endfor %} 
+                    </ul>
+                </li>        
+        </ul>               
+
+    </div>    
+
+   
 
     <script>
     $(function () {
       // 6 create an instance when the DOM is ready
-      $('#jstree').jstree();
+      $('#jstreeprojet').jstree();
       
       // 7 bind to events triggered on the tree
-      $('#jstree').on("changed.jstree", function (e, data) {
+      $('#jstreeprojet').on("changed.jstree", function (e, data) {
         console.log(data.selected);
       });
       
       // 8 interact with the tree - either way is OK
       $('button').on('click', function () {
-        $('#jstree').jstree(true).select_node('child_node_1');
-        $('#jstree').jstree('select_node', 'child_node_1');
-        $.jstree.reference('#jstree').select_node('child_node_1');
+        $('#jstreeprojet').jstree(true).select_node('child_node_1');
+        $('#jstreeprojet').jstree('select_node', 'child_node_1');
+        $.jstree.reference('#jstreeprojet').select_node('child_node_1');
       });
     });
     </script>    
