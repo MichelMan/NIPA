@@ -78,6 +78,14 @@ projet_new:
     path: projet/new
     defaults: { _controller: NIPAProjetBundle:Projet:addProjet }
 
+projet_edit:
+    path: projet/edit/{reference}
+    defaults: { _controller: NIPAProjetBundle:Projet:editProjet }
+
+projet_delete:
+    path: projet/edit/{reference}
+    defaults: { _controller: NIPAProjetBundle:Projet:deleteProjet }
+
 projet_load_demande:
     path: projet/load/demande
     defaults: { _controller: NIPAProjetBundle:Projet:loadProjetDemande }

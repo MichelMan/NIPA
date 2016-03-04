@@ -5,12 +5,12 @@ namespace NIPA\ProjetBundle\Entity;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * ProjetStatut
+ * ProjetEtape
  *
  * @ORM\Table()
- * @ORM\Entity(repositoryClass="NIPA\ProjetBundle\Repository\ProjetStatutRepository")
+ * @ORM\Entity(repositoryClass="NIPA\ProjetBundle\Repository\ProjetEtapeRepository")
  */
-class ProjetStatut
+class ProjetEtape
 {
     /**
      * @var integer

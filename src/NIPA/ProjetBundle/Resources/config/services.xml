@@ -9,9 +9,15 @@
         <parameter key="nipa_groupe.groupe_manager.class">NIPA\UserBundle\Manager\GroupeManager</parameter>
         <parameter key="nipa_portefeuille.portefeuille_manager.class">NIPA\ProjetBundle\Manager\PortefeuilleManager</parameter>
         <parameter key="nipa_demande.demande_manager.class">NIPA\ProjetBundle\Manager\DemandeManager</parameter>    
+        <parameter key="nipa_projet.projet_manager.class">NIPA\ProjetBundle\Manager\ProjetManager</parameter>    
     </parameters>
 
     <services>
+        <service id="nipa_projet.projet_manager" class="%nipa_projet.projet_manager.class%">
+            <argument type="service" id="doctrine.orm.entity_manager" />
+            <!-- <argument>plain_value</argument>
+            <argument>%parameter_name%</argument> -->
+        </service>    
         <service id="nipa_demande.demande_manager" class="%nipa_demande.demande_manager.class%">
             <argument type="service" id="doctrine.orm.entity_manager" />
             <!-- <argument>plain_value</argument>

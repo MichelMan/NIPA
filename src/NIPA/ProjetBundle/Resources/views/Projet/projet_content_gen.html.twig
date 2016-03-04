@@ -37,6 +37,17 @@
             font-size: 15px;
         }
         
+        .loader {
+            position : fixed;
+            z-index: 9999;
+            background : url('{{ asset('bundles/nipaprojetbundle/img/ajax-loader.gif') }}') 50% 50% no-repeat;
+            top : 0px;
+            left : 0px;
+            height : 100%;
+            width : 100%;
+            cursor : wait;
+        }        
+        
     </style>    
   
     {# TEST LES DROITS USER#}
@@ -54,7 +65,9 @@
     {% else %}
         <h4 class=""><span class='glyphicon glyphicon-plus-sign'></span> {{ 'Nouveau Projet'|trans }} </h4>        
     {% endif %}      
-        
+    
+    <div class="loader" id="loader" style="display: none"></div>
+    
     <form action="{% if projet.referenceProjet %}{{ path('projet_edit', {'reference': projet.referenceProjet}) }}{% else %}{{ path('projet_new') }}{% endif %}" method="post" {{ form_enctype(form) }} >
                   
         <div class="container">                   
@@ -67,7 +80,11 @@
                         <div class="pull-right" id="pull-right">
                             <select class="form-control" id="referenceDemande" name="referenceDemande">
                                {% for demande in listDemande %}
-                                    <option value="{{demande.getReferenceDemande()}}">{{ demande.getReferenceDemande() }} ({{ demande.getNom() }})</option>
+                                    {% if projet.referenceProjet and projet.getDemande().getReferenceDemande() == demande.getReferenceDemande() %}
+                                        <option value="{{demande.getReferenceDemande()}}" selected>{{ demande.getReferenceDemande() }} ({{ demande.getNom() }})</option>
+                                    {% else %}
+                                        <option value="{{demande.getReferenceDemande()}}">{{ demande.getReferenceDemande() }} ({{ demande.getNom() }})</option>
+                                    {% endif %}
                                 {% endfor %}
                             </select>
                         </div> 
@@ -75,28 +92,42 @@
                 <div id="collapseInfo" class="panel-collapse collapse-in">                                
                     <div class="panel-body">
                         
-                        <!-- row 1-->          
+                        <!-- row 0 -->          
                         <table class="table table-hover" id="GDP">
                             <thead>
                                 <tr>
                                     <th>Référence</th>
-                                    <th class="text-center">Titre*</th>
-                                    <th class="text-center">Lot du Projet*</th>
-                                    <th class="text-center">Enveloppe Budgétaire</th>
-                                    <th class="text-center">Priorité</th>
+                                    <th class="text-center">Titre</th>
+                                    <th class="text-center">Lot du Projet</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 <tr>
-                                    <td><h4><strong></strong></h4></td>
-                                    <td>{{ form_widget(form.titre) }}</td>
+                                    <td><h4><strong>{% if projet.referenceProjet %} {{ projet.referenceProjet }} {% endif %}</strong></h4></td>
+                                    <td>{{ form_widget(form.titre, { 'attr': { 'readonly':'true'} }) }}</td>
                                     <td>{{ form_widget(form.titreLot) }}</td>
-                                    <td>{{ form_widget(form.enveloppe) }}</td>
-                                    <td>{{ form_widget(form.priorite) }}</td>
                                 </tr>
                             </tbody>
                         </table>
  
+                        <!-- row 1 -->          
+                        <table class="table table-hover" id="GDP">
+                            <thead>
+                                <tr>
+                                    <th class="text-center">Enveloppe Budgétaire</th>
+                                    <th class="text-center">Priorité</th>
+                                    <th class="text-center">Divers</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>{{ form_widget(form.enveloppe, { 'attr': { 'readonly':'true'} }) }}</td>
+                                    <td>{{ form_widget(form.priorite, { 'attr': { 'readonly':'true'} }) }}</td>
+                                    <td>{{ form_widget(form.divers, { 'attr': { 'readonly':'true'} }) }}</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                                
                         <!-- row 2 -->                                              
                         <table class="table table-hover" id="GDP">
                             <thead>
@@ -105,16 +136,14 @@
                                     <th class="text-center">Entité Métier</th>
                                     <th class="text-center">Offre concernée</th>
                                     <th class="text-center">Type de projet</th>
-                                    <th class="text-center">Divers</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 <tr>
-                                    <td>{{ form_widget(form.direction) }}</td>
-                                    <td>{{ form_widget(form.entiteMetier) }}</td>
-                                    <td>{{ form_widget(form.offres) }}</td>
-                                    <td>{{ form_widget(form.typeProjet) }}</td>
-                                    <td>{{ form_widget(form.divers) }}</td>
+                                    <td>{{ form_widget(form.direction , { 'attr': { 'readonly':'true'} }) }}</td>
+                                    <td>{{ form_widget(form.entiteMetier, { 'attr': { 'readonly':'true'} }) }}</td>
+                                    <td>{{ form_widget(form.offres, { 'attr': { 'readonly':'true'} }) }}</td>
+                                    <td>{{ form_widget(form.typeProjet, { 'attr': { 'readonly':'true'} }) }}</td>
                                 </tr>
                             </tbody>
                         </table>
@@ -130,9 +159,39 @@
                             </thead>
                             <tbody>
                                 <tr>
-                                    <td>{{ form_widget(form.interlocuteurMOA) }}</td>
-                                    <td>{{ form_widget(form.porteurMetier) }}</td>
-                                    <td>{{ form_widget(form.SDM) }}</td>
+                                    <td>
+                                        <select class="form-control" id="interlocuteurMOA" name="interlocuteurMOA">
+                                           {% for moa in listInterlocuteurMOA %}
+                                                {% if projet.referenceProjet and projet.getInterlocuteurMOA() == moa.getNom() %}
+                                                    <option value="{{moa.getNom()}}" selected>{{ moa.getNom() }}</option>
+                                                {% else %}
+                                                    <option value="{{moa.getNom()}}">{{ moa.getNom() }}</option>
+                                                {% endif %}
+                                            {% endfor %}
+                                        </select>                          
+                                    </td>
+                                    <td>
+                                        <select class="form-control" id="porteurMetier" name="porteurMetier">
+                                           {% for PE in listPorteurMetier %}
+                                                {% if projet.referenceProjet and projet.getPorteurMetier() == PE.getNom() %}
+                                                    <option value="{{PE.getNom()}}" selected>{{ PE.getNom() }}</option>
+                                                {% else %}
+                                                    <option value="{{PE.getNom()}}">{{ PE.getNom() }}</option>
+                                                {% endif %}
+                                            {% endfor %}
+                                        </select>                          
+                                    </td>
+                                    <td>
+                                        <select class="form-control" id="SDM" name="SDM">
+                                           {% for SDM in listSDM %}
+                                                {% if projet.referenceProjet and projet.getSDM() == SDM.getNom() %}
+                                                    <option value="{{SDM.getNom()}}" selected>{{ SDM.getNom() }}</option>
+                                                {% else %}
+                                                    <option value="{{SDM.getNom()}}">{{ SDM.getNom() }}</option>
+                                                {% endif %}
+                                            {% endfor %}
+                                        </select>                          
+                                    </td>
                                 </tr>
                             </tbody>
                         </table>                
@@ -163,7 +222,6 @@
             {% endif %}
             
         </div> 
-            <p>* Champs obligatoire</p>        
             
             
     <!-- MODAL DELETE -->
@@ -186,9 +244,14 @@
             </div><!-- /.modal-content -->
         </div><!-- /.modal-dalog -->
     </div><!-- /.modal -->
+ 
     
 <script>
-        
+       
+        $(window).load(function() {
+            $(".loader").fadeOut("0");
+        })
+
         $(document).ready(function () {
             var theHREF;
 
@@ -210,9 +273,11 @@
 
     $(document).ready(function(){
       $("#referenceDemande").change( function() {
-          
-        console.log($(this).val());
+        //console.log($(this).val());
   
+        $(".loader").fadeIn(1000);
+        $(".loader").fadeOut(2000);
+            
         $.post("{{ path('projet_load_demande') }}", { referenceDemande: $(this).val() },
         function(data){
             //  $("#mon_formulaire_lambda_departement_id").html(data);
@@ -224,9 +289,12 @@
             document.getElementById('nipa_projet_projet_entiteMetier').value = data.entiteMetier;
             document.getElementById('nipa_projet_projet_offres').value = data.offres;
             document.getElementById('nipa_projet_projet_typeProjet').value = data.typeProjet;
-            document.getElementById('nipa_projet_projet_interlocuteurMOA').value = data.interlocuteurMOA;
-            document.getElementById('nipa_projet_projet_porteurMetier').value = data.porteurMetier;
-            document.getElementById('nipa_projet_projet_SDM').value = data.SDM;
+            //document.getElementById('nipa_projet_projet_interlocuteurMOA').value = data.interlocuteurMOA;
+            //document.getElementById('nipa_projet_projet_porteurMetier').value = data.porteurMetier;
+            //document.getElementById('nipa_projet_projet_SDM').value = data.SDM;
+            $('#interlocuteurMOA').val(data.interlocuteurMOA)
+            $('#porteurMetier').val(data.porteurMetier)
+            $('#SDM').val(data.SDM)
         });
       });
     });

@@ -83,7 +83,7 @@
                         <thead>
                             <tr>
                                 <th class="text-center">Instance</th>
-                                <th class="text-center">Date prév.</th>
+                                <th class="text-center">Date</th>
                                 {#<th class="text-center">Date rév.</th>
                                 <th class="text-center">Validation effective</th>#}
                                 <th class="text-center">Remarques</th>
@@ -180,22 +180,6 @@
         //}
 
     });
-
-
-    $(document).ready(function () {
-        var theHREF;
-
-        $(".confirmModalLinkRemarques").click(function(e) {
-            e.preventDefault();
-            theHREF = $(this).attr("href");
-            $("#myModalRemarques").modal("show");
-        });
-
-        $("#confirmModalOK").click(function(e) {
-            $("#myModalRemarques").modal("hide");
-        });
-
-    }); 
 
     </script>
     

@@ -35,6 +35,17 @@ class DemandeInstance
      */
     private $nom;
 
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="Type", type="string", length=25)
+     */
+    private $type;    
+    
+    /**
+     * @ORM\ManyToOne(targetEntity="NIPA\ProjetBundle\Entity\ProjetPhase")
+     */
+    private $refPhase;    
 
     /**
      * Get id
@@ -93,5 +104,55 @@ class DemandeInstance
     {
         return $this->nom;
     }
+    
+    /**
+     * Set type
+     *
+     * @param string $type
+     *
+     * @return DemandeInstance
+     */
+    public function setType($type)
+    {
+        $this->type = $type;
+
+        return $this;
+    }
+
+    /**
+     * Get type
+     *
+     * @return string
+     */
+    public function getType()
+    {
+        return $this->type;
+    }
+    
+    
+     /**
+     * Set refPhase
+     *
+     * @param ProjetPhase $refPhase
+     *
+     * @return DemandeInstance
+     */
+    public function setRefPhase(ProjetPhase $refPhase)
+    {
+        $this->refPhase = $refPhase;
+
+        return $this;
+    }
+
+    /**
+     * Get refPhase
+     *
+     * @return ProjetPhase
+     */
+    public function getRefPhase()
+    {
+        return $this->refPhase;
+    }
+    
 }
 

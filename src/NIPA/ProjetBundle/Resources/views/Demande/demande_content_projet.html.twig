@@ -272,8 +272,8 @@
                                                   <td><input type="checkbox"  name="idPortefeuilles[]" value="{{choices2[index].referencePortefeuille}}"></input></td>
                                                   <td>{{ choices2[index].referencePortefeuille }}</td>
                                                   <td>{{ choices2[index].nom }}</td>
-                                                  <td>{{ choices2[index].getPortefeuilleAnnee().getValeur() }}</td>
-                                                  <td>{{ choices2[index].portefeuilleStatut.nom}}</td>                                                
+                                                  <td>{% if choices2[index].getPortefeuilleAnnee is not null %} {{ choices2[index].getPortefeuilleAnnee().getValeur() }} {% endif %}</td>
+                                                  <td>{% if choices2[index].portefeuilleStatut is not null %} {{ choices2[index].portefeuilleStatut.nom}} {% endif %}</td>                                                
                                                 </tr>                                              
                                                 {% endif %}
                                             {% else %}

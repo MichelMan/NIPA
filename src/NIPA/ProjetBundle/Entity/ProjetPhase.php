@@ -5,12 +5,12 @@ namespace NIPA\ProjetBundle\Entity;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * ProjetLivrable
+ * ProjetPhase
  *
  * @ORM\Table()
- * @ORM\Entity(repositoryClass="NIPA\ProjetBundle\Repository\ProjetLivrableRepository")
+ * @ORM\Entity(repositoryClass="NIPA\ProjetBundle\Repository\ProjetPhaseRepository")
  */
-class ProjetLivrable
+class ProjetPhase
 {
     /**
      * @var integer
@@ -34,13 +34,14 @@ class ProjetLivrable
      * @ORM\Column(name="Reference", type="string", length=50)
      */
     private $reference;
-    
+
+
     /**
-     * @ORM\ManyToOne(targetEntity="NIPA\ProjetBundle\Entity\ProjetPhase")
+     * @ORM\ManyToOne(targetEntity="NIPA\ProjetBundle\Entity\ProjetEtape")
      */
-    private $refPhase;    
-
-
+    private $refEtape;    
+    
+    
     /**
      * Get id
      *
@@ -56,7 +57,7 @@ class ProjetLivrable
      *
      * @param string $nom
      *
-     * @return ProjetLivrable
+     * @return ProjetPhase
      */
     public function setNom($nom)
     {
@@ -75,13 +76,12 @@ class ProjetLivrable
         return $this->nom;
     }
 
-    
     /**
      * Set reference
      *
      * @param string $reference
      *
-     * @return ProjetLivrable
+     * @return ProjetPhase
      */
     public function setReference($reference)
     {
@@ -102,28 +102,28 @@ class ProjetLivrable
     
     
     /**
-     * Set refPhase
+     * Set refEtape
      *
-     * @param ProjetPhase $refPhase
+     * @param ProjetEtape $refEtape
      *
-     * @return ProjetLivrable
+     * @return ProjetPhase
      */
-    public function setRefPhase(ProjetPhase $refPhase)
+    public function setRefEtape(ProjetEtape $refEtape)
     {
-        $this->refPhase = $refPhase;
+        $this->refEtape = $refEtape;
 
         return $this;
     }
 
     /**
-     * Get refPhase
+     * Get refEtape
      *
-     * @return ProjetPhase
+     * @return ProjetStatut
      */
-    public function getRefPhase()
+    public function getRefEtape()
     {
-        return $this->refPhase;
-    }
+        return $this->refEtape;
+    }    
     
 }
 

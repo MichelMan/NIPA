@@ -50,7 +50,7 @@ class Projet
     /**
      * @var string
      *
-     * @ORM\Column(name="enveloppe", type="string", length=50)
+     * @ORM\Column(name="enveloppe", type="string", length=50, nullable=true)
      */
     private $enveloppe;
 
