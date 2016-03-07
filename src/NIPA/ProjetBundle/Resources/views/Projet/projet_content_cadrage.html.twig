@@ -15,10 +15,10 @@
     
         <h4 class=""><span class='glyphicon glyphicon-list-alt'></span> {{ 'En cadrage'|trans }} </h4>        
  
-        <div class="container">                   
             <div class="row col-md-13">
-
-                <!-- PANEL(s) En Cadrage -->      
+                <div id="accordion1" role="tablist" aria-multiselectable="true">
+               
+                    <!-- PANEL(s) En Cadrage -->      
                 
                     {% for phase in listProjetPhaseEtapeCadrage %}
 
@@ -27,68 +27,220 @@
                                     <h5 class="panel-title"> Informations liées à la phase <strong> {{ phase.getNom()}} </strong></h5>
                                     <div class="pull-right">
                                         <strong> OK/NOK </strong>
-                                        <span data-toggle="collapse" data-target="#collapseInfo{{ phase.getNom() }}" class="clickable collapsed" title="Afficher détails" data-container="body">
+                                        {# <span data-toggle="collapse" data-target="#collapseInfo{{ phase.getNom() }}" class="clickable collapsed" title="Afficher détails" data-container="body"> #}
+                                        <span data-toggle="collapse" data-parent="#accordion1" href="#collapseEtape{{ phase.getNom() }}" class="clickable collapsed" title="Afficher détails" data-container="body">
                                             <i class="glyphicon glyphicon-plus"></i>
                                         </span>
                                     </div>                      
                                 </div>
                                 {% if listProjetPhaseEtapeCadrage|length == 1 %}            
-                                    <div id="collapseInfo{{ phase.getNom() }}" class="panel-collapse collapse in"> 
+                                    <div id="collapseEtape{{ phase.getNom() }}" class="panel-collapse collapse in"> 
                                 {% else %}
-                                    <div id="collapseInfo{{ phase.getNom() }}" class="panel-collapse collapse"> 
+                                    <div id="collapseEtape{{ phase.getNom() }}" class="panel-collapse collapse"> 
                                 {% endif %}
                                     <div class="panel-body">
+                                        
+                                        <!-- PANEL JALONS -->
+                                        <div class="panel panel-success">
+                                            <div class="panel-heading">
+                                                <h5 class="panel-title"> Liste Jalons</h5>
+                                                <div class="pull-right">
+                                                    <span data-toggle="collapse" data-target="#collapseJalon{{ phase.getNom() }}" class="clickable collapsed" title="Jalons" data-container="body">
+                                                        <i class="glyphicon glyphicon-plus"></i>
+                                                    </span>
+                                                </div>                      
+                                            </div>  
+                                                        
+                                            <div id="collapseJalon{{ phase.getNom() }}" class="panel-collapse collapse"> 
+                                            <div class="panel-body">
 
-                                        <table class="table table-hover" id="champs-table GDP">
-                                            <thead>
-                                                <tr>
-                                                    <th class="text-center">Date Prév.</th>
-                                                    <th class="text-center">Date Rév.</th>
-                                                    <th class="text-center">Validation</th>
-                                                    <th class="text-center">Remarques</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                                <tr>
-                                                    <td><input type="text" class="form-control input-md date textinput" id="datePrev{{ phase.getNom() }}" class="datePrev{{ phase.getNom() }}" name="datePrev{{ phase.getNom() }}" style="text-align:center;"></td>
-                                                    <td><input type="text" class="form-control input-md date textinput" id="dateRev{{ phase.getNom() }}" class="dateRev{{ phase.getNom() }}" name="dateRev{{ phase.getNom() }}" style="text-align:center;"></td>
-                                                    <td class="text-center"><input id="validation{{ phase.getNom() }}{{ phase.getNom() }}" name="validation" type="checkbox" value=""></td>
-                                                    <td class="text-center"><textarea class="form-control input-md" rows="2" cols="50" id="remarques{{ phase.getNom() }}" placeholder="..." name="remarques{{ phase.getNom() }}"></textarea></td>
-                                                </tr>
-                                            </tbody>
-                                        </table>
+                                                <table class="table table-hover" id="champs-table-livrables GDP">
+                                                    <thead>
+                                                        <tr>
+                                                            <th class="text-center">Jalons</th>
+                                                            <th class="text-center">Date Prév.</th>
+                                                            <th class="text-center">Date Rév.</th>
+                                                            <th class="text-center">Validation</th>
+                                                            <th class="text-center">Remarques</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        {% for liv in listProjetLivrable %}
+                                                            {% if liv.getRefPhase().getNom() == phase.getNom()%}
+                                                            <tr>    
+                                                                <td class="text-center"><strong>{{ liv.getNom() }}</strong></td>
+                                                                <td><input type="text" class="form-control input-md date textinput" id="datePrevLivrable{{ phase.getNom() }}{{ liv.getReference() }}" class="datePrevLivrable{{ phase.getNom() }}{{ liv.getReference() }}" name="datePrevLivrable{{ phase.getNom() }}{{ liv.getReference() }}" style="text-align:center;"></td>
+                                                                <td><input type="text" class="form-control input-md date textinput" id="dateRevLivrable{{ phase.getNom() }}{{ liv.getReference() }}" class="dateRevLivrable{{ phase.getNom() }}{{ liv.getReference() }}" name="dateRevLivrable{{ phase.getNom() }}{{ liv.getReference() }}" style="text-align:center;"></td>
+                                                                <td class="text-center"><input id="validationLivrable{{ phase.getNom() }}{{ liv.getReference() }}" name="validationLivrable{{ phase.getNom() }}{{ liv.getReference() }}" type="checkbox" value=""></td>
+                                                                <td class="text-center"><textarea class="form-control input-md" rows="2" cols="50" id="remarquesLivrable{{ phase.getNom() }}{{ liv.getReference() }}" placeholder="..." name="remarquesLivrable{{ phase.getNom() }}{{ liv.getReference() }}"></textarea></td>
+                                                            </tr>
+                                                                <script>
+
+                                                                    $(function () {
+                                                                        $('#datePrevLivrable{{ phase.getNom() }}{{ liv.getReference() }}').datetimepicker({
+                                                                            todayBtn:"true",
+                                                                            format:"dd/mm/yyyy", 
+                                                                            autoclose:"true",
+                                                                            startView:"year",
+                                                                            minView:"month",
+                                                                            language:"fr",
+                                                                        });
+                                                                    });
+
+                                                                    $(function () {
+                                                                        $('#dateRevLivrable{{ phase.getNom() }}{{ liv.getReference() }}').datetimepicker({
+                                                                            todayBtn:"true",
+                                                                            format:"dd/mm/yyyy", 
+                                                                            autoclose:"true",
+                                                                            startView:"year",
+                                                                            minView:"month",
+                                                                            language:"fr",
+                                                                        });
+                                                                    });
+
+                                                                </script>    
+
+                                                            {% endif%}
+                                                        {% endfor %}
+
+                                                        {% for jal in listProjetJalonDate %}
+                                                            {% if jal.getRefPhase().getNom() == phase.getNom()%}
+                                                            <tr>                                                         
+                                                                <td class="text-center"><strong>{{ jal.getNom() }}</strong></td>
+                                                                <td><input type="text" class="form-control input-md date textinput" id="datePrevJalon{{ phase.getNom()}}{{ jal.getReference() }}" class="datePrevJalon{{ phase.getNom()}}{{ jal.getReference() }}" name="datePrevJalon{{ phase.getNom()}}{{ jal.getReference() }}" style="text-align:center;"></td>
+                                                                <td><input type="text" class="form-control input-md date textinput" id="dateRevJalon{{ phase.getNom()}}{{ jal.getReference() }}" class="dateRevJalon{{ phase.getNom()}}{{ jal.getReference() }}" name="dateRevJalon{{ phase.getNom()}}{{ jal.getReference() }}" style="text-align:center;"></td>
+                                                                <td class="text-center"><input id="validationJalon{{ phase.getNom()}}{{ jal.getReference() }}" name="validation{{ phase.getNom()}}{{ jal.getReference() }}" type="checkbox" value=""></td>
+                                                                <td class="text-center"><textarea class="form-control input-md" rows="2" cols="50" id="remarquesJalon{{ phase.getNom()}}{{ jal.getReference() }}" placeholder="..." name="remarquesJalon{{ phase.getNom()}}{{ jal.getReference() }}"></textarea></td>
+                                                            </tr>
+                                                                <script>
+
+                                                                    $(function () {
+                                                                        $('#datePrevJalon{{ phase.getNom()}}{{ jal.getReference() }}').datetimepicker({
+                                                                            todayBtn:"true",
+                                                                            format:"dd/mm/yyyy", 
+                                                                            autoclose:"true",
+                                                                            startView:"year",
+                                                                            minView:"month",
+                                                                            language:"fr",
+                                                                        });
+                                                                    });
+
+                                                                    $(function () {
+                                                                        $('#dateRevJalon{{ phase.getNom()}}{{ jal.getReference() }}').datetimepicker({
+                                                                            todayBtn:"true",
+                                                                            format:"dd/mm/yyyy", 
+                                                                            autoclose:"true",
+                                                                            startView:"year",
+                                                                            minView:"month",
+                                                                            language:"fr",
+                                                                        });
+                                                                    });
+
+                                                                </script>    
+
+                                                            {% endif%}
+                                                        {% endfor %}   
+                                                    </tbody>
+                                                </table>
+                                            </div>        
+                                            </div>
+                                        </div>
+                                                
+                                        <!-- PANEL INSTANCES -->
+                                        <div class="panel panel-success">
+                                            <div class="panel-heading">
+                                                <h5 class="panel-title"> Liste Instances</h5>
+                                                <div class="pull-right">
+                                                    <span data-toggle="collapse" data-target="#collapseInstance{{ phase.getNom() }}" class="clickable collapsed" title="Instances" data-container="body">
+                                                        <i class="glyphicon glyphicon-plus"></i>
+                                                    </span>
+                                                </div>                      
+                                            </div>  
+                                                        
+                                            <div id="collapseInstance{{ phase.getNom() }}" class="panel-collapse collapse"> 
+                                            <div class="panel-body">
+                                                
+                                                <table class="table table-hover" id="champs-table-instances GDP">
+                                                    <thead>
+                                                        <tr>
+                                                            <th class="text-center">Instances</th>
+                                                            <th class="text-center">Date Prév.</th>
+                                                            <th class="text-center">Date Rév.</th>
+                                                            <th class="text-center">Validation</th>
+                                                            <th class="text-center">Remarques</th>
+                                                            <th class="text-center">Statut</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                    {% set instZero = 0 %}
+                                                    {% for ins in listProjetInstance %}
+                                                        {% if ins.getRefPhase().getNom() == phase.getNom()%}   
+                                                        <tr>
+                                                            <td class="text-center"><strong>{{ ins.getNom() }}</strong></td>
+                                                            <td class="col-xs-2"><input type="text" class="form-control input-md date textinput" id="datePrevInstance{{ phase.getNom() }}{{ ins.getReference() }}" class="datePrevInstance{{ phase.getNom() }}{{ ins.getReference() }}" name="datePrevInstance{{ phase.getNom() }}{{ ins.getReference() }}" style="text-align:center;"></td>
+                                                            <td class="col-xs-2"><input type="text" class="form-control input-md date textinput" id="dateRevInstance{{ phase.getNom() }}{{ ins.getReference() }}" class="dateRevInstance{{ phase.getNom() }}{{ ins.getReference() }}" name="dateRevInstance{{ phase.getNom() }}{{ ins.getReference() }}" style="text-align:center;"></td>
+                                                            <td class="text-center"><input id="validationInstance{{ phase.getNom() }}{{ ins.getReference() }}" name="validationInstance{{ phase.getNom() }}{{ ins.getReference() }}" type="checkbox" value=""></td>
+                                                            <td class="text-center">                                    
+                                                                <select class="form-control" id="phaseInstance{{ phase.getNom() }}{{ ins.getReference() }}" name="phaseInstance{{ phase.getNom() }}{{ ins.getReference() }}">
+                                                                <option></option>
+                                                                <option>GO</option>
+                                                                <option>NO GO</option>
+                                                                <option>N/A</option>
+                                                              </select> 
+                                                            </td>
+                                                        </tr>
+
+                                                        <script>
+
+                                                            $(function () {
+                                                                $('#datePrevInstance{{ phase.getNom() }}{{ ins.getReference() }}').datetimepicker({
+                                                                    todayBtn:"true",
+                                                                    format:"dd/mm/yyyy", 
+                                                                    autoclose:"true",
+                                                                    startView:"year",
+                                                                    minView:"month",
+                                                                    language:"fr",
+                                                                });
+                                                            });
+
+                                                            $(function () {
+                                                                $('#dateRevInstance{{ phase.getNom() }}{{ ins.getReference() }}').datetimepicker({
+                                                                    todayBtn:"true",
+                                                                    format:"dd/mm/yyyy", 
+                                                                    autoclose:"true",
+                                                                    startView:"year",
+                                                                    minView:"month",
+                                                                    language:"fr",
+                                                                });
+                                                            });
+
+                                                        </script>    
+                                                        
+                                                        {% else %}
+                                                            {% set instZero = instZero + 1 %}
+                                                        {% endif%}
+                                                    {% endfor %} 
+                                                    
+                                                    {% if instZero == listProjetInstance|length %}
+                                                        <center><i> Aucune instance</i></center>
+                                                    {% endif %}
+                                                    
+                                                    </tbody>
+
+                                                </table>                                    
+                                            </div>        
+                                            </div>
+                                        </div>
+                                                    
                                     </div> 
                                 </div>                    
                             </div> 
 
                             <br>     
-
-                        <script>
-
-                        $('#datePrev{{ phase.getNom() }}').datetimepicker({
-                        todayBtn:"true",
-                        format:"dd/mm/yyyy", 
-                        autoclose:"true",
-                        startView:"year",
-                        minView:"month",
-                        language:"fr"
-                        });  
-
-                        $('#dateRev{{ phase.getNom() }}').datetimepicker({
-                        todayBtn:"true",
-                        format:"dd/mm/yyyy", 
-                        autoclose:"true",
-                        startView:"year",
-                        minView:"month",
-                        language:"fr"
-                        });  
-                        
-                        </script>    
                         
                     {% endfor %}
-                
+                </div>
             </div>
-        </div> 
         
         <div class="pull-right">
             {% if droit != 0 %}

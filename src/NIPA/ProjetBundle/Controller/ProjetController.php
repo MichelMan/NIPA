@@ -3,8 +3,12 @@
 namespace NIPA\ProjetBundle\Controller;
 
 use NIPA\ProjetBundle\Form\Type\ProjetFormType;
+use NIPA\ProjetBundle\Form\Type\ProjetEnCadrageFormType;
+use NIPA\ProjetBundle\Form\Type\ProjetEnConceptionFormType;
+use NIPA\ProjetBundle\Form\Type\ProjetEnRealisationFormType;
 
 use NIPA\ProjetBundle\Entity\Projet;
+use NIPA\ProjetBundle\Entity\ProjetListeSteps;
 
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
@@ -113,6 +117,22 @@ class ProjetController extends Controller
         usort($listProjetLivrable, function ($a, $b) {
             return strnatcmp($a->getReference(), $b->getReference());
         });    
+
+        //return array() List Jalons Date
+        $repository = $this->getDoctrine()->getManager()->getRepository('NIPAProjetBundle:ProjetJalonDate');
+        $listProjetJalonDate = $repository->findAll();  
+        //On trie la liste 
+        usort($listProjetJalonDate, function ($a, $b) {
+            return strnatcmp($a->getReference(), $b->getReference());
+        });
+        
+        //return array() List Instances
+        $repository = $this->getDoctrine()->getManager()->getRepository('NIPAProjetBundle:DemandeInstance');
+        $listProjetInstance = $repository->findByType("Projet");  
+        //On trie la liste 
+        usort($listProjetInstance, function ($a, $b) {
+            return strnatcmp($a->getReference(), $b->getReference());
+        }); 
         
         /************************************/
 
@@ -128,6 +148,20 @@ class ProjetController extends Controller
         
         /************************************/
 
+        // Form En Cadrage
+        $projetEnCadrage = new ProjetListeSteps();
+        $formEnCadrage = $this->get('form.factory')->create(new ProjetEnCadrageFormType(), $projetEnCadrage);
+
+        // Form En Conception
+        $projetEnConception = new ProjetListeSteps();
+        $formEnConception = $this->get('form.factory')->create(new ProjetEnConceptionFormType(), $projetEnConception);
+        
+        // Form En Réalisation
+        $projetEnRealisation = new ProjetListeSteps();
+        $formEnRealisation = $this->get('form.factory')->create(new ProjetEnRealisationFormType(), $projetEnRealisation);
+                
+        /************************************/
+        
         $projet = new Projet(); // On créé notre objet      
         $form = $this->get('form.factory')->create(new ProjetFormType(), $projet); // On bind l'objet à notre formulaire 
         
@@ -137,6 +171,9 @@ class ProjetController extends Controller
         return $this->render('NIPAProjetBundle:Projet:projet.html.twig', array(
             'user' => $user, 
             'form' => $form->createView(),
+            'formEnCadrage' => $formEnCadrage->createView(),
+            'formEnConception' => $formEnConception->createView(),
+            'formEnRealisation' => $formEnRealisation->createView(),
             'projet' => $projet, 
             'listDemande' => $listDemande,
             'listPortefeuille' => $listPortefeuille, 
@@ -149,7 +186,9 @@ class ProjetController extends Controller
             'listProjetPhaseEtapeCadrage' => $listProjetPhaseEtapeCadrage,
             'listProjetPhaseEtapeConception' => $listProjetPhaseEtapeConception,
             'listProjetPhaseEtapeRealisation' => $listProjetPhaseEtapeRealisation,
-            'listProjetLivrable' => $listProjetLivrable
+            'listProjetLivrable' => $listProjetLivrable,
+            'listProjetJalonDate' => $listProjetJalonDate,
+            'listProjetInstance' => $listProjetInstance
             )); 
     } 
     
@@ -253,6 +292,22 @@ class ProjetController extends Controller
             return strnatcmp($a->getReference(), $b->getReference());
         });   
         
+        //return array() List Jalons Date
+        $repository = $this->getDoctrine()->getManager()->getRepository('NIPAProjetBundle:ProjetJalonDate');
+        $listProjetJalonDate = $repository->findAll();  
+        //On trie la liste 
+        usort($listProjetJalonDate, function ($a, $b) {
+            return strnatcmp($a->getReference(), $b->getReference());
+        });
+        
+        //return array() List Instances
+        $repository = $this->getDoctrine()->getManager()->getRepository('NIPAProjetBundle:DemandeInstance');
+        $listProjetInstance = $repository->findByType("Projet");  
+        //On trie la liste 
+        usort($listProjetInstance, function ($a, $b) {
+            return strnatcmp($a->getReference(), $b->getReference());
+        });         
+        
         /************************************/        
         //On récupère les interlocuteurMOA
         $repository = $this->getDoctrine()->getManager()->getRepository('NIPAProjetBundle:DemandeInterlocuteurMOA');
@@ -266,6 +321,20 @@ class ProjetController extends Controller
         
         /************************************/
 
+        // Form En Cadrage
+        $projetEnCadrage = new ProjetListeSteps();
+        $formEnCadrage = $this->get('form.factory')->create(new ProjetEnCadrageFormType(), $projetEnCadrage);
+
+        // Form En Conception
+        $projetEnConception = new ProjetListeSteps();
+        $formEnConception = $this->get('form.factory')->create(new ProjetEnConceptionFormType(), $projetEnConception);
+        
+        // Form En Réalisation
+        $projetEnRealisation = new ProjetListeSteps();
+        $formEnRealisation = $this->get('form.factory')->create(new ProjetEnRealisationFormType(), $projetEnRealisation);
+                
+        /************************************/        
+        
         $projet = new Projet(); // On créé notre objet      
         $form = $this->get('form.factory')->create(new ProjetFormType(), $projet); // On bind l'objet à notre formulaire 
         
@@ -349,6 +418,9 @@ class ProjetController extends Controller
         return $this->render('NIPAProjetBundle:Projet:projet.html.twig', array(
             'user' => $user, 
             'form' => $form->createView(),
+            'formEnCadrage' => $formEnCadrage->createView(),
+            'formEnConception' => $formEnConception->createView(),
+            'formEnRealisation' => $formEnRealisation->createView(),
             'projet' => $projet, 
             'listDemande' => $listDemande,
             'listPortefeuille' => $listPortefeuille, 
@@ -361,7 +433,9 @@ class ProjetController extends Controller
             'listProjetPhaseEtapeCadrage' => $listProjetPhaseEtapeCadrage,
             'listProjetPhaseEtapeConception' => $listProjetPhaseEtapeConception,
             'listProjetPhaseEtapeRealisation' => $listProjetPhaseEtapeRealisation,
-            'listProjetLivrable' => $listProjetLivrable
+            'listProjetLivrable' => $listProjetLivrable,
+            'listProjetJalonDate' => $listProjetJalonDate,
+            'listProjetInstance' => $listProjetInstance
             )); 
     } 
     
@@ -469,7 +543,23 @@ class ProjetController extends Controller
         //On trie la liste 
         usort($listProjetLivrable, function ($a, $b) {
             return strnatcmp($a->getReference(), $b->getReference());
-        });   
+        });
+        
+        //return array() List Jalons Date
+        $repository = $this->getDoctrine()->getManager()->getRepository('NIPAProjetBundle:ProjetJalonDate');
+        $listProjetJalonDate = $repository->findAll();  
+        //On trie la liste 
+        usort($listProjetJalonDate, function ($a, $b) {
+            return strnatcmp($a->getReference(), $b->getReference());
+        });
+        
+        //return array() List Instances
+        $repository = $this->getDoctrine()->getManager()->getRepository('NIPAProjetBundle:DemandeInstance');
+        $listProjetInstance = $repository->findByType("Projet");  
+        //On trie la liste 
+        usort($listProjetInstance, function ($a, $b) {
+            return strnatcmp($a->getReference(), $b->getReference());
+        }); 
         
         /************************************/
         //On récupère les interlocuteurMOA
@@ -482,6 +572,20 @@ class ProjetController extends Controller
         $repository = $this->getDoctrine()->getManager()->getRepository('NIPAProjetBundle:DemandeSDM');
         $listSDM = $repository->findAll(); 
         
+        /************************************/
+        
+        // Form En Cadrage
+        $projetEnCadrage = new ProjetListeSteps();
+        $formEnCadrage = $this->get('form.factory')->create(new ProjetEnCadrageFormType(), $projetEnCadrage);
+
+        // Form En Conception
+        $projetEnConception = new ProjetListeSteps();
+        $formEnConception = $this->get('form.factory')->create(new ProjetEnConceptionFormType(), $projetEnConception);
+        
+        // Form En Réalisation
+        $projetEnRealisation = new ProjetListeSteps();
+        $formEnRealisation = $this->get('form.factory')->create(new ProjetEnRealisationFormType(), $projetEnRealisation);
+                
         /************************************/
         
         $form = $this->get('form.factory')->create(new ProjetFormType(), $projet); // On bind l'objet à notre formulaire 
@@ -541,6 +645,9 @@ class ProjetController extends Controller
         return $this->render('NIPAProjetBundle:Projet:projet.html.twig', array(
             'user' => $user, 
             'form' => $form->createView(),
+            'formEnCadrage' => $formEnCadrage->createView(),
+            'formEnConception' => $formEnConception->createView(),
+            'formEnRealisation' => $formEnRealisation->createView(),
             'projet' => $projet, 
             'listDemande' => $listDemande,
             'listPortefeuille' => $listPortefeuille, 
@@ -553,7 +660,9 @@ class ProjetController extends Controller
             'listProjetPhaseEtapeCadrage' => $listProjetPhaseEtapeCadrage,
             'listProjetPhaseEtapeConception' => $listProjetPhaseEtapeConception,
             'listProjetPhaseEtapeRealisation' => $listProjetPhaseEtapeRealisation,
-            'listProjetLivrable' => $listProjetLivrable
+            'listProjetLivrable' => $listProjetLivrable,
+            'listProjetJalonDate' => $listProjetJalonDate,
+            'listProjetInstance' => $listProjetInstance
             )); 
     }     
   
