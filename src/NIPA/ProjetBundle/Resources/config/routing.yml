@@ -89,3 +89,7 @@ projet_delete:
 projet_load_demande:
     path: projet/load/demande
     defaults: { _controller: NIPAProjetBundle:Projet:loadProjetDemande }
+
+projet_maj_en_realisation:
+    path: projet/update/enRealisation/{reference}
+    defaults: { _controller: NIPAProjetBundle:Projet:updateEnRealisation }

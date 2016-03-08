@@ -161,33 +161,33 @@
 
     $(function() {
 
-    //$('#champs-table-budget-add tr #add-budget').on("click", function() {
-    $("#form_ajouter_budget").submit(function(){ 
-    
-        var ipp = $("#champs-table-budget-add tr #IPP").val();
-        var date = $("#champs-table-budget-add tr #date").val();
-        var montant = $("#champs-table-budget-add tr #montant").val();
-        var commentaires = $("#champs-table-budget-add tr #comment").val();
+        //$('#champs-table-budget-add tr #add-budget').on("click", function() {
+        $("#form_ajouter_budget").submit(function(){ 
 
-        $.ajax({
-            type: 'post',
-            url: "{% if demande.referenceDemande %}{{ path('demande_update_budget',{'reference': demande.referenceDemande}) }}{% endif %}",
-            //data: {ipp: ipp, date: date, montant: montant, commentaires: commentaires},
-            data: $('#form_ajouter_budget').serialize(),
-            success: function()
-            {
-                alert("Ajout5 effectué avec succès! (TEST)");
-                var url = document.location.href;
-                $(location).attr('href',url+"#budget");                 
-                location.reload();        
-            },
-            error: function(e) {
-               console.log(e);
-             }      
+            var ipp = $("#champs-table-budget-add tr #IPP").val();
+            var date = $("#champs-table-budget-add tr #date").val();
+            var montant = $("#champs-table-budget-add tr #montant").val();
+            var commentaires = $("#champs-table-budget-add tr #comment").val();
+
+            $.ajax({
+                type: 'post',
+                url: "{% if demande.referenceDemande %}{{ path('demande_update_budget',{'reference': demande.referenceDemande}) }}{% endif %}",
+                //data: {ipp: ipp, date: date, montant: montant, commentaires: commentaires},
+                data: $('#form_ajouter_budget').serialize(),
+                success: function()
+                {
+                    alert("Ajout5 effectué avec succès! (TEST)");
+                    var url = document.location.href;
+                    $(location).attr('href',url+"#budget");                 
+                    location.reload();        
+                },
+                error: function(e) {
+                   console.log(e);
+                 }      
+            });
+            return false;
         });
-        return false;
-    });
-});  
+    });  
 
 
     /*

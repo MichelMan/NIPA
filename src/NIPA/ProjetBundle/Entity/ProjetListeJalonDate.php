@@ -5,12 +5,12 @@ namespace NIPA\ProjetBundle\Entity;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * ProjetListeSteps
+ * ProjetListeJalonDate
  *
  * @ORM\Table()
- * @ORM\Entity(repositoryClass="NIPA\ProjetBundle\Repository\ProjetListeStepsRepository")
+ * @ORM\Entity(repositoryClass="NIPA\ProjetBundle\Repository\ProjetListeJalonDateRepository")
  */
-class ProjetListeSteps
+class ProjetListeJalonDate
 {
     /**
      * @var integer
@@ -50,30 +50,10 @@ class ProjetListeSteps
     private $remarques;
 
     /**
-     * @var string
-     *
-     * @ORM\Column(name="statutInstance", type="string", length=25, nullable=true)
-     */
-    private $statutInstance;
-
-    /**
      * @ORM\ManyToOne(targetEntity="NIPA\ProjetBundle\Entity\ProjetJalonDate")
      * @ORM\JoinColumn(name="projet_JalonDate_id", referencedColumnName="id", onDelete="SET NULL")
      */
     private $jalonDate;
-    
-    
-    /**
-     * @ORM\ManyToOne(targetEntity="NIPA\ProjetBundle\Entity\DemandeInstance")
-     * @ORM\JoinColumn(name="projet_instance_id", referencedColumnName="id", onDelete="SET NULL")
-     */
-    private $instance;
-    
-    /**
-     * @ORM\ManyToOne(targetEntity="NIPA\ProjetBundle\Entity\ProjetLivrable")
-     * @ORM\JoinColumn(name="projet_livrable_id", referencedColumnName="id", onDelete="SET NULL")
-     */
-    private $livrable;
     
     /**
      * @ORM\ManyToOne(targetEntity="NIPA\ProjetBundle\Entity\Projet")
@@ -96,7 +76,7 @@ class ProjetListeSteps
      *
      * @param \DateTime $datePrev
      *
-     * @return ProjetListeSteps
+     * @return ProjetListeJalonDate
      */
     public function setDatePrev($datePrev)
     {
@@ -120,7 +100,7 @@ class ProjetListeSteps
      *
      * @param \DateTime $dateRev
      *
-     * @return ProjetListeSteps
+     * @return ProjetListeJalonDate
      */
     public function setDateRev($dateRev)
     {
@@ -144,7 +124,7 @@ class ProjetListeSteps
      *
      * @param boolean $validationEffective
      *
-     * @return ProjetListeSteps
+     * @return ProjetListeJalonDate
      */
     public function setValidationEffective($validationEffective)
     {
@@ -168,7 +148,7 @@ class ProjetListeSteps
      *
      * @param string $remarques
      *
-     * @return ProjetListeSteps
+     * @return ProjetListeJalonDate
      */
     public function setRemarques($remarques)
     {
@@ -188,35 +168,11 @@ class ProjetListeSteps
     }
 
     /**
-     * Set statutInstance
-     *
-     * @param string $statutInstance
-     *
-     * @return ProjetListeSteps
-     */
-    public function setStatutInstance($statutInstance)
-    {
-        $this->statutInstance = $statutInstance;
-
-        return $this;
-    }
-
-    /**
-     * Get statutInstance
-     *
-     * @return string
-     */
-    public function getStatutInstance()
-    {
-        return $this->statutInstance;
-    }
-
-    /**
      * Set jalonDate
      *
      * @param ProjetJalonDate $jalonDate
      *
-     * @return ProjetListeSteps
+     * @return ProjetListeJalonDate
      */
     public function setJalonDate(ProjetJalonDate $jalonDate)
     {
@@ -234,58 +190,7 @@ class ProjetListeSteps
     {
         return $this->jalonDate;
     }
-    
-    
-    /**
-     * Set instance
-     *
-     * @param DemandeInstance $instance
-     *
-     * @return ProjetListeSteps
-     */
-    public function setInstance(DemandeInstance $instance)
-    {
-        $this->instance = $instance;
-
-        return $this;
-    }
-
-    /**
-     * Get instance
-     *
-     * @return DemandeInstance
-     */
-    public function getInstance()
-    {
-        return $this->instance;
-    }
-    
-    
-    /**
-     * Set livrable
-     *
-     * @param ProjetLivrable $livrable
-     *
-     * @return ProjetListeSteps
-     */
-    public function setLivrable(ProjetLivrable $livrable)
-    {
-        $this->livrable = $livrable;
-
-        return $this;
-    }
-
-    /**
-     * Get instance
-     *
-     * @return ProjetLivrable
-     */
-    public function getLivrable()
-    {
-        return $this->livrable;
-    }
-    
-    
+        
     /**
      * Set projet
      *

@@ -5,12 +5,12 @@ namespace NIPA\ProjetBundle\Entity;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * ProjetListeSteps
+ * ProjetListeInstance
  *
  * @ORM\Table()
- * @ORM\Entity(repositoryClass="NIPA\ProjetBundle\Repository\ProjetListeStepsRepository")
+ * @ORM\Entity(repositoryClass="NIPA\ProjetBundle\Repository\ProjetListeInstanceRepository")
  */
-class ProjetListeSteps
+class ProjetListeInstance
 {
     /**
      * @var integer
@@ -55,12 +55,6 @@ class ProjetListeSteps
      * @ORM\Column(name="statutInstance", type="string", length=25, nullable=true)
      */
     private $statutInstance;
-
-    /**
-     * @ORM\ManyToOne(targetEntity="NIPA\ProjetBundle\Entity\ProjetJalonDate")
-     * @ORM\JoinColumn(name="projet_JalonDate_id", referencedColumnName="id", onDelete="SET NULL")
-     */
-    private $jalonDate;
     
     
     /**
@@ -69,11 +63,6 @@ class ProjetListeSteps
      */
     private $instance;
     
-    /**
-     * @ORM\ManyToOne(targetEntity="NIPA\ProjetBundle\Entity\ProjetLivrable")
-     * @ORM\JoinColumn(name="projet_livrable_id", referencedColumnName="id", onDelete="SET NULL")
-     */
-    private $livrable;
     
     /**
      * @ORM\ManyToOne(targetEntity="NIPA\ProjetBundle\Entity\Projet")
@@ -96,7 +85,7 @@ class ProjetListeSteps
      *
      * @param \DateTime $datePrev
      *
-     * @return ProjetListeSteps
+     * @return ProjetListeInstance
      */
     public function setDatePrev($datePrev)
     {
@@ -120,7 +109,7 @@ class ProjetListeSteps
      *
      * @param \DateTime $dateRev
      *
-     * @return ProjetListeSteps
+     * @return ProjetListeInstance
      */
     public function setDateRev($dateRev)
     {
@@ -144,7 +133,7 @@ class ProjetListeSteps
      *
      * @param boolean $validationEffective
      *
-     * @return ProjetListeSteps
+     * @return ProjetListeInstance
      */
     public function setValidationEffective($validationEffective)
     {
@@ -168,7 +157,7 @@ class ProjetListeSteps
      *
      * @param string $remarques
      *
-     * @return ProjetListeSteps
+     * @return ProjetListeInstance
      */
     public function setRemarques($remarques)
     {
@@ -192,7 +181,7 @@ class ProjetListeSteps
      *
      * @param string $statutInstance
      *
-     * @return ProjetListeSteps
+     * @return ProjetListeInstance
      */
     public function setStatutInstance($statutInstance)
     {
@@ -212,36 +201,11 @@ class ProjetListeSteps
     }
 
     /**
-     * Set jalonDate
-     *
-     * @param ProjetJalonDate $jalonDate
-     *
-     * @return ProjetListeSteps
-     */
-    public function setJalonDate(ProjetJalonDate $jalonDate)
-    {
-        $this->jalonDate = $jalonDate;
-
-        return $this;
-    }
-
-    /**
-     * Get jalonDate
-     *
-     * @return ProjetJalonDate
-     */
-    public function getJalonDate()
-    {
-        return $this->jalonDate;
-    }
-    
-    
-    /**
      * Set instance
      *
      * @param DemandeInstance $instance
      *
-     * @return ProjetListeSteps
+     * @return ProjetListeInstance
      */
     public function setInstance(DemandeInstance $instance)
     {
@@ -262,36 +226,11 @@ class ProjetListeSteps
     
     
     /**
-     * Set livrable
-     *
-     * @param ProjetLivrable $livrable
-     *
-     * @return ProjetListeSteps
-     */
-    public function setLivrable(ProjetLivrable $livrable)
-    {
-        $this->livrable = $livrable;
-
-        return $this;
-    }
-
-    /**
-     * Get instance
-     *
-     * @return ProjetLivrable
-     */
-    public function getLivrable()
-    {
-        return $this->livrable;
-    }
-    
-    
-    /**
      * Set projet
      *
      * @param Demande $projet
      *
-     * @return ProjetListeSteps
+     * @return ProjetListeInstance
      */
     public function setProjet(Projet $projet)
     {
@@ -308,7 +247,7 @@ class ProjetListeSteps
     public function getProjet()
     {
         return $this->projet;
-    }       
+    } 
     
 }
 

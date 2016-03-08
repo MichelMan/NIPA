@@ -17,7 +17,7 @@ class ProjetEnRealisationFormType extends AbstractType
     public function getDefaultOptions(array $options)
     {
         return array(
-            'data_class' => 'NIPA\ProjetBundle\Entity\ProjetListeSteps',
+            'data_class' => 'NIPA\ProjetBundle\Entity\ProjetEtape',
         );
     }
     

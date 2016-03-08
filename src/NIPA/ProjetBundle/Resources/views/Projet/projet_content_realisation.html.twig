@@ -14,10 +14,14 @@
     {% endfor %}      
     
         <h4 class=""><span class='glyphicon glyphicon-list-alt'></span> {{ 'En réalisation'|trans }} </h4>        
- 
-            <div class="row col-md-13">
+
+        <div class="row col-md-13">
+            
+            <form action="" method="post" {{ form_enctype(formEnConception) }} id="form_maj_en_realisation" >
+
                 <div id="accordion3" role="tablist" aria-multiselectable="true">
-               
+
+
                     <!-- PANEL(s) En Réalisation -->      
                 
                     {% for phase in listProjetPhaseEtapeRealisation %}
@@ -57,9 +61,10 @@
                                                 <table class="table table-hover" id="champs-table-livrables GDP">
                                                     <thead>
                                                         <tr>
+                                                            <th style="display:none">ID</th>
                                                             <th class="text-center">Jalons</th>
-                                                            <th class="text-center">Date Prév.</th>
-                                                            <th class="text-center">Date Rév.</th>
+                                                            <th class="text-center">Date Prévue</th>
+                                                            <th class="text-center">Date Révisée</th>
                                                             <th class="text-center">Validation</th>
                                                             <th class="text-center">Remarques</th>
                                                         </tr>
@@ -68,16 +73,17 @@
                                                         {% for liv in listProjetLivrable %}
                                                             {% if liv.getRefPhase().getNom() == phase.getNom()%}
                                                             <tr>    
+                                                                <td style="display:none"><input type="text" class="form-control input-md date textinput" value="{{ liv.getId() }}" id="IdLivrable{{ liv.getReference() }}" class="IdLivrable{{ liv.getReference() }}" name="Livrable[id][]" style="text-align:center;"></td>
                                                                 <td class="text-center"><strong>{{ liv.getNom() }}</strong></td>
-                                                                <td><input type="text" class="form-control input-md date textinput" id="datePrevLivrable{{ phase.getNom() }}{{ liv.getReference() }}" class="datePrevLivrable{{ phase.getNom() }}{{ liv.getReference() }}" name="datePrevLivrable{{ phase.getNom() }}{{ liv.getReference() }}" style="text-align:center;"></td>
-                                                                <td><input type="text" class="form-control input-md date textinput" id="dateRevLivrable{{ phase.getNom() }}{{ liv.getReference() }}" class="dateRevLivrable{{ phase.getNom() }}{{ liv.getReference() }}" name="dateRevLivrable{{ phase.getNom() }}{{ liv.getReference() }}" style="text-align:center;"></td>
-                                                                <td class="text-center"><input id="validationLivrable{{ phase.getNom() }}{{ liv.getReference() }}" name="validationLivrable{{ phase.getNom() }}{{ liv.getReference() }}" type="checkbox" value=""></td>
-                                                                <td class="text-center"><textarea class="form-control input-md" rows="2" cols="50" id="remarquesLivrable{{ phase.getNom() }}{{ liv.getReference() }}" placeholder="..." name="remarquesLivrable{{ phase.getNom() }}{{ liv.getReference() }}"></textarea></td>
+                                                                <td><input type="text" class="form-control input-md date textinput" id="datePrevLivrable{{ liv.getReference() }}" class="datePrevLivrable{{ liv.getReference() }}" name="Livrable[datePrev][]" style="text-align:center;"></td>
+                                                                <td><input type="text" class="form-control input-md date textinput" id="dateRevLivrable{{ liv.getReference() }}" class="dateRevLivrable{{ liv.getReference() }}" name="Livrable[dateRev][]" style="text-align:center;"></td>
+                                                                <td class="text-center"><input type="checkbox" id="validationLivrable{{ liv.getReference() }}" name="Livrable[validation][{{ liv.getReference() }}]" /></td>
+                                                                <td class="text-center"><textarea class="form-control input-md" rows="2" cols="50" id="remarquesLivrable{{ liv.getReference() }}" placeholder="..." name="Livrable[remarques][]"></textarea></td>
                                                             </tr>
                                                                 <script>
 
                                                                     $(function () {
-                                                                        $('#datePrevLivrable{{ phase.getNom() }}{{ liv.getReference() }}').datetimepicker({
+                                                                        $('#datePrevLivrable{{ liv.getReference() }}').datetimepicker({
                                                                             todayBtn:"true",
                                                                             format:"dd/mm/yyyy", 
                                                                             autoclose:"true",
@@ -88,7 +94,7 @@
                                                                     });
 
                                                                     $(function () {
-                                                                        $('#dateRevLivrable{{ phase.getNom() }}{{ liv.getReference() }}').datetimepicker({
+                                                                        $('#dateRevLivrable{{ liv.getReference() }}').datetimepicker({
                                                                             todayBtn:"true",
                                                                             format:"dd/mm/yyyy", 
                                                                             autoclose:"true",
@@ -105,17 +111,18 @@
 
                                                         {% for jal in listProjetJalonDate %}
                                                             {% if jal.getRefPhase().getNom() == phase.getNom()%}
-                                                            <tr>                                                         
+                                                            <tr>    
+                                                                <td style="display:none"><input type="text" class="form-control input-md date textinput" value="{{ jal.getId() }}" id="IdJalon{{ jal.getReference() }}" class="IdJalon{{ jal.getReference() }}" name="Jalon[id][]" style="text-align:center;"></td>
                                                                 <td class="text-center"><strong>{{ jal.getNom() }}</strong></td>
-                                                                <td><input type="text" class="form-control input-md date textinput" id="datePrevJalon{{ phase.getNom()}}{{ jal.getReference() }}" class="datePrevJalon{{ phase.getNom()}}{{ jal.getReference() }}" name="datePrevJalon{{ phase.getNom()}}{{ jal.getReference() }}" style="text-align:center;"></td>
-                                                                <td><input type="text" class="form-control input-md date textinput" id="dateRevJalon{{ phase.getNom()}}{{ jal.getReference() }}" class="dateRevJalon{{ phase.getNom()}}{{ jal.getReference() }}" name="dateRevJalon{{ phase.getNom()}}{{ jal.getReference() }}" style="text-align:center;"></td>
-                                                                <td class="text-center"><input id="validationJalon{{ phase.getNom()}}{{ jal.getReference() }}" name="validation{{ phase.getNom()}}{{ jal.getReference() }}" type="checkbox" value=""></td>
-                                                                <td class="text-center"><textarea class="form-control input-md" rows="2" cols="50" id="remarquesJalon{{ phase.getNom()}}{{ jal.getReference() }}" placeholder="..." name="remarquesJalon{{ phase.getNom()}}{{ jal.getReference() }}"></textarea></td>
+                                                                <td><input type="text" class="form-control input-md date textinput" id="datePrevJalon{{ jal.getReference() }}" class="datePrevJalon{{ jal.getReference() }}" name="Jalon[datePrev][]" style="text-align:center;"></td>
+                                                                <td><input type="text" class="form-control input-md date textinput" id="dateRevJalon{{ jal.getReference() }}" class="dateRevJalon{{ jal.getReference() }}" name="Jalon[dateRev][]" style="text-align:center;"></td>
+                                                                <td class="text-center"><input type="checkbox" id="validationJalon{{ jal.getReference() }}" name="Jalon[validation][{{ jal.getReference() }}]" /></td>
+                                                                <td class="text-center"><textarea class="form-control input-md" rows="2" cols="50" id="remarquesJalon{{ jal.getReference() }}" placeholder="..." name="Jalon[remarques][]"></textarea></td>
                                                             </tr>
                                                                 <script>
 
                                                                     $(function () {
-                                                                        $('#datePrevJalon{{ phase.getNom()}}{{ jal.getReference() }}').datetimepicker({
+                                                                        $('#datePrevJalon{{ jal.getReference() }}').datetimepicker({
                                                                             todayBtn:"true",
                                                                             format:"dd/mm/yyyy", 
                                                                             autoclose:"true",
@@ -126,7 +133,7 @@
                                                                     });
 
                                                                     $(function () {
-                                                                        $('#dateRevJalon{{ phase.getNom()}}{{ jal.getReference() }}').datetimepicker({
+                                                                        $('#dateRevJalon{{ jal.getReference() }}').datetimepicker({
                                                                             todayBtn:"true",
                                                                             format:"dd/mm/yyyy", 
                                                                             autoclose:"true",
@@ -163,73 +170,136 @@
                                                 <table class="table table-hover" id="champs-table-instances GDP">
                                                     <thead>
                                                         <tr>
+                                                            <th style="display:none">ID</th>
                                                             <th class="text-center">Instances</th>
-                                                            <th class="text-center">Date Prév.</th>
-                                                            <th class="text-center">Date Rév.</th>
+                                                            <th class="text-center">Date Prévue</th>
+                                                            <th class="text-center">Date Révisée</th>
                                                             <th class="text-center">Validation</th>
                                                             <th class="text-center">Remarques</th>
                                                             <th class="text-center">Statut</th>
                                                         </tr>
                                                     </thead>
                                                     <tbody>
-                                                    {% set instZero = 0 %}
-                                                    {% for ins in listProjetInstance %}
-                                                        {% if ins.getRefPhase().getNom() == phase.getNom()%}   
                                                         <tr>
-                                                            <td class="text-center"><strong>{{ ins.getNom() }}</strong></td>
-                                                            <td class="col-xs-2"><input type="text" class="form-control input-md date textinput" id="datePrevInstance{{ phase.getNom() }}{{ ins.getReference() }}" class="datePrevInstance{{ phase.getNom() }}{{ ins.getReference() }}" name="datePrevInstance{{ phase.getNom() }}{{ ins.getReference() }}" style="text-align:center;"></td>
-                                                            <td class="col-xs-2"><input type="text" class="form-control input-md date textinput" id="dateRevInstance{{ phase.getNom() }}{{ ins.getReference() }}" class="dateRevInstance{{ phase.getNom() }}{{ ins.getReference() }}" name="dateRevInstance{{ phase.getNom() }}{{ ins.getReference() }}" style="text-align:center;"></td>
-                                                            <td class="text-center"><input id="validationInstance{{ phase.getNom() }}{{ ins.getReference() }}" name="validationInstance{{ phase.getNom() }}{{ ins.getReference() }}" type="checkbox" value=""></td>
-                                                            <td class="text-center">                                    
-                                                                <select class="form-control" id="phaseInstance{{ phase.getNom() }}{{ ins.getReference() }}" name="phaseInstance{{ phase.getNom() }}{{ ins.getReference() }}">
-                                                                <option></option>
-                                                                <option>GO</option>
-                                                                <option>NO GO</option>
-                                                                <option>N/A</option>
-                                                              </select> 
-                                                            </td>
+
                                                         </tr>
-
-                                                        <script>
-
-                                                            $(function () {
-                                                                $('#datePrevInstance{{ phase.getNom() }}{{ ins.getReference() }}').datetimepicker({
-                                                                    todayBtn:"true",
-                                                                    format:"dd/mm/yyyy", 
-                                                                    autoclose:"true",
-                                                                    startView:"year",
-                                                                    minView:"month",
-                                                                    language:"fr",
-                                                                });
-                                                            });
-
-                                                            $(function () {
-                                                                $('#dateRevInstance{{ phase.getNom() }}{{ ins.getReference() }}').datetimepicker({
-                                                                    todayBtn:"true",
-                                                                    format:"dd/mm/yyyy", 
-                                                                    autoclose:"true",
-                                                                    startView:"year",
-                                                                    minView:"month",
-                                                                    language:"fr",
-                                                                });
-                                                            });
-
-                                                        </script>    
-                                                        
-                                                        {% else %}
-                                                            {% set instZero = instZero + 1 %}
-                                                        {% endif%}
-                                                    {% endfor %} 
-            
                                                     </tbody>
                                                 </table>    
                                                     
-                                                {% if instZero == listProjetInstance|length %}
-                                                    <center><i> Aucune instance</i></center>
-                                                {% endif %}
-                                                    
                                             </div>        
                                             </div>
+                                                   
+                                                {% if projet.referenceProjet %} 
+                                                     <table class="table" id="champs-table-realisation-instance{{phase.getNom()}}">
+                                                         <thead>
+                                                             <tr>
+                                                                <th class="text-center">Instances</th>
+                                                                <th class="text-center">Date Prévue</th>
+                                                                <th class="text-center">Date Révisée</th>
+                                                                <th class="text-center">Validation</th>
+                                                                <th class="text-center">Remarques</th>
+                                                                <th class="text-center">Statut</th>
+                                                                <th class="text-center">Ajouter</th>                    
+                                                             </tr>
+                                                         </thead>                   
+                                                         <tbody>
+                                                             <tr>
+                                                                 <td class="text-center">
+                                                                    <select class="form-control" id="nomInstance{{phase.getNom()}}" name="nomInstance{{phase.getNom()}}">
+                                                                        {% for ins in listProjetInstance %}
+                                                                            <option value="{{ ins.getId() }}">{{ ins.getNom() }}</option>
+                                                                        {% endfor %}
+                                                                    </select> 
+                                                                </td>
+                                                                <td><input type="text" class="form-control input-md date textinput" id="datePrevInstance{{phase.getNom()}}" class="datePrevInstance{{phase.getNom()}}" name="datePrevInstance{{phase.getNom()}}" style="text-align:center;"></td>
+                                                                <td><input type="text" class="form-control input-md date textinput" id="dateRevInstance{{phase.getNom()}}" class="dateRevInstance{{phase.getNom()}}" name="dateRevInstance{{phase.getNom()}}" style="text-align:center;"></td>
+                                                                <td class="text-center"><input type="checkbox" id="validationInstance{{phase.getNom()}}" name="validationInstance{{phase.getNom()}}" /></td>
+                                                                <td class="text-center"><textarea class="form-control input-md" rows="2" cols="50" id="remarquesInstance{{phase.getNom()}}" placeholder="..." name="remarquesInstance{{phase.getNom()}}"></textarea></td>
+                                                                <td class="text-center">                                    
+                                                                    <select class="form-control" id="statutInstance{{phase.getNom()}}" name="statutInstance{{phase.getNom()}}">
+                                                                    <option></option>
+                                                                    <option>GO</option>
+                                                                    <option>NO GO</option>
+                                                                    <option>N/A</option>
+                                                                  </select> 
+                                                                </td>                                                                 
+                                                                {% if droit != 0 %}
+                                                                    <td class="text-center"><button type="submit" class="btn btn-success" id="add-realisation-instance{{phase.getNom()}}"><i class="glyphicon glyphicon-plus"></i></button></td>
+                                                                 {% else %}
+                                                                    <td class="text-center"><button type="submit" class="btn btn-success" id="add-realisation-instance-no{{phase.getNom()}}" DISABLED><i class="glyphicon glyphicon-plus"></i></button></td>
+                                                                {% endif %}
+                                                             </tr>   
+                                                         </tbody>   
+                                                     </table>
+                                                             
+                                                    <script>
+
+                                                        $(function () {
+                                                            $('#datePrevInstance{{phase.getNom()}}').datetimepicker({
+                                                                todayBtn:"true",
+                                                                format:"dd/mm/yyyy", 
+                                                                autoclose:"true",
+                                                                startView:"year",
+                                                                minView:"month",
+                                                                language:"fr",
+                                                            });
+                                                        });
+
+                                                        $(function () {
+                                                            $('#dateRevInstance{{phase.getNom()}}').datetimepicker({
+                                                                todayBtn:"true",
+                                                                format:"dd/mm/yyyy", 
+                                                                autoclose:"true",
+                                                                startView:"year",
+                                                                minView:"month",
+                                                                language:"fr",
+                                                            });
+                                                        });   
+                                                        
+       
+                                                        $(function() {
+
+                                                            $('#champs-table-realisation-instance{{phase.getNom()}} tr #add-realisation-instance{{phase.getNom()}}').on("click", function() {
+                                                            //$("#form_ajouter_budget").submit(function(){ 
+
+                                                                var id = $("#champs-table-realisation-instance{{phase.getNom()}} tr #nomInstance{{phase.getNom()}}").val();
+                                                                var datePrev = $("#champs-table-realisation-instance{{phase.getNom()}} tr #datePrevInstance{{phase.getNom()}}").val();
+                                                                var dateRev = $("#champs-table-realisation-instance{{phase.getNom()}} tr #dateRevInstance{{phase.getNom()}}").val();
+                                                                var validation = $("#champs-table-realisation-instance{{phase.getNom()}} tr #validationInstance{{phase.getNom()}}").val();
+                                                                var remarques = $("#champs-table-realisation-instance{{phase.getNom()}} tr #remarquesInstance{{phase.getNom()}}").val();
+                                                                var statut = $("#champs-table-realisation-instance{{phase.getNom()}} tr #statutInstance{{phase.getNom()}}").val();
+
+                                                                console.log(id);
+                                                                console.log(datePrev);
+                                                                console.log(dateRev);
+                                                                console.log(validation);
+                                                                console.log(remarques);
+                                                                console.log(statut);
+
+                                                                /* $.ajax({
+                                                                    type: 'post',
+                                                                    url: "",
+                                                                    //data: {ipp: ipp, date: date, montant: montant, commentaires: commentaires},
+                                                                    data: $('#form_ajouter_budget').serialize(),
+                                                                    success: function()
+                                                                    {
+                                                                        alert("Ajout5 effectué avec succès! (TEST)");
+                                                                        var url = document.location.href;
+                                                                        $(location).attr('href',url+"#budget");                 
+                                                                        location.reload();        
+                                                                    },
+                                                                    error: function(e) {
+                                                                       console.log(e);
+                                                                     }      
+                                                                });*/
+                                                                return false;
+                                                            }); 
+                                                        });     
+                                                        
+                                                    </script>
+                                                             
+                                                 {% endif %}                                                
+                                                
                                         </div>
                                                     
                                     </div> 
@@ -239,7 +309,8 @@
                             <br>     
                         
                     {% endfor %}
-                </div>
+                    
+                        </div>
             </div>
         
         <div class="pull-right">
@@ -249,6 +320,35 @@
                 <button class="btn btn-success" type="submit" DISABLED><span class='glyphicon glyphicon-check'></span> Valider</button>           
             {% endif %}
         </div> 
-                                
-                    
+    </form>
+
+
+    <script>
+
+        $(function() {
+
+            $("#form_maj_en_realisation").submit(function(){ 
+
+                $.ajax({
+                    type: 'post',
+                    url: "{% if projet.referenceProjet %}{{ path('projet_maj_en_realisation',{'reference': projet.referenceProjet}) }}{% endif %}",
+                    data: $('#form_maj_en_realisation').serialize(),
+                    success: function()
+                    {
+                        alert("Ajout effectué avec succès! (TEST)");
+                        var url = document.location.href;
+                        $(location).attr('href',url+"#realisation");                 
+                        location.reload();        
+                    },
+                    error: function(e) {
+                       console.log(e);
+                     }      
+                });
+                return false;
+            });
+        });  
+       
+           
+    </script>
+    
 {% endblock %}            
