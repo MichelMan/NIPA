@@ -93,3 +93,19 @@ projet_load_demande:
 projet_maj_en_realisation:
     path: projet/update/enRealisation/{reference}
     defaults: { _controller: NIPAProjetBundle:Projet:updateEnRealisation }
+
+projet_maj_en_conception:
+    path: projet/update/enConception/{reference}
+    defaults: { _controller: NIPAProjetBundle:Projet:updateEnConception }
+
+projet_maj_en_cadrage:
+    path: projet/update/enCadrage/{reference}
+    defaults: { _controller: NIPAProjetBundle:Projet:updateEnCadrage }
+
+update_projet_instance:
+    path: projet/update/instance/{reference}
+    defaults: { _controller: NIPAProjetBundle:Projet:updateInstanceProjet }
+
+delete_projet_instance:
+    path: projet/delete/instance/{reference}
+    defaults: { _controller: NIPAProjetBundle:Projet:deleteInstanceProjet }

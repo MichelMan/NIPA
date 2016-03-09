@@ -65,9 +65,9 @@
                                     <td><h5><textarea class="form-control" cols=30 rows=3 id="Remarques" READONLY>{{ instance.remarques }}</textarea></h5></td> 
                                     <td class="text-center"><h5>{{ instance.getStatut().getNom() }}</h5></td>
                                     {% if droit != 0 %}
-                                        <td id="delete-instance"><a id="{{ instance.id }}" class="btn btn-danger confirmModalBudget"><i class="glyphicon glyphicon-remove"></i> </a></td>                    
+                                        <td id="delete-instance"><a id="{{ instance.id }}" class="btn btn-danger"><i class="glyphicon glyphicon-remove"></i> </a></td>                    
                                     {% else %}
-                                        <td id="delete-instance"><a id="{{ instance.id }}" class="btn btn-danger confirmModalBudget" DISABLED><i class="glyphicon glyphicon-remove"></i> </a></td>                    
+                                        <td id="delete-instance"><a id="{{ instance.id }}" class="btn btn-danger" DISABLED><i class="glyphicon glyphicon-remove"></i> </a></td>                    
                                     {% endif %}
                                 </tr>
                             {% endfor %}                        

@@ -1183,15 +1183,7 @@ class DemandeController extends Controller
     */
     public function deleteInstanceAction($reference)    
     {
-        
-        /**********************DROIT SECTION************************/
-        $requests = Request::createFromGlobals();
-        $droit = $requests->query->get('droit');
-               
-        if ($droit == "denied") { // On test si user pour avoir accès à la section 
-            //throw new AccessDeniedException("Section autorisée uniquement pour les administrateurs!");
-            $this->get('session')->getFlashBag()->set('error', "Vous n'avez pas les droits requis pour accéder à cette section!");            
-        }        
+
         /***********************************************************/
         
         $request = $this->get('request');

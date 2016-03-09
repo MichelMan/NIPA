@@ -137,6 +137,7 @@ class ProjetController extends Controller
             return strnatcmp($a->getReference(), $b->getReference());
         }); 
         
+
         /************************************/
 
         //On récupère les interlocuteurMOA
@@ -170,6 +171,40 @@ class ProjetController extends Controller
         
         /*************************************************/     
        
+        //return array() List ListeInstance
+        $repository = $this->getDoctrine()->getManager()->getRepository('NIPAProjetBundle:ProjetListeInstance');
+        $listProjetListeInstance = $repository->findByProjet($projet);  
+        //On trie la liste 
+        usort($listProjetListeInstance, function($a, $b) {
+          return ($a->getDatePrev() < $b->getDatePrev()) ? -1 : 1;
+        });                     
+
+        //return array() List ListeJalonDate En Cadrage
+        $repository = $this->getDoctrine()->getManager()->getRepository('NIPAProjetBundle:ProjetListeJalonDate');
+        $listProjetListeJalonDateEnCadrage = $repository->getJalonDateProjetEnCadrage($projet);     
+        
+        //return array() List ListeJalonDate En Conception
+        $repository = $this->getDoctrine()->getManager()->getRepository('NIPAProjetBundle:ProjetListeJalonDate');
+        $listProjetListeJalonDateEnConception = $repository->getJalonDateProjetEnConception($projet);    
+        
+        //return array() List ListeJalonDate En Realisation
+        $repository = $this->getDoctrine()->getManager()->getRepository('NIPAProjetBundle:ProjetListeJalonDate');
+        $listProjetListeJalonDateEnRealisation = $repository->getJalonDateProjetEnRealisation($projet);    
+        
+        //return array() List ListeLivrable En Cadrage
+        $repository = $this->getDoctrine()->getManager()->getRepository('NIPAProjetBundle:ProjetListeLivrable');
+        $listProjetListeLivrableEnCadrage = $repository->getLivrableProjetEnCadrage($projet);     
+        
+        //return array() List ListeLivrable En Conception
+        $repository = $this->getDoctrine()->getManager()->getRepository('NIPAProjetBundle:ProjetListeLivrable');
+        $listProjetListeLivrableEnConception = $repository->getLivrableProjetEnConception($projet); 
+        
+        //return array() List ListeLivrable En Realisation
+        $repository = $this->getDoctrine()->getManager()->getRepository('NIPAProjetBundle:ProjetListeLivrable');
+        $listProjetListeLivrableEnRealisation = $repository->getLivrableProjetEnRealisation($projet);  
+        
+        /*************************************************/        
+        
         //return array();
         return $this->render('NIPAProjetBundle:Projet:projet.html.twig', array(
             'user' => $user, 
@@ -191,7 +226,14 @@ class ProjetController extends Controller
             'listProjetPhaseEtapeRealisation' => $listProjetPhaseEtapeRealisation,
             'listProjetLivrable' => $listProjetLivrable,
             'listProjetJalonDate' => $listProjetJalonDate,
-            'listProjetInstance' => $listProjetInstance
+            'listProjetInstance' => $listProjetInstance,
+            'listProjetListeInstance' => $listProjetListeInstance,
+            'listProjetListeJalonDateEnCadrage' => $listProjetListeJalonDateEnCadrage,
+            'listProjetListeJalonDateEnConception' => $listProjetListeJalonDateEnConception,
+            'listProjetListeJalonDateEnRealisation' => $listProjetListeJalonDateEnRealisation,
+            'listProjetListeLivrableEnCadrage' => $listProjetListeLivrableEnCadrage,
+            'listProjetListeLivrableEnConception' => $listProjetListeLivrableEnConception,
+            'listProjetListeLivrableEnRealisation' => $listProjetListeLivrableEnRealisation
             )); 
     } 
     
@@ -343,6 +385,42 @@ class ProjetController extends Controller
         
         /*************************************************/     
        
+        //return array() List ListeInstance
+        $repository = $this->getDoctrine()->getManager()->getRepository('NIPAProjetBundle:ProjetListeInstance');
+        $listProjetListeInstance = $repository->findByProjet($projet);  
+        //On trie la liste 
+        usort($listProjetListeInstance, function($a, $b) {
+          return ($a->getDatePrev() < $b->getDatePrev()) ? -1 : 1;
+        });                    
+
+        //return array() List ListeJalonDate En Cadrage
+        $repository = $this->getDoctrine()->getManager()->getRepository('NIPAProjetBundle:ProjetListeJalonDate');
+        $listProjetListeJalonDateEnCadrage = $repository->getJalonDateProjetEnCadrage($projet);     
+        
+        //return array() List ListeJalonDate En Conception
+        $repository = $this->getDoctrine()->getManager()->getRepository('NIPAProjetBundle:ProjetListeJalonDate');
+        $listProjetListeJalonDateEnConception = $repository->getJalonDateProjetEnConception($projet);    
+        
+        //return array() List ListeJalonDate En Realisation
+        $repository = $this->getDoctrine()->getManager()->getRepository('NIPAProjetBundle:ProjetListeJalonDate');
+        $listProjetListeJalonDateEnRealisation = $repository->getJalonDateProjetEnRealisation($projet);    
+        
+        //return array() List ListeLivrable En Cadrage
+        $repository = $this->getDoctrine()->getManager()->getRepository('NIPAProjetBundle:ProjetListeLivrable');
+        $listProjetListeLivrableEnCadrage = $repository->getLivrableProjetEnCadrage($projet);     
+        
+        //return array() List ListeLivrable En Conception
+        $repository = $this->getDoctrine()->getManager()->getRepository('NIPAProjetBundle:ProjetListeLivrable');
+        $listProjetListeLivrableEnConception = $repository->getLivrableProjetEnConception($projet); 
+        
+        //return array() List ListeLivrable En Realisation
+        $repository = $this->getDoctrine()->getManager()->getRepository('NIPAProjetBundle:ProjetListeLivrable');
+        $listProjetListeLivrableEnRealisation = $repository->getLivrableProjetEnRealisation($projet); 
+        
+        
+        /*************************************************/              
+        
+        
         $form->handleRequest($request);
         if($form->isSubmitted()) {                                   
             
@@ -416,7 +494,6 @@ class ProjetController extends Controller
             //}   
         }        
         
-        
         //return array();
         return $this->render('NIPAProjetBundle:Projet:projet.html.twig', array(
             'user' => $user, 
@@ -438,7 +515,14 @@ class ProjetController extends Controller
             'listProjetPhaseEtapeRealisation' => $listProjetPhaseEtapeRealisation,
             'listProjetLivrable' => $listProjetLivrable,
             'listProjetJalonDate' => $listProjetJalonDate,
-            'listProjetInstance' => $listProjetInstance
+            'listProjetInstance' => $listProjetInstance,
+            'listProjetListeInstance' => $listProjetListeInstance,
+            'listProjetListeJalonDateEnCadrage' => $listProjetListeJalonDateEnCadrage,
+            'listProjetListeJalonDateEnConception' => $listProjetListeJalonDateEnConception,
+            'listProjetListeJalonDateEnRealisation' => $listProjetListeJalonDateEnRealisation,
+            'listProjetListeLivrableEnCadrage' => $listProjetListeLivrableEnCadrage,
+            'listProjetListeLivrableEnConception' => $listProjetListeLivrableEnConception,
+            'listProjetListeLivrableEnRealisation' => $listProjetListeLivrableEnRealisation
             )); 
     } 
     
@@ -595,6 +679,43 @@ class ProjetController extends Controller
         
         /*************************************************/     
        
+        //return array() List ListeInstance
+        $repository = $this->getDoctrine()->getManager()->getRepository('NIPAProjetBundle:ProjetListeInstance');
+        $listProjetListeInstance = $repository->findByProjet($projet);  
+        //On trie la liste 
+        usort($listProjetListeInstance, function($a, $b) {
+          return ($a->getDatePrev() < $b->getDatePrev()) ? -1 : 1;
+        });     
+        
+        //return array() List ListeJalonDate En Cadrage
+        $repository = $this->getDoctrine()->getManager()->getRepository('NIPAProjetBundle:ProjetListeJalonDate');
+        $listProjetListeJalonDateEnCadrage = $repository->getJalonDateProjetEnCadrage($projet);     
+        
+        //return array() List ListeJalonDate En Conception
+        $repository = $this->getDoctrine()->getManager()->getRepository('NIPAProjetBundle:ProjetListeJalonDate');
+        $listProjetListeJalonDateEnConception = $repository->getJalonDateProjetEnConception($projet);    
+        
+        //return array() List ListeJalonDate En Realisation
+        $repository = $this->getDoctrine()->getManager()->getRepository('NIPAProjetBundle:ProjetListeJalonDate');
+        $listProjetListeJalonDateEnRealisation = $repository->getJalonDateProjetEnRealisation($projet);    
+        
+        //return array() List ListeLivrable En Cadrage
+        $repository = $this->getDoctrine()->getManager()->getRepository('NIPAProjetBundle:ProjetListeLivrable');
+        $listProjetListeLivrableEnCadrage = $repository->getLivrableProjetEnCadrage($projet);     
+        
+        //return array() List ListeLivrable En Conception
+        $repository = $this->getDoctrine()->getManager()->getRepository('NIPAProjetBundle:ProjetListeLivrable');
+        $listProjetListeLivrableEnConception = $repository->getLivrableProjetEnConception($projet); 
+        
+        //return array() List ListeLivrable En Realisation
+        $repository = $this->getDoctrine()->getManager()->getRepository('NIPAProjetBundle:ProjetListeLivrable');
+        $listProjetListeLivrableEnRealisation = $repository->getLivrableProjetEnRealisation($projet); 
+        
+        //\Doctrine\Common\Util\Debug::dump($listProjetListeJalonDateEnRealisation);
+        
+        /*************************************************/              
+        
+        
         $form->handleRequest($request);
         if($form->isSubmitted()) {                                   
    
@@ -643,7 +764,6 @@ class ProjetController extends Controller
             //}   
         }        
         
-        
         //return array();
         return $this->render('NIPAProjetBundle:Projet:projet.html.twig', array(
             'user' => $user, 
@@ -665,7 +785,14 @@ class ProjetController extends Controller
             'listProjetPhaseEtapeRealisation' => $listProjetPhaseEtapeRealisation,
             'listProjetLivrable' => $listProjetLivrable,
             'listProjetJalonDate' => $listProjetJalonDate,
-            'listProjetInstance' => $listProjetInstance
+            'listProjetInstance' => $listProjetInstance,
+            'listProjetListeInstance' => $listProjetListeInstance,
+            'listProjetListeJalonDateEnCadrage' => $listProjetListeJalonDateEnCadrage,
+            'listProjetListeJalonDateEnConception' => $listProjetListeJalonDateEnConception,
+            'listProjetListeJalonDateEnRealisation' => $listProjetListeJalonDateEnRealisation,
+            'listProjetListeLivrableEnCadrage' => $listProjetListeLivrableEnCadrage,
+            'listProjetListeLivrableEnConception' => $listProjetListeLivrableEnConception,
+            'listProjetListeLivrableEnRealisation' => $listProjetListeLivrableEnRealisation
             )); 
     }     
   
@@ -840,131 +967,138 @@ class ProjetController extends Controller
                 
                 //On regard s'il existe déjà des données (Livrables)
                 $repository = $this->getDoctrine()->getManager()->getRepository('NIPAProjetBundle:ProjetListeLivrable');
-                $listProjetLivrable = $repository->findByProjet($projet); 
+                $listProjetLivrable = $repository->getLivrableProjetEnRealisation($projet); 
              
                 //On regard s'il existe déjà des données (Jalons)
                 $repository = $this->getDoctrine()->getManager()->getRepository('NIPAProjetBundle:ProjetListeJalonDate');
-                $listProjetJalonDate = $repository->findByProjet($projet); 
+                $listProjetJalonDate = $repository->getJalonDateProjetEnRealisation($projet); 
                 
                 $em = $this->getDoctrine()->getEntityManager();
 
                 /***********/               
                 // LIVRABLES
-                if(sizeof($listProjetLivrable) != 0)
+                if(isset($data["Livrable"]))
                 {
-                    // On supprime tout?
-                    foreach($listProjetLivrable as $livrable)
+                    if(sizeof($listProjetLivrable) != 0)
                     {
-                        $em->remove($livrable);
+                        // On supprime tout?
+                        foreach($listProjetLivrable as $livrable)
+                        {
+                            $em->remove($livrable);
+                            $em->flush();
+                        }
+                    }
+
+                    $i = 0;
+                    foreach ($data["Livrable"]["id"] as $liv)
+                    {
+                        $stepLivrable = new ProjetListeLivrable;
+
+                        // On récupère le livrable correspondant à l'id
+                        $id = $data["Livrable"]["id"][$i];
+                        $repository = $this->getDoctrine()->getManager()->getRepository('NIPAProjetBundle:ProjetLivrable');            
+                        $livrable = $repository->findOneBy(array('id' => $id));
+
+                        $stepLivrable->setLivrable($livrable);
+                        $stepLivrable->setProjet($projet);
+
+                        //Date Prev
+                        if($data["Livrable"]["datePrev"][$i] != "")
+                        {
+                            $var = $data["Livrable"]["datePrev"][$i];
+                            $date = str_replace('/', '-', $var);
+                            $format = date('Y-m-d', strtotime($date));     
+                            $datePrev = new \DateTime($format);
+                            $stepLivrable->setDatePrev($datePrev);
+                        }
+
+                        //Date Rev
+                        if($data["Livrable"]["dateRev"][$i] != "")
+                        {
+                            $var = $data["Livrable"]["dateRev"][$i];
+                            $date = str_replace('/', '-', $var);
+                            $format = date('Y-m-d', strtotime($date));     
+                            $dateRev = new \DateTime($format);
+                            $stepLivrable->setDateRev($dateRev);
+                        }
+
+                        // Si checkbox validation coché
+                        if(isset($data["Livrable"]["validation"]["Ref".$id]))
+                        {
+                            $stepLivrable->setValidationEffective(1);
+                        }
+
+                        $stepLivrable->setRemarques($data["Livrable"]["remarques"][$i]);
+
+                        $em->persist($stepLivrable);
                         $em->flush();
-                    }
-                }
-               
-                $i = 0;
-                foreach ($data["Livrable"]["id"] as $liv)
-                {
-                    $stepLivrable = new ProjetListeLivrable;
 
-                    // On récupère le livrable correspondant à l'id
-                    $id = $data["Livrable"]["id"][$i];
-                    $repository = $this->getDoctrine()->getManager()->getRepository('NIPAProjetBundle:ProjetLivrable');            
-                    $livrable = $repository->findOneBy(array('id' => $id));
-
-                    $stepLivrable->setLivrable($livrable);
-                    $stepLivrable->setProjet($projet);
-
-                    //Date Prev
-                    if($data["Livrable"]["datePrev"][$i] != "")
-                    {
-                        $var = $data["Livrable"]["datePrev"][$i];
-                        $date = str_replace('/', '-', $var);
-                        $format = date('Y-m-d', strtotime($date));     
-                        $datePrev = new \DateTime($format);
-                        $stepLivrable->setDatePrev($datePrev);
-                    }
-
-                    //Date Rev
-                    if($data["Livrable"]["dateRev"][$i] != "")
-                    {
-                        $var = $data["Livrable"]["dateRev"][$i];
-                        $date = str_replace('/', '-', $var);
-                        $format = date('Y-m-d', strtotime($date));     
-                        $dateRev = new \DateTime($format);
-                        $stepLivrable->setDateRev($dateRev);
-                    }
-
-                    // Si checkbox validation coché
-                    if(isset($data["Livrable"]["validation"]["Ref".$id]))
-                    {
-                        $stepLivrable->setValidationEffective($data["Livrable"]["validation"]["Ref".$id]);
-                    }
-
-                    $stepLivrable->setRemarques($data["Livrable"]["remarques"][$i]);
-
-                    $em->persist($stepLivrable);
-                    $em->flush();
-
-                    $i++;
-                }     
-
-                /***********/               
-                // JALONS
-                if(sizeof($listProjetJalonDate) != 0)
-                {
-                    // On supprime tout?
-                    foreach($listProjetJalonDate as $jalon)
-                    {
-                        $em->remove($jalon);
-                        $em->flush();
-                    }
+                        $i++;
+                    }     
                 }
                 
-                $j = 0;
-                foreach ($data["Jalon"]["id"] as $jal)
+                /***********/               
+                // JALONS
+                
+                if(isset($data["Jalon"]))
                 {
-                    $stepJalon = new ProjetListeJalonDate();
-
-                    // On récupère le Jalon correspondant à l'id
-                    $id = $data["Jalon"]["id"][$j];
-                    $repository = $this->getDoctrine()->getManager()->getRepository('NIPAProjetBundle:ProjetJalonDate');            
-                    $jalon = $repository->findOneBy(array('id' => $id));
-
-                    $stepJalon->setJalonDate($jalon);
-                    $stepJalon->setProjet($projet);
-
-                    //Date Prev
-                    if($data["Jalon"]["datePrev"][$j] != "")
+                    if(sizeof($listProjetJalonDate) != 0)
                     {
-                        $var = $data["Jalon"]["datePrev"][$j];
-                        $date = str_replace('/', '-', $var);
-                        $format = date('Y-m-d', strtotime($date));     
-                        $datePrev = new \DateTime($format);
-                        $stepJalon->setDatePrev($datePrev);
+                        // On supprime tout?
+                        foreach($listProjetJalonDate as $jalon)
+                        {
+                            $em->remove($jalon);
+                            $em->flush();
+                        }
                     }
 
-                    //Date Rev
-                    if($data["Jalon"]["dateRev"][$j] != "")
+                    $j = 0;
+                    foreach ($data["Jalon"]["id"] as $jal)
                     {
-                        $var = $data["Jalon"]["dateRev"][$j];
-                        $date = str_replace('/', '-', $var);
-                        $format = date('Y-m-d', strtotime($date));     
-                        $dateRev = new \DateTime($format);
-                        $stepJalon->setDateRev($dateRev);
-                    }
+                        $stepJalon = new ProjetListeJalonDate();
 
-                    // Si checkbox validation coché
-                    if(isset($data["Jalon"]["validation"]["Ref".$id]))
-                    {
-                        $stepJalon->setValidationEffective($data["Jalon"]["validation"]["Ref".$id]);
-                    }
+                        // On récupère le Jalon correspondant à l'id
+                        $id = $data["Jalon"]["id"][$j];
+                        $repository = $this->getDoctrine()->getManager()->getRepository('NIPAProjetBundle:ProjetJalonDate');            
+                        $jalon = $repository->findOneBy(array('id' => $id));
 
-                    $stepJalon->setRemarques($data["Jalon"]["remarques"][$j]);
+                        $stepJalon->setJalonDate($jalon);
+                        $stepJalon->setProjet($projet);
 
-                    $em->persist($stepJalon);
-                    $em->flush();
+                        //Date Prev
+                        if($data["Jalon"]["datePrev"][$j] != "")
+                        {
+                            $var = $data["Jalon"]["datePrev"][$j];
+                            $date = str_replace('/', '-', $var);
+                            $format = date('Y-m-d', strtotime($date));     
+                            $datePrev = new \DateTime($format);
+                            $stepJalon->setDatePrev($datePrev);
+                        }
 
-                    $j++;
-                }   
+                        //Date Rev
+                        if($data["Jalon"]["dateRev"][$j] != "")
+                        {
+                            $var = $data["Jalon"]["dateRev"][$j];
+                            $date = str_replace('/', '-', $var);
+                            $format = date('Y-m-d', strtotime($date));     
+                            $dateRev = new \DateTime($format);
+                            $stepJalon->setDateRev($dateRev);
+                        }
+
+                        // Si checkbox validation coché
+                        if(isset($data["Jalon"]["validation"]["Ref".$id]))
+                        {
+                            $stepJalon->setValidationEffective(1);
+                        }
+
+                        $stepJalon->setRemarques($data["Jalon"]["remarques"][$j]);
+
+                        $em->persist($stepJalon);
+                        $em->flush();
+
+                        $j++;
+                    }   
+                }
                 
                 /***********/               
                 
@@ -979,8 +1113,484 @@ class ProjetController extends Controller
              }
 
         }    
-    
     }
     
+    
+    /**
+    *  UPDATE TTD (JALON+LIVRABLES) En Conception of a Projet
+    * 
+    */
+    public function updateEnConceptionAction($reference)    
+    {
+   
+        $request = $this->get('request');
+            
+        // On vérifie que l'objet existe
+        if(!$projet = $this->get('nipa_projet.projet_manager')->loadProjet($reference)) {
+            throw new NotFoundHttpException(
+                $this->get('translator')->trans('This projet does not exist.')
+            );
+        }
+        
+        /***************************************************************/        
+
+          // Form En Conception
+        $projetEnConception = new ProjetEtape;
+        $formEnConception = $this->get('form.factory')->create(new ProjetEnConceptionFormType(), $projetEnConception);
+         
+        /***************************************************************/        
+        
+        if ($request->isXmlHttpRequest()) {
+            //return new JsonResponse(array('message' => 'You can access this only using Ajax!'), 200);
+
+            $formEnConception->handleRequest($request);
+            if ('POST' == $request->getMethod()) { // Si on a posté le formulaire
+                
+                $data = $request->request->all();
+                //\Doctrine\Common\Util\Debug::dump($data);
+
+                //\Doctrine\Common\Util\Debug::dump($data["Livrable"]["id"]);
+                //\Doctrine\Common\Util\Debug::dump($data["Livrable"]["datePrev"]);
+                //\Doctrine\Common\Util\Debug::dump($data["Livrable"]["dateRev"]);
+                //\Doctrine\Common\Util\Debug::dump($data["Livrable"]["validation"]);
+                //\Doctrine\Common\Util\Debug::dump($data["Livrable"]["remarques"]);
+                
+                
+                //On regard s'il existe déjà des données (Livrables)
+                $repository = $this->getDoctrine()->getManager()->getRepository('NIPAProjetBundle:ProjetListeLivrable');
+                $listProjetLivrable = $repository->getLivrableProjetEnConception($projet); 
+             
+                //On regard s'il existe déjà des données (Jalons)
+                $repository = $this->getDoctrine()->getManager()->getRepository('NIPAProjetBundle:ProjetListeJalonDate');
+                $listProjetJalonDate = $repository->getJalonDateProjetEnConception($projet); 
+                
+                $em = $this->getDoctrine()->getEntityManager();
+
+                /***********/               
+                // LIVRABLES
+                if(isset($data["Livrable"]))
+                {
+                    if(sizeof($listProjetLivrable) != 0)
+                    {
+                        // On supprime tout?
+                        foreach($listProjetLivrable as $livrable)
+                        {
+                            $em->remove($livrable);
+                            $em->flush();
+                        }
+                    }
+
+                    $i = 0;
+                    foreach ($data["Livrable"]["id"] as $liv)
+                    {
+                        $stepLivrable = new ProjetListeLivrable;
+
+                        // On récupère le livrable correspondant à l'id
+                        $id = $data["Livrable"]["id"][$i];
+                        $repository = $this->getDoctrine()->getManager()->getRepository('NIPAProjetBundle:ProjetLivrable');            
+                        $livrable = $repository->findOneBy(array('id' => $id));
+
+                        $stepLivrable->setLivrable($livrable);
+                        $stepLivrable->setProjet($projet);
+
+                        //Date Prev
+                        if($data["Livrable"]["datePrev"][$i] != "")
+                        {
+                            $var = $data["Livrable"]["datePrev"][$i];
+                            $date = str_replace('/', '-', $var);
+                            $format = date('Y-m-d', strtotime($date));     
+                            $datePrev = new \DateTime($format);
+                            $stepLivrable->setDatePrev($datePrev);
+                        }
+
+                        //Date Rev
+                        if($data["Livrable"]["dateRev"][$i] != "")
+                        {
+                            $var = $data["Livrable"]["dateRev"][$i];
+                            $date = str_replace('/', '-', $var);
+                            $format = date('Y-m-d', strtotime($date));     
+                            $dateRev = new \DateTime($format);
+                            $stepLivrable->setDateRev($dateRev);
+                        }
+
+                        // Si checkbox validation coché
+                        if(isset($data["Livrable"]["validation"]["Ref".$id]))
+                        {
+                            $stepLivrable->setValidationEffective(1);
+                        }
+
+                        $stepLivrable->setRemarques($data["Livrable"]["remarques"][$i]);
+
+                        $em->persist($stepLivrable);
+                        $em->flush();
+
+                        $i++;
+                    }     
+                }
+                
+                /***********/               
+                // JALONS
+                
+                if(isset($data["Jalon"]))
+                {
+                    if(sizeof($listProjetJalonDate) != 0)
+                    {
+                        // On supprime tout?
+                        foreach($listProjetJalonDate as $jalon)
+                        {
+                            $em->remove($jalon);
+                            $em->flush();
+                        }
+                    }
+
+                    $j = 0;
+                    foreach ($data["Jalon"]["id"] as $jal)
+                    {
+                        $stepJalon = new ProjetListeJalonDate();
+
+                        // On récupère le Jalon correspondant à l'id
+                        $id = $data["Jalon"]["id"][$j];
+                        $repository = $this->getDoctrine()->getManager()->getRepository('NIPAProjetBundle:ProjetJalonDate');            
+                        $jalon = $repository->findOneBy(array('id' => $id));
+
+                        $stepJalon->setJalonDate($jalon);
+                        $stepJalon->setProjet($projet);
+
+                        //Date Prev
+                        if($data["Jalon"]["datePrev"][$j] != "")
+                        {
+                            $var = $data["Jalon"]["datePrev"][$j];
+                            $date = str_replace('/', '-', $var);
+                            $format = date('Y-m-d', strtotime($date));     
+                            $datePrev = new \DateTime($format);
+                            $stepJalon->setDatePrev($datePrev);
+                        }
+
+                        //Date Rev
+                        if($data["Jalon"]["dateRev"][$j] != "")
+                        {
+                            $var = $data["Jalon"]["dateRev"][$j];
+                            $date = str_replace('/', '-', $var);
+                            $format = date('Y-m-d', strtotime($date));     
+                            $dateRev = new \DateTime($format);
+                            $stepJalon->setDateRev($dateRev);
+                        }
+
+                        // Si checkbox validation coché
+                        if(isset($data["Jalon"]["validation"]["Ref".$id]))
+                        {
+                            $stepJalon->setValidationEffective(1);
+                        }
+
+                        $stepJalon->setRemarques($data["Jalon"]["remarques"][$j]);
+
+                        $em->persist($stepJalon);
+                        $em->flush();
+
+                        $j++;
+                    }   
+                }
+                
+                /***********/               
+                
+                $this->get('session')->getFlashBag()->add('success','Mise à jour des données');  
+
+                return new JsonResponse(array('message' => 'Success!'), 200);
+
+                $response = new JsonResponse(array('message' => 'Error'), 400);
+
+                return $response;   
+            
+             }
+
+        }    
+    }    
+    
+    
+  /**
+    *  UPDATE TTD (JALON+LIVRABLES) En Cadrage of a Projet
+    * 
+    */
+    public function updateEnCadrageAction($reference)    
+    {
+   
+        $request = $this->get('request');
+            
+        // On vérifie que l'objet existe
+        if(!$projet = $this->get('nipa_projet.projet_manager')->loadProjet($reference)) {
+            throw new NotFoundHttpException(
+                $this->get('translator')->trans('This projet does not exist.')
+            );
+        }
+        
+        /***************************************************************/        
+
+          // Form En Cadrage
+        $projetEnCadrage = new ProjetEtape;
+        $formEnCadrage = $this->get('form.factory')->create(new ProjetEnCadrageFormType(), $projetEnCadrage);
+         
+        /***************************************************************/        
+        
+        if ($request->isXmlHttpRequest()) {
+            //return new JsonResponse(array('message' => 'You can access this only using Ajax!'), 200);
+
+            $formEnCadrage->handleRequest($request);
+            if ('POST' == $request->getMethod()) { // Si on a posté le formulaire
+                
+                $data = $request->request->all();
+                //\Doctrine\Common\Util\Debug::dump($data);
+
+                //\Doctrine\Common\Util\Debug::dump($data["Livrable"]["id"]);
+                //\Doctrine\Common\Util\Debug::dump($data["Livrable"]["datePrev"]);
+                //\Doctrine\Common\Util\Debug::dump($data["Livrable"]["dateRev"]);
+                //\Doctrine\Common\Util\Debug::dump($data["Livrable"]["validation"]);
+                //\Doctrine\Common\Util\Debug::dump($data["Livrable"]["remarques"]);
+                
+                
+                //On regard s'il existe déjà des données (Livrables)
+                $repository = $this->getDoctrine()->getManager()->getRepository('NIPAProjetBundle:ProjetListeLivrable');
+                $listProjetLivrable = $repository->getLivrableProjetEnCadrage($projet); 
+             
+                //On regard s'il existe déjà des données (Jalons)
+                $repository = $this->getDoctrine()->getManager()->getRepository('NIPAProjetBundle:ProjetListeJalonDate');
+                $listProjetJalonDate = $repository->getJalonDateProjetEnCadrage($projet); 
+                
+                $em = $this->getDoctrine()->getEntityManager();
+
+                /***********/               
+                // LIVRABLES
+                if(isset($data["Livrable"]))
+                {
+                    if(sizeof($listProjetLivrable) != 0)
+                    {
+                        // On supprime tout?
+                        foreach($listProjetLivrable as $livrable)
+                        {
+                            $em->remove($livrable);
+                            $em->flush();
+                        }
+                    }
+
+                    $i = 0;
+                    foreach ($data["Livrable"]["id"] as $liv)
+                    {
+                        $stepLivrable = new ProjetListeLivrable;
+
+                        // On récupère le livrable correspondant à l'id
+                        $id = $data["Livrable"]["id"][$i];
+                        $repository = $this->getDoctrine()->getManager()->getRepository('NIPAProjetBundle:ProjetLivrable');            
+                        $livrable = $repository->findOneBy(array('id' => $id));
+
+                        $stepLivrable->setLivrable($livrable);
+                        $stepLivrable->setProjet($projet);
+
+                        //Date Prev
+                        if($data["Livrable"]["datePrev"][$i] != "")
+                        {
+                            $var = $data["Livrable"]["datePrev"][$i];
+                            $date = str_replace('/', '-', $var);
+                            $format = date('Y-m-d', strtotime($date));     
+                            $datePrev = new \DateTime($format);
+                            $stepLivrable->setDatePrev($datePrev);
+                        }
+
+                        //Date Rev
+                        if($data["Livrable"]["dateRev"][$i] != "")
+                        {
+                            $var = $data["Livrable"]["dateRev"][$i];
+                            $date = str_replace('/', '-', $var);
+                            $format = date('Y-m-d', strtotime($date));     
+                            $dateRev = new \DateTime($format);
+                            $stepLivrable->setDateRev($dateRev);
+                        }
+
+                        // Si checkbox validation coché
+                        if(isset($data["Livrable"]["validation"]["Ref".$id]))
+                        {
+                            $stepLivrable->setValidationEffective(1);
+                        }
+
+                        $stepLivrable->setRemarques($data["Livrable"]["remarques"][$i]);
+
+                        $em->persist($stepLivrable);
+                        $em->flush();
+
+                        $i++;
+                    }     
+                }
+                
+                /***********/               
+                // JALONS
+                
+                if(isset($data["Jalon"]))
+                {
+                    if(sizeof($listProjetJalonDate) != 0)
+                    {
+                        // On supprime tout?
+                        foreach($listProjetJalonDate as $jalon)
+                        {
+                            $em->remove($jalon);
+                            $em->flush();
+                        }
+                    }
+
+                    $j = 0;
+                    foreach ($data["Jalon"]["id"] as $jal)
+                    {
+                        $stepJalon = new ProjetListeJalonDate();
+
+                        // On récupère le Jalon correspondant à l'id
+                        $id = $data["Jalon"]["id"][$j];
+                        $repository = $this->getDoctrine()->getManager()->getRepository('NIPAProjetBundle:ProjetJalonDate');            
+                        $jalon = $repository->findOneBy(array('id' => $id));
+
+                        $stepJalon->setJalonDate($jalon);
+                        $stepJalon->setProjet($projet);
+
+                        //Date Prev
+                        if($data["Jalon"]["datePrev"][$j] != "")
+                        {
+                            $var = $data["Jalon"]["datePrev"][$j];
+                            $date = str_replace('/', '-', $var);
+                            $format = date('Y-m-d', strtotime($date));     
+                            $datePrev = new \DateTime($format);
+                            $stepJalon->setDatePrev($datePrev);
+                        }
+
+                        //Date Rev
+                        if($data["Jalon"]["dateRev"][$j] != "")
+                        {
+                            $var = $data["Jalon"]["dateRev"][$j];
+                            $date = str_replace('/', '-', $var);
+                            $format = date('Y-m-d', strtotime($date));     
+                            $dateRev = new \DateTime($format);
+                            $stepJalon->setDateRev($dateRev);
+                        }
+
+                        // Si checkbox validation coché
+                        if(isset($data["Jalon"]["validation"]["Ref".$id]))
+                        {
+                            $stepJalon->setValidationEffective(1);
+                        }
+
+                        $stepJalon->setRemarques($data["Jalon"]["remarques"][$j]);
+
+                        $em->persist($stepJalon);
+                        $em->flush();
+
+                        $j++;
+                    }   
+                }
+                
+                /***********/               
+                
+                $this->get('session')->getFlashBag()->add('success','Mise à jour des données');  
+
+                return new JsonResponse(array('message' => 'Success!'), 200);
+
+                $response = new JsonResponse(array('message' => 'Error'), 400);
+
+                return $response;   
+            
+             }
+
+        }    
+    }    
+    
+    
+    /**
+    *  UPDATE TTD (Instances) of a Projet
+    * 
+    */
+    public function updateInstanceProjetAction($reference)    
+    {
+        $request = $this->get('request');
+            
+        // On vérifie que l'objet existe
+        if(!$projet = $this->get('nipa_projet.projet_manager')->loadProjet($reference)) {
+            throw new NotFoundHttpException(
+                $this->get('translator')->trans('This projet does not exist.')
+            );
+        }
+        
+        /***************************************************************/              
+        
+        if ($request->isXmlHttpRequest()) {
+
+            $data = $request->request->all();
+            
+            //\Doctrine\Common\Util\Debug::dump($data);
+
+            $em = $this->getDoctrine()->getEntityManager();
+
+            /***********/               
+            // INSTANCES
+
+            $stepInstance = new ProjetListeInstance;
+
+            // On récupère le livrable correspondant à l'id
+            $id = $data["id"];
+            $repository = $this->getDoctrine()->getManager()->getRepository('NIPAProjetBundle:DemandeInstance');            
+            $instance = $repository->findOneBy(array('id' => $id));
+
+            $stepInstance->setInstance($instance);
+            $stepInstance->setProjet($projet);
+            
+            //Date (Date Prev)
+            $var = $data["datePrev"];
+            $date = str_replace('/', '-', $var);
+            $format = date('Y-m-d', strtotime($date));     
+            $datePrev = new \DateTime($format);
+            $stepInstance->setDatePrev($datePrev);
+
+            $stepInstance->setValidationEffective($data["validation"]);
+            $stepInstance->setRemarques($data["remarques"]);
+            $stepInstance->setStatutInstance($data["statut"]);
+
+            $em->persist($stepInstance);
+            $em->flush();
+
+            /***********/               
+
+            $this->get('session')->getFlashBag()->add('success','Mise à jour des données');  
+
+            return new JsonResponse(array('message' => 'Success!'), 200);
+
+            $response = new JsonResponse(array('message' => 'Error'), 400);
+
+            return $response;   
+            
+        }    
+    }    
+    
+   /**
+    *  DELETE Instance of a Projet
+    * 
+    */
+    public function deleteInstanceProjetAction($reference)    
+    {
+        $request = $this->get('request');
+
+        if ($request->isXmlHttpRequest()) {
+            
+                $data = $request->request->all();
+                //\Doctrine\Common\Util\Debug::dump($data);
+       
+                $repository = $this->getDoctrine()->getManager()->getRepository('NIPAProjetBundle:ProjetListeInstance');
+                $entity = $repository->findOneBy(array('id' => $data["id"]));
+                
+                $em = $this->getDoctrine()->getManager();
+                $em->remove($entity);
+                $em->flush();
+                
+                $this->get('session')->getFlashBag()->set('success', "Suppression effectuée avec succès!");            
+                
+                return new JsonResponse(array('message' => 'Success!'), 200);
+
+                $response = new JsonResponse(array('message' => 'Error'), 400);
+
+                return $response; 
+        }
+    } 
     
 }

@@ -10,4 +10,35 @@ namespace NIPA\ProjetBundle\Repository;
  */
 class ProjetListeJalonDateRepository extends \Doctrine\ORM\EntityRepository
 {
+    
+    public function getJalonDateProjetEnCadrage($projet)
+    {
+        $query = $this->_em->createQuery('SELECT a FROM NIPAProjetBundle:ProjetListeJalonDate a JOIN a.jalonDate l JOIN l.refPhase r JOIN r.refEtape e WHERE a.projet = :projet AND e.nom = :etape');
+        $query->setParameter('projet', $projet);
+        $query->setParameter('etape', "En Cadrage");
+
+        // Utilisation de getSingleResult car la requête ne doit retourner qu'un seul résultat
+        return $query->getResult();
+    }    
+    
+    public function getJalonDateProjetEnConception($projet)
+    {
+        $query = $this->_em->createQuery('SELECT a FROM NIPAProjetBundle:ProjetListeJalonDate a JOIN a.jalonDate l JOIN l.refPhase r JOIN r.refEtape e WHERE a.projet = :projet AND e.nom = :etape');
+        $query->setParameter('projet', $projet);
+        $query->setParameter('etape', "En Conception");
+
+        // Utilisation de getSingleResult car la requête ne doit retourner qu'un seul résultat
+        return $query->getResult();
+    }  
+    
+        public function getJalonDateProjetEnRealisation($projet)
+    {
+        $query = $this->_em->createQuery('SELECT a FROM NIPAProjetBundle:ProjetListeJalonDate a JOIN a.jalonDate l JOIN l.refPhase r JOIN r.refEtape e WHERE a.projet = :projet AND e.nom = :etape');
+        $query->setParameter('projet', $projet);
+        $query->setParameter('etape', "En Réalisation");
+
+        // Utilisation de getSingleResult car la requête ne doit retourner qu'un seul résultat
+        return $query->getResult();
+    }      
+    
 }
