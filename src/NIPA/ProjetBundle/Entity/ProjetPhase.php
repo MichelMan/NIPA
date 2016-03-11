@@ -34,8 +34,8 @@ class ProjetPhase
      * @ORM\Column(name="Reference", type="string", length=50)
      */
     private $reference;
-
-
+    
+    
     /**
      * @ORM\ManyToOne(targetEntity="NIPA\ProjetBundle\Entity\ProjetEtape")
      */

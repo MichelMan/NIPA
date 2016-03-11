@@ -109,3 +109,11 @@ update_projet_instance:
 delete_projet_instance:
     path: projet/delete/instance/{reference}
     defaults: { _controller: NIPAProjetBundle:Projet:deleteInstanceProjet }
+
+add_projet_budget:
+    path: projet/add/budget/{reference}
+    defaults: { _controller: NIPAProjetBundle:Projet:addBudgetProjet }
+
+delete_projet_budget:
+    path: projet/delete/budget/{reference}
+    defaults: { _controller: NIPAProjetBundle:Projet:deleteBudgetProjet }

@@ -12,7 +12,7 @@
         {% endif %}
     {% endfor %}     
     
-    <h4 class=""><i class="fa fa-pencil-square fa-fw"></i> {{ 'Description & Enjeux Business'|trans }} </h4>        
+    <h4 class=""><i class="fa fa-pencil-square fa-fw"></i> {{ 'Description & Enjeux Business'|trans }}: {% if demande.referenceDemande %} {{ demande.nom }} {% endif %} </h4>        
 
     <div class="container">                   
             <div class="row col-md-13">

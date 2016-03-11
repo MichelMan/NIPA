@@ -48,7 +48,8 @@ class ProjetListeJalonDate
      * @ORM\Column(name="Remarques", type="string", length=2500, nullable=true)
      */
     private $remarques;
-
+    
+    
     /**
      * @ORM\ManyToOne(targetEntity="NIPA\ProjetBundle\Entity\ProjetJalonDate")
      * @ORM\JoinColumn(name="projet_JalonDate_id", referencedColumnName="id", onDelete="SET NULL")
@@ -167,6 +168,8 @@ class ProjetListeJalonDate
         return $this->remarques;
     }
 
+    
+    
     /**
      * Set jalonDate
      *

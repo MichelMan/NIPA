@@ -48,6 +48,7 @@ class ProjetListeLivrable
      * @ORM\Column(name="Remarques", type="string", length=2500, nullable=true)
      */
     private $remarques;
+
     
     /**
      * @ORM\ManyToOne(targetEntity="NIPA\ProjetBundle\Entity\ProjetLivrable")
@@ -167,7 +168,7 @@ class ProjetListeLivrable
         return $this->remarques;
     }
 
-   
+    
     /**
      * Set livrable
      *

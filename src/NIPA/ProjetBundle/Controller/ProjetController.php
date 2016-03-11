@@ -6,12 +6,14 @@ use NIPA\ProjetBundle\Form\Type\ProjetFormType;
 use NIPA\ProjetBundle\Form\Type\ProjetEnCadrageFormType;
 use NIPA\ProjetBundle\Form\Type\ProjetEnConceptionFormType;
 use NIPA\ProjetBundle\Form\Type\ProjetEnRealisationFormType;
+use NIPA\ProjetBundle\Form\Type\ProjetBudgetFormType;
 
 use NIPA\ProjetBundle\Entity\Projet;
 use NIPA\ProjetBundle\Entity\ProjetEtape;
 use NIPA\ProjetBundle\Entity\ProjetListeLivrable;
 use NIPA\ProjetBundle\Entity\ProjetListeInstance;
 use NIPA\ProjetBundle\Entity\ProjetListeJalonDate;
+use NIPA\ProjetBundle\Entity\ProjetBudget;
 
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
@@ -137,8 +139,26 @@ class ProjetController extends Controller
             return strnatcmp($a->getReference(), $b->getReference());
         }); 
         
+        /**********On récupère NB instance par phase Projet************/
+        
+        //En cadrage
+        $repository = $this->getDoctrine()->getManager()->getRepository('NIPAProjetBundle:DemandeInstance');
+        $countCadrage = $repository->getInstanceProjetCadrage();  
+        $countEtude = $repository->getInstanceProjetEtude();  
+        $countDeveloppement = $repository->getInstanceProjetDeveloppement();  
+        $countRecette = $repository->getInstanceProjetRecette();  
+        $countMEP = $repository->getInstanceProjetMEP();  
+        $countVSR = $repository->getInstanceProjetVSR();  
 
-        /************************************/
+       $countInstance = array();
+       $countInstance[0] = $countCadrage;
+       $countInstance[1] = $countEtude;
+       $countInstance[2] = $countDeveloppement;
+       $countInstance[3] = $countRecette;
+       $countInstance[4] = $countMEP;
+       $countInstance[5] = $countVSR;
+       
+       /************************************/
 
         //On récupère les interlocuteurMOA
         $repository = $this->getDoctrine()->getManager()->getRepository('NIPAProjetBundle:DemandeInterlocuteurMOA');
@@ -170,41 +190,7 @@ class ProjetController extends Controller
         $form = $this->get('form.factory')->create(new ProjetFormType(), $projet); // On bind l'objet à notre formulaire 
         
         /*************************************************/     
-       
-        //return array() List ListeInstance
-        $repository = $this->getDoctrine()->getManager()->getRepository('NIPAProjetBundle:ProjetListeInstance');
-        $listProjetListeInstance = $repository->findByProjet($projet);  
-        //On trie la liste 
-        usort($listProjetListeInstance, function($a, $b) {
-          return ($a->getDatePrev() < $b->getDatePrev()) ? -1 : 1;
-        });                     
-
-        //return array() List ListeJalonDate En Cadrage
-        $repository = $this->getDoctrine()->getManager()->getRepository('NIPAProjetBundle:ProjetListeJalonDate');
-        $listProjetListeJalonDateEnCadrage = $repository->getJalonDateProjetEnCadrage($projet);     
-        
-        //return array() List ListeJalonDate En Conception
-        $repository = $this->getDoctrine()->getManager()->getRepository('NIPAProjetBundle:ProjetListeJalonDate');
-        $listProjetListeJalonDateEnConception = $repository->getJalonDateProjetEnConception($projet);    
-        
-        //return array() List ListeJalonDate En Realisation
-        $repository = $this->getDoctrine()->getManager()->getRepository('NIPAProjetBundle:ProjetListeJalonDate');
-        $listProjetListeJalonDateEnRealisation = $repository->getJalonDateProjetEnRealisation($projet);    
-        
-        //return array() List ListeLivrable En Cadrage
-        $repository = $this->getDoctrine()->getManager()->getRepository('NIPAProjetBundle:ProjetListeLivrable');
-        $listProjetListeLivrableEnCadrage = $repository->getLivrableProjetEnCadrage($projet);     
-        
-        //return array() List ListeLivrable En Conception
-        $repository = $this->getDoctrine()->getManager()->getRepository('NIPAProjetBundle:ProjetListeLivrable');
-        $listProjetListeLivrableEnConception = $repository->getLivrableProjetEnConception($projet); 
-        
-        //return array() List ListeLivrable En Realisation
-        $repository = $this->getDoctrine()->getManager()->getRepository('NIPAProjetBundle:ProjetListeLivrable');
-        $listProjetListeLivrableEnRealisation = $repository->getLivrableProjetEnRealisation($projet);  
-        
-        /*************************************************/        
-        
+               
         //return array();
         return $this->render('NIPAProjetBundle:Projet:projet.html.twig', array(
             'user' => $user, 
@@ -227,13 +213,7 @@ class ProjetController extends Controller
             'listProjetLivrable' => $listProjetLivrable,
             'listProjetJalonDate' => $listProjetJalonDate,
             'listProjetInstance' => $listProjetInstance,
-            'listProjetListeInstance' => $listProjetListeInstance,
-            'listProjetListeJalonDateEnCadrage' => $listProjetListeJalonDateEnCadrage,
-            'listProjetListeJalonDateEnConception' => $listProjetListeJalonDateEnConception,
-            'listProjetListeJalonDateEnRealisation' => $listProjetListeJalonDateEnRealisation,
-            'listProjetListeLivrableEnCadrage' => $listProjetListeLivrableEnCadrage,
-            'listProjetListeLivrableEnConception' => $listProjetListeLivrableEnConception,
-            'listProjetListeLivrableEnRealisation' => $listProjetListeLivrableEnRealisation
+            'countInstance' => $countInstance
             )); 
     } 
     
@@ -305,6 +285,14 @@ class ProjetController extends Controller
         
         /************************************/
 
+         //return array() List 3 ETAPES
+        $repository = $this->getDoctrine()->getManager()->getRepository('NIPAProjetBundle:ProjetEtape');
+        $listProjetEtape = $repository->findAll();     
+        //On trie la liste
+        usort($listProjetEtape, function ($a, $b) {
+            return strnatcmp($a->getReference(), $b->getReference());
+        });         
+        
         //return array() List Phases en etape CADRAGE
         $repository = $this->getDoctrine()->getManager()->getRepository('NIPAProjetBundle:ProjetPhase');
         $listProjetPhaseEtapeCadrage = $repository->findByrefEtape("1");     
@@ -353,6 +341,25 @@ class ProjetController extends Controller
             return strnatcmp($a->getReference(), $b->getReference());
         });         
         
+        /**********On récupère NB instance par phase Projet************/
+        
+        //En cadrage
+        $repository = $this->getDoctrine()->getManager()->getRepository('NIPAProjetBundle:DemandeInstance');
+        $countCadrage = $repository->getInstanceProjetCadrage();  
+        $countEtude = $repository->getInstanceProjetEtude();  
+        $countDeveloppement = $repository->getInstanceProjetDeveloppement();  
+        $countRecette = $repository->getInstanceProjetRecette();  
+        $countMEP = $repository->getInstanceProjetMEP();  
+        $countVSR = $repository->getInstanceProjetVSR();  
+
+         $countInstance = array();
+         $countInstance[0] = $countCadrage;
+         $countInstance[1] = $countEtude;
+         $countInstance[2] = $countDeveloppement;
+         $countInstance[3] = $countRecette;
+         $countInstance[4] = $countMEP;
+         $countInstance[5] = $countVSR;        
+        
         /************************************/        
         //On récupère les interlocuteurMOA
         $repository = $this->getDoctrine()->getManager()->getRepository('NIPAProjetBundle:DemandeInterlocuteurMOA');
@@ -380,46 +387,14 @@ class ProjetController extends Controller
                 
         /************************************/        
         
+        // ProjetBudget Form
+        $ProjetBudget = new ProjetBudget();  
+        $formBudget = $this->createForm(new ProjetBudgetFormType(), $ProjetBudget);                
+        
         $projet = new Projet(); // On créé notre objet      
         $form = $this->get('form.factory')->create(new ProjetFormType(), $projet); // On bind l'objet à notre formulaire 
         
         /*************************************************/     
-       
-        //return array() List ListeInstance
-        $repository = $this->getDoctrine()->getManager()->getRepository('NIPAProjetBundle:ProjetListeInstance');
-        $listProjetListeInstance = $repository->findByProjet($projet);  
-        //On trie la liste 
-        usort($listProjetListeInstance, function($a, $b) {
-          return ($a->getDatePrev() < $b->getDatePrev()) ? -1 : 1;
-        });                    
-
-        //return array() List ListeJalonDate En Cadrage
-        $repository = $this->getDoctrine()->getManager()->getRepository('NIPAProjetBundle:ProjetListeJalonDate');
-        $listProjetListeJalonDateEnCadrage = $repository->getJalonDateProjetEnCadrage($projet);     
-        
-        //return array() List ListeJalonDate En Conception
-        $repository = $this->getDoctrine()->getManager()->getRepository('NIPAProjetBundle:ProjetListeJalonDate');
-        $listProjetListeJalonDateEnConception = $repository->getJalonDateProjetEnConception($projet);    
-        
-        //return array() List ListeJalonDate En Realisation
-        $repository = $this->getDoctrine()->getManager()->getRepository('NIPAProjetBundle:ProjetListeJalonDate');
-        $listProjetListeJalonDateEnRealisation = $repository->getJalonDateProjetEnRealisation($projet);    
-        
-        //return array() List ListeLivrable En Cadrage
-        $repository = $this->getDoctrine()->getManager()->getRepository('NIPAProjetBundle:ProjetListeLivrable');
-        $listProjetListeLivrableEnCadrage = $repository->getLivrableProjetEnCadrage($projet);     
-        
-        //return array() List ListeLivrable En Conception
-        $repository = $this->getDoctrine()->getManager()->getRepository('NIPAProjetBundle:ProjetListeLivrable');
-        $listProjetListeLivrableEnConception = $repository->getLivrableProjetEnConception($projet); 
-        
-        //return array() List ListeLivrable En Realisation
-        $repository = $this->getDoctrine()->getManager()->getRepository('NIPAProjetBundle:ProjetListeLivrable');
-        $listProjetListeLivrableEnRealisation = $repository->getLivrableProjetEnRealisation($projet); 
-        
-        
-        /*************************************************/              
-        
         
         $form->handleRequest($request);
         if($form->isSubmitted()) {                                   
@@ -501,6 +476,7 @@ class ProjetController extends Controller
             'formEnCadrage' => $formEnCadrage->createView(),
             'formEnConception' => $formEnConception->createView(),
             'formEnRealisation' => $formEnRealisation->createView(),
+            'formBudget' => $formBudget->createView(),
             'projet' => $projet, 
             'listDemande' => $listDemande,
             'listPortefeuille' => $listPortefeuille, 
@@ -510,19 +486,14 @@ class ProjetController extends Controller
             'listInterlocuteurMOA' => $listInterlocuteurMOA,
             'listPorteurMetier' => $listPorteurMetier,
             'listSDM' => $listSDM,
+            'listProjetEtape' => $listProjetEtape,
             'listProjetPhaseEtapeCadrage' => $listProjetPhaseEtapeCadrage,
             'listProjetPhaseEtapeConception' => $listProjetPhaseEtapeConception,
             'listProjetPhaseEtapeRealisation' => $listProjetPhaseEtapeRealisation,
             'listProjetLivrable' => $listProjetLivrable,
             'listProjetJalonDate' => $listProjetJalonDate,
             'listProjetInstance' => $listProjetInstance,
-            'listProjetListeInstance' => $listProjetListeInstance,
-            'listProjetListeJalonDateEnCadrage' => $listProjetListeJalonDateEnCadrage,
-            'listProjetListeJalonDateEnConception' => $listProjetListeJalonDateEnConception,
-            'listProjetListeJalonDateEnRealisation' => $listProjetListeJalonDateEnRealisation,
-            'listProjetListeLivrableEnCadrage' => $listProjetListeLivrableEnCadrage,
-            'listProjetListeLivrableEnConception' => $listProjetListeLivrableEnConception,
-            'listProjetListeLivrableEnRealisation' => $listProjetListeLivrableEnRealisation
+            'countInstance' => $countInstance
             )); 
     } 
     
@@ -600,6 +571,14 @@ class ProjetController extends Controller
         
         /************************************/
 
+         //return array() List 3 ETAPES
+        $repository = $this->getDoctrine()->getManager()->getRepository('NIPAProjetBundle:ProjetEtape');
+        $listProjetEtape = $repository->findAll();     
+        //On trie la liste
+        usort($listProjetEtape, function ($a, $b) {
+            return strnatcmp($a->getReference(), $b->getReference());
+        });      
+        
         //return array() List Phases en etape CADRAGE
         $repository = $this->getDoctrine()->getManager()->getRepository('NIPAProjetBundle:ProjetPhase');
         $listProjetPhaseEtapeCadrage = $repository->findByrefEtape("1");     
@@ -648,6 +627,25 @@ class ProjetController extends Controller
             return strnatcmp($a->getReference(), $b->getReference());
         }); 
         
+        /**********On récupère NB instance par phase Projet************/
+        
+        //En cadrage
+        $repository = $this->getDoctrine()->getManager()->getRepository('NIPAProjetBundle:DemandeInstance');
+        $countCadrage = $repository->getInstanceProjetCadrage();  
+        $countEtude = $repository->getInstanceProjetEtude();  
+        $countDeveloppement = $repository->getInstanceProjetDeveloppement();  
+        $countRecette = $repository->getInstanceProjetRecette();  
+        $countMEP = $repository->getInstanceProjetMEP();  
+        $countVSR = $repository->getInstanceProjetVSR();  
+
+        $countInstance = array();
+        $countInstance[0] = $countCadrage;
+        $countInstance[1] = $countEtude;
+        $countInstance[2] = $countDeveloppement;
+        $countInstance[3] = $countRecette;
+        $countInstance[4] = $countMEP;
+        $countInstance[5] = $countVSR;        
+        
         /************************************/
         //On récupère les interlocuteurMOA
         $repository = $this->getDoctrine()->getManager()->getRepository('NIPAProjetBundle:DemandeInterlocuteurMOA');
@@ -674,6 +672,14 @@ class ProjetController extends Controller
         $formEnRealisation = $this->get('form.factory')->create(new ProjetEnRealisationFormType(), $projetEnRealisation);
                 
         /************************************/
+        
+        // ProjetBudget Form
+        $ProjetBudget = new ProjetBudget();  
+        $formBudget = $this->createForm(new ProjetBudgetFormType(), $ProjetBudget);     
+        
+        //On tous les budgets
+        $repository = $this->getDoctrine()->getManager()->getRepository('NIPAProjetBundle:ProjetBudget');
+        $listProjetBudget = $repository->findByProjet($projet);           
         
         $form = $this->get('form.factory')->create(new ProjetFormType(), $projet); // On bind l'objet à notre formulaire 
         
@@ -771,6 +777,7 @@ class ProjetController extends Controller
             'formEnCadrage' => $formEnCadrage->createView(),
             'formEnConception' => $formEnConception->createView(),
             'formEnRealisation' => $formEnRealisation->createView(),
+            'formBudget' => $formBudget->createView(),
             'projet' => $projet, 
             'listDemande' => $listDemande,
             'listPortefeuille' => $listPortefeuille, 
@@ -780,6 +787,7 @@ class ProjetController extends Controller
             'listInterlocuteurMOA' => $listInterlocuteurMOA,
             'listPorteurMetier' => $listPorteurMetier,
             'listSDM' => $listSDM,
+            'listProjetEtape' => $listProjetEtape,
             'listProjetPhaseEtapeCadrage' => $listProjetPhaseEtapeCadrage,
             'listProjetPhaseEtapeConception' => $listProjetPhaseEtapeConception,
             'listProjetPhaseEtapeRealisation' => $listProjetPhaseEtapeRealisation,
@@ -792,7 +800,9 @@ class ProjetController extends Controller
             'listProjetListeJalonDateEnRealisation' => $listProjetListeJalonDateEnRealisation,
             'listProjetListeLivrableEnCadrage' => $listProjetListeLivrableEnCadrage,
             'listProjetListeLivrableEnConception' => $listProjetListeLivrableEnConception,
-            'listProjetListeLivrableEnRealisation' => $listProjetListeLivrableEnRealisation
+            'listProjetListeLivrableEnRealisation' => $listProjetListeLivrableEnRealisation,
+            'countInstance' => $countInstance,
+            'listProjetBudget' => $listProjetBudget
             )); 
     }     
   
@@ -1526,7 +1536,7 @@ class ProjetController extends Controller
             /***********/               
             // INSTANCES
 
-            $stepInstance = new ProjetListeInstance;
+            $stepInstance = new ProjetListeInstance();
 
             // On récupère le livrable correspondant à l'id
             $id = $data["id"];
@@ -1543,7 +1553,15 @@ class ProjetController extends Controller
             $datePrev = new \DateTime($format);
             $stepInstance->setDatePrev($datePrev);
 
-            $stepInstance->setValidationEffective($data["validation"]);
+            if($data["validation"] == true)
+            {
+                $stepInstance->setValidationEffective(1);
+            }
+            else
+            {
+                $stepInstance->setValidationEffective(0);
+            }
+            
             $stepInstance->setRemarques($data["remarques"]);
             $stepInstance->setStatutInstance($data["statut"]);
 
@@ -1593,4 +1611,94 @@ class ProjetController extends Controller
         }
     } 
     
+    
+    /**
+    *  ADD BUDGET of a Projet
+    * 
+    */
+    public function addBudgetProjetAction($reference)    
+    {
+        $request = $this->get('request');
+            
+        // On vérifie que l'objet existe
+        if(!$projet = $this->get('nipa_projet.projet_manager')->loadProjet($reference)) {
+            throw new NotFoundHttpException(
+                $this->get('translator')->trans('This projet does not exist.')
+            );
+        }
+        
+        /***************************************************************/              
+        
+        if ($request->isXmlHttpRequest()) {
+
+            $data = $request->request->all();
+            
+            //\Doctrine\Common\Util\Debug::dump($data);
+
+            $em = $this->getDoctrine()->getEntityManager();
+
+            /***********/               
+            // budget
+
+            $budget = new ProjetBudget();
+
+
+            $budget->setEtapeProjet($data["etape"]);
+            $budget->setProjet($projet);
+            
+            //Date (Date Prev)
+            $var = $data["date"];
+            $date = str_replace('/', '-', $var);
+            $format = date('Y-m-d', strtotime($date));     
+            $datePrev = new \DateTime($format);
+            $budget->setDate($datePrev);
+            
+            $budget->setMontant($data["montant"]);
+            $budget->setCommentaires($data["remarques"]);
+
+            $em->persist($budget);
+            $em->flush();
+
+            /***********/               
+
+            $this->get('session')->getFlashBag()->add('success','Ajout Budget effectué');  
+
+            return new JsonResponse(array('message' => 'Success!'), 200);
+
+            $response = new JsonResponse(array('message' => 'Error'), 400);
+
+            return $response;   
+            
+        }    
+    }      
+    
+    /**
+    *  DELETE Budget of a Projet
+    * 
+    */
+    public function deleteBudgetProjetAction($reference)    
+    {
+        $request = $this->get('request');
+
+        if ($request->isXmlHttpRequest()) {
+            
+                $data = $request->request->all();
+                //\Doctrine\Common\Util\Debug::dump($data);
+       
+                $repository = $this->getDoctrine()->getManager()->getRepository('NIPAProjetBundle:ProjetBudget');
+                $entity = $repository->findOneBy(array('id' => $data["id"]));
+                
+                $em = $this->getDoctrine()->getManager();
+                $em->remove($entity);
+                $em->flush();
+                
+                $this->get('session')->getFlashBag()->set('success', "Suppression effectuée avec succès!");            
+                
+                return new JsonResponse(array('message' => 'Success!'), 200);
+
+                $response = new JsonResponse(array('message' => 'Error'), 400);
+
+                return $response; 
+        }
+    }     
 }

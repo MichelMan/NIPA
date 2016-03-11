@@ -12,7 +12,7 @@
         {% endif %}
     {% endfor %}  
 
-    <h4 class=""><i class="fa fa-dollar fa-fw"></i> {{ 'Budget '|trans }} </h4>        
+    <h4 class=""><i class="fa fa-dollar fa-fw"></i> {{ 'Budget '|trans }}: {% if projet.referenceProjet %}{{ projet.titre }}{% endif %} </h4>        
         
         <div class="row col-md-13">
 
@@ -35,26 +35,28 @@
                     <table class="table table-hover" id="champs-table-resume-instance">
                         <thead>
                             <tr>
-                                <th class="text-center">Phase</th>
+                                <th class="text-center">Etape</th>
                                 <th class="text-center">Date</th>
-                                <th class="text-center">Montant</th>
+                                <th class="text-center">Montant (en k€)</th>
+                                <th class="text-center">Remarques</th>
                                 <th class="text-center">Action</th>     
                             </tr>
                         </thead>
                         <tbody>
                         {% if projet.referenceProjet %} 
-                            {# {% for instance in listDemandeInstance %} #}
+                            {% for budget in listProjetBudget %}
                                 <tr>
-                                    <td class="text-center"><h5><strong></strong></h5></td>
-                                    <td class="text-center"><h5></h5></td>
-                                    <td class="text-center"><h5></h5></td>
+                                    <td class="text-center"><h5><strong>{{ budget.etapeProjet }}</strong></h5></td>
+                                    <td class="text-center"><h5>{{ budget.date|date('d/m/Y') }}</h5></td>
+                                    <td class="text-center"><h5>{{ budget.montant }}</h5></td>
+                                    <td><h5><textarea class="form-control" cols=30 rows=3 id="Remarques" READONLY>{{ budget.commentaires }}</textarea></h5></td> 
                                     {% if droit != 0 %}
-                                        <td id="delete-instance" class="text-center"><a id="" class="btn btn-danger confirmModalBudget"><i class="glyphicon glyphicon-remove"></i> </a></td>                    
+                                        <td id="delete-instance" class="text-center"><a id="{{ budget.getId() }}" class="btn btn-danger confirmModalBudget"><i class="glyphicon glyphicon-remove"></i> </a></td>                    
                                     {% else %}
                                         <td id="delete-instance" class="text-center"><a id="" class="btn btn-danger confirmModalBudget" DISABLED><i class="glyphicon glyphicon-remove"></i> </a></td>                    
                                     {% endif %}
                                 </tr>
-                            {# {% endfor %} #}                        
+                            {% endfor %}                        
                         {% endif %}
                         </tbody>
                     </table>
@@ -62,36 +64,35 @@
                 </div> 
             </div>           
                 {% if projet.referenceProjet %} 
-                <form action="" method="post"  id="form_ajouter_budget" >
+                <form action="" method="post" {{ form_enctype(formBudget) }}  id="form_ajouter_budget" >
                     <table class="table" id="champs-table-budget-projet">
                         <thead>
                             <tr>
-                                <th class="text-center">Phase</th>
+                                <th class="text-center">Etape</th>
                                 <th class="text-center">Date</th>
-                                <th class="text-center">Montant</th>
+                                <th class="text-center">Montant (en k€)</th>
+                                <th class="text-center">Remarques</th>
                                 <th class="text-center">Ajouter</th>                    
                             </tr>
                         </thead>                   
                         <tbody>
                             <tr>
                                 <td>
-                                    <select class="form-control" id="phase" name="phase">
-                                      <option>PE</option>
-                                      <option>Etude</option>
-                                      <option>...</option>
+                                    <select class="form-control" id="etape" name="etape">
+                                      {% for etape in listProjetEtape %}
+                                        <option value="{{ etape.nom }}">{{ etape.nom }}</option>
+                                       {% endfor %}
                                     </select>                                
                                 </td>
                                 <td><input type='text' class="form-control input-md date textinput" id='date' name="date" style="text-align:center;" required="true" /></td>
                                 <td><input type="number" min="0" step="0.01" data-number-to-fixed="2" data-number-stepfactor="100" id="montant" placeholder="Montant" class="form-control input-md textinput currency" name="montant" required="true" style="text-align:center;"></td>
+                                <td class="text-center"><textarea class="form-control input-md" rows="2" cols="30" id="remarques" placeholder="..." name="remarques"></textarea></td>
                                 {% if droit != 0 %}
-                                    <td class="text-center"><button type="submit" class="btn btn-success" id="add-budget"><i class="glyphicon glyphicon-plus"></i></button></td>
+                                    <td class="text-center"><button type="submit" class="btn btn-success" id="add-budget"><i class="glyphicon glyphicon-check"></i></button></td>
                                 {% else %}
-                                    <td class="text-center"><button type="submit" class="btn btn-success" id="add-budget" DISABLED><i class="glyphicon glyphicon-plus"></i></button></td>
+                                    <td class="text-center"><button type="submit" class="btn btn-success" id="add-budget" DISABLED><i class="glyphicon glyphicon-check"></i></button></td>
                                 {% endif %}
                             </tr>   
-                            {# Pour l'erreur: "Le jeton CSRF est invalide" 
-                            {{ form_widget(form._token) }}        
-                            {{form_errors(form)}} #}
                         </tbody>   
                     </table>
                 </form>    
@@ -114,17 +115,17 @@
     
     $(function() {
 
-        $("#form_ajouter_instance").submit(function(){ 
-        
+        $("#form_ajouter_budget").submit(function(){ 
+                        
             $.ajax({
                 type: 'post',
-                url: "{# {% if demande.referenceDemande %}{{ path('demande_add_instance',{'reference': demande.referenceDemande}) }}{% endif %} #}",
-                data: $('#form_ajouter_instance').serialize(),
+                url: "{% if projet.referenceProjet %}{{ path('add_projet_budget',{'reference': projet.referenceProjet}) }}{% endif %}",
+                data: $('#form_ajouter_budget').serialize(),
                 success: function()
                 {
-                    alert("Ajout5 effectué avec succès! (TEST)");
+                    alert("Ajout10 effectué avec succès! (TEST)");
                     var url = document.location.href;
-                    $(location).attr('href',url+"#instances");                 
+                    $(location).attr('href',url+"#budget");                 
                     location.reload();        
                 },
                 error: function(e) {
@@ -144,11 +145,11 @@
         //{    
             $(this).parent().remove();      
 
-            $.post("{# {% if demande.referenceDemande %}{{ path('demande_delete_instance',{'reference': demande.referenceDemande}) }}{% endif %} #}", {id: id})
+            $.post("{% if projet.referenceProjet %}{{ path('delete_projet_budget',{'reference': projet.referenceProjet}) }}{% endif %}", {id: id})
               .done(function(data) {
                 alert("Suppression effectuée avec succès!");
                 var url = document.location.href;
-                $(location).attr('href',url+"#instances");                
+                $(location).attr('href',url+"#budget");                
                 location.reload();
             });
         //}

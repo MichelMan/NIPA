@@ -12,7 +12,7 @@
         {% endif %}
     {% endfor %}     
     
-    <h4 class=""><i class="fa fa-pencil-square fa-fw"></i> {{ 'Informations Projet'|trans }} </h4>        
+    <h4 class=""><i class="fa fa-pencil-square fa-fw"></i> {{ 'Informations Projet'|trans }}: {% if projet.referenceProjet %}{{ projet.titre }}{% endif %}</h4>        
 
     <div class="container">                   
             <div class="row col-md-13">

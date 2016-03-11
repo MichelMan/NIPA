@@ -36,6 +36,14 @@ class ProjetJalonDate
     private $reference;
 
     /**
+     * @var string
+     *
+     * @ORM\Column(name="Description", type="string", length=2500, nullable= true)
+     */
+    private $description;    
+    
+    
+    /**
      * @ORM\ManyToOne(targetEntity="NIPA\ProjetBundle\Entity\ProjetPhase")
      */
     private $refPhase;
@@ -99,6 +107,33 @@ class ProjetJalonDate
         return $this->reference;
     }
 
+
+    /**
+     * Set description
+     *
+     * @param string $description
+     *
+     * @return ProjetJalonDate
+     */
+    public function setDescription($description)
+    {
+        $this->description = $description;
+
+        return $this;
+    }
+
+    /**
+     * Get description
+     *
+     * @return string
+     */
+    public function getDescription()
+    {
+        return $this->description;
+    }    
+        
+    
+    
     /**
      * Set refPhase
      *

@@ -45,7 +45,7 @@
     {% endfor %}     
     
     {% if demande.referenceDemande %}                
-        <h4 class=""><span class='glyphicon glyphicon-edit'></span> {{ 'Mise à jour Demande'|trans }} </h4>            
+        <h4 class=""><span class='glyphicon glyphicon-edit'></span> {{ 'Mise à jour Demande'|trans }}: {{ demande.nom }}</h4>            
     {% else %}
         <h4 class=""><span class='glyphicon glyphicon-plus-sign'></span> {{ 'Nouvelle Demande'|trans }} </h4>        
     {% endif %}      

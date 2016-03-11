@@ -18,7 +18,7 @@
         {% endif %}
     {% endfor %}    
     
-    <h4 class=""><span class='glyphicon glyphicon-usd'></span> {{ 'Budget actuel '|trans }} </h4>        
+    <h4 class=""><span class='glyphicon glyphicon-usd'></span> {{ 'Budget actuel '|trans }}: {% if demande.referenceDemande %} {{ demande.nom }} {% endif %} </h4>        
         
     <div class="container">                   
 
