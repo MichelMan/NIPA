@@ -680,6 +680,10 @@ class ProjetController extends Controller
         //On tous les budgets
         $repository = $this->getDoctrine()->getManager()->getRepository('NIPAProjetBundle:ProjetBudget');
         $listProjetBudget = $repository->findByProjet($projet);           
+        // On trie les budgets dans l'ordre CHRONO par date
+        usort($listProjetBudget, function($a, $b) {
+          return ($a->getDate() > $b->getDate()) ? -1 : 1;
+        });        
         
         $form = $this->get('form.factory')->create(new ProjetFormType(), $projet); // On bind l'objet à notre formulaire 
         
@@ -690,7 +694,7 @@ class ProjetController extends Controller
         $listProjetListeInstance = $repository->findByProjet($projet);  
         //On trie la liste 
         usort($listProjetListeInstance, function($a, $b) {
-          return ($a->getDatePrev() < $b->getDatePrev()) ? -1 : 1;
+          return ($a->getDatePrev() > $b->getDatePrev()) ? -1 : 1;
         });     
         
         //return array() List ListeJalonDate En Cadrage

@@ -188,6 +188,28 @@ class Projet
     private $lotissement;
 
     /**
+     * @var string
+     *
+     * @ORM\Column(name="phaseProjetEnCours", type="string", length=25, nullable=true)
+     */
+    private $phaseProjetEnCours;
+    
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="BudgetEnCours", type="float", nullable=true)
+     */
+    private $BudgetEnCours;
+    
+    /**
+     * @var date
+     *
+     * @ORM\Column(name="dateMEP", type="date", nullable=true)
+     */
+    private $dateMEP;
+    
+    
+    /**
      * Get id
      *
      * @return integer
@@ -773,6 +795,78 @@ class Projet
     public function getLotissement()
     {
         return $this->lotissement;
+    }
+    
+    /**
+     * Get phaseProjetEnCours
+     *
+     * @return string
+     */
+    public function getPhaseProjetEnCours()
+    {
+        return $this->phaseProjetEnCours;
+    }
+
+    /**
+     * Set phaseProjetEnCours
+     *
+     * @param string $phaseProjetEnCours
+     *
+     * @return Projet
+     */
+    public function setPhaseProjetEnCours($phaseProjetEnCours)
+    {
+        $this->phaseProjetEnCours = $phaseProjetEnCours;
+
+        return $this;
+    }
+    
+    /**
+     * Get BudgetEnCours
+     *
+     * @return float
+     */
+    public function getBudgetEnCours()
+    {
+        return $this->BudgetEnCours;
+    }
+
+    /**
+     * Set BudgetEnCours
+     *
+     * @param float $BudgetEnCours
+     *
+     * @return Projet
+     */
+    public function setBudgetEnCours($BudgetEnCours)
+    {
+        $this->BudgetEnCours = $BudgetEnCours;
+
+        return $this;
+    }
+    
+    /**
+     * Get dateMEP
+     *
+     * @return date
+     */
+    public function getDateMEP()
+    {
+        return $this->dateMEP;
+    }
+
+    /**
+     * Set dateMEP
+     *
+     * @param date $dateMEP
+     *
+     * @return Projet
+     */
+    public function setDateMEP($dateMEP)
+    {
+        $this->dateMEP = $dateMEP;
+
+        return $this;
     }
     
 }

@@ -157,7 +157,7 @@ class PortefeuilleController extends Controller
         // On trie les budgets prev dans l'ordre CHRONO
         $listTriEnveloppePrev = $listPortefeuilleEnveloppePrev;        
         usort($listTriEnveloppePrev, function($a, $b) {
-          return ($a->getDate() < $b->getDate()) ? -1 : 1;
+          return ($a->getDate() > $b->getDate()) ? -1 : 1;
         });
         /*************************************************/
           
@@ -316,7 +316,7 @@ class PortefeuilleController extends Controller
         // On trie les budgets prev dans l'ordre CHRONO
         $listTriEnveloppePrev = $listPortefeuilleEnveloppePrev;        
         usort($listTriEnveloppePrev, function($a, $b) {
-          return ($a->getDate() < $b->getDate()) ? -1 : 1;
+          return ($a->getDate() > $b->getDate()) ? -1 : 1;
         });
         /*************************************************/
           
@@ -470,7 +470,7 @@ class PortefeuilleController extends Controller
         // On trie les budgets prev dans l'ordre CHRONO
         $listTriEnveloppePrev = $listPortefeuilleEnveloppePrev;        
         usort($listTriEnveloppePrev, function($a, $b) {
-          return ($a->getDate() < $b->getDate()) ? -1 : 1;
+          return ($a->getDate() > $b->getDate()) ? -1 : 1;
         });
         /*************************************************/
           
@@ -615,7 +615,7 @@ class PortefeuilleController extends Controller
         // On trie les budgets prev dans l'ordre CHRONO
         $listTriEnveloppePrev = $listPortefeuilleEnveloppePrev;        
         usort($listTriEnveloppePrev, function($a, $b) {
-          return ($a->getDate() < $b->getDate()) ? -1 : 1;
+          return ($a->getDate() > $b->getDate()) ? -1 : 1;
         });
         /*************************************************/
           

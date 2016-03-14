@@ -3,7 +3,7 @@
 {% block body %}
 
     <style>
-        #table_texte,#textinput, .textinput, h4{
+        #table_texte,#textinput, .textinput, h4.panel-title{
         text-align:center;
         }       
         
@@ -26,14 +26,16 @@
         {% endif %}
     {% endfor %}    
     
+    <h4><span class='glyphicon glyphicon-usd'></span> {{ 'Budget'|trans }}: {% if portefeuille.referencePortefeuille %} {{ portefeuille.nom }} {% endif %} </h4>        
+    
     <div class="row col-md-13">
          
         <!-- PANEL -->          
-        <div class="panel panel-success">
+        <div class="panel panel-primary">
             <div class="panel-heading">
                 {% set counter = 0 %}
                 {% if portefeuille.referencePortefeuille and listTriEnveloppePrev|length > 0 %}  
-                    {% set counter = listTriEnveloppePrev[listPortefeuilleEnveloppePrev|length-1].montant %}
+                    {% set counter = listTriEnveloppePrev[0].montant %}
                 {% endif %}                
                 <h3 class="panel-title">Budget prévisionnel: {{ counter|number_format(2, ',', ' ') }} k€ </h3>
                 <div class="pull-right">              
@@ -116,7 +118,7 @@
     <div class="row col-md-13">
         
         <!-- PANEL -->          
-        <div class="panel panel-success">
+        <div class="panel panel-primary">
             <div class="panel-heading">
                 {% set counter2 = 0 %}
                 {% if portefeuille.referencePortefeuille %}  

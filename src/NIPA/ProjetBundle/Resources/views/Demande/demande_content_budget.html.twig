@@ -18,7 +18,7 @@
         {% endif %}
     {% endfor %}    
     
-    <h4 class=""><span class='glyphicon glyphicon-usd'></span> {{ 'Budget actuel '|trans }}: {% if demande.referenceDemande %} {{ demande.nom }} {% endif %} </h4>        
+    <h4 class=""><span class='glyphicon glyphicon-usd'></span> {{ 'Budget actuel'|trans }}: {% if demande.referenceDemande %} {{ demande.nom }} {% endif %} </h4>        
         
     <div class="container">                   
 
@@ -55,7 +55,7 @@
                     <table class="table table-hover" id="champs-table-resume-budget">
                         <thead>
                             <tr>
-                                <th>Année</th>
+                                <th>Portefeuille</th>
                                 <th>Révisé le</th>
                                 <th>Montant (en k€)</th>
                                 <th class="text-center">Commentaires</th>
@@ -88,7 +88,7 @@
                     <table class="table" id="champs-table-budget-add">
                         <thead>
                             <tr>
-                                <th class="text-center">Année</th>
+                                <th class="text-center row col-sm-3">Portefeuille</th>
                                 <th class="text-center">Révisé le</th>
                                 <th class="text-center">Montant (en k€)</th>
                                 <th class="text-center">Commentaires</th>

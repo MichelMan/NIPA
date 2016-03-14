@@ -18,7 +18,7 @@
         {% endif %}
     {% endfor %}  
 
-    <h4 class=""><i class="fa fa-users fa-fw"></i> {{ 'Instances '|trans }}: {% if demande.referenceDemande %} {{ demande.nom }} {% endif %} </h4>        
+    <h4 class=""><i class="fa fa-users fa-fw"></i> {{ 'Instances'|trans }}: {% if demande.referenceDemande %} {{ demande.nom }} {% endif %} </h4>        
         
         <div class="row col-md-13">
 
@@ -29,7 +29,7 @@
                         Informations sur les instances passées
                     </h3>
                     <div class="pull-right">  
-                        {% if demande.referenceDemande %} Dernière instance: <strong> {{listDemandeInstance ? listDemandeInstance[listDemandeInstance|length-1].getInstance().getNom() }} </strong> | Statut: <strong> {{listDemandeInstance ? listDemandeInstance[listDemandeInstance|length-1].getStatut().getNom() }} </strong>{% endif %}
+                        {% if demande.referenceDemande %} Dernière instance: <strong> {{listDemandeInstance ? listDemandeInstance[0].getInstance().getNom() }} </strong> | Statut: <strong> {{listDemandeInstance ? listDemandeInstance[listDemandeInstance|length-1].getStatut().getNom() }} </strong>{% endif %}
                         <span data-toggle="collapse" data-target="#collapseInstances" class="clickable collapsed" title="Afficher détails" data-container="body">
                             <i class="glyphicon glyphicon-plus"></i>
                         </span>
@@ -93,8 +93,8 @@
                         </thead>                   
                         <tbody>
                             <tr>
-                                <td>{{ form_widget(formInstance.instance) }}</td>
-                                <td>{{ form_widget(formInstance.datePrev, { 'attr': {'class': 'datePrev textcenter'} }) }}</td>
+                                <td class="text-center row col-sm-2">{{ form_widget(formInstance.instance) }}</td>
+                                <td class="text-center row col-sm-2">{{ form_widget(formInstance.datePrev, { 'attr': {'class': 'datePrev textcenter'} }) }}</td>
                                 {#<td>{{ form_widget(formInstance.dateRev, { 'attr': {'class': 'dateRev textcenter'} }) }}</td>
                                 <td class="text-center">{{ form_widget(formInstance.validationEffective) }}</td>#}
                                 <td>{{ form_widget(formInstance.remarques) }}</td>

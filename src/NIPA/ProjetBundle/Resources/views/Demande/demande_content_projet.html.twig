@@ -10,7 +10,18 @@
                 {% set droit = droit + 1 %}  
             {% endif %}    
         {% endif %}
-    {% endfor %}      
+    {% endfor %}     
+    
+    {# NB LOTS PROJETS (SANS LES SUSPENDUS ET ANNULES) #}
+    {% if listProjet is defined %}
+        {% set lot = 0 %}
+        {% for projet in listProjet %}
+            {% if projet.annuler == 0 and projet.suspendre == 0 %}
+                {% set lot = lot + 1 %}
+            {% endif %}
+        {% endfor %}
+    {% endif %}
+    
     
         <h4 class=""><span class='glyphicon glyphicon-list-alt'></span> {{ 'Portefeuille(s) & Projet(s)'|trans }}: {% if demande.referenceDemande %} {{ demande.nom }} {% endif %} </h4>        
  
@@ -88,7 +99,11 @@
                     <div class="panel-heading" id="GDD">
                         <h5 class="panel-title"> Informations liées au(x) Projet(s)</h5>
                         <div class="pull-right">  
-                            {% if demande.referenceDemande %} <strong> 0 Projet(s) associé(s) </strong> {% endif %}
+                            {% if listProjet is defined %}
+                                <strong> {{ listProjet|length }} Projet(s) associé(s) </strong> 
+                            {%else%}
+                                <strong> 0 Projet(s) associé(s) </strong> 
+                            {% endif %}
                             <span data-toggle="collapse" data-target="#collapseInfoProjet" class="clickable collapsed" title="Afficher détails" data-container="body">
                                 <i class="glyphicon glyphicon-plus"></i>
                             </span>
@@ -102,14 +117,22 @@
                             <thead>
                                 <tr>
                                     <th class="text-center">Σ  Budgets Projet</th>
-                                    <th class="text-center">Nombre de lots</th>
+                                    <th></th>
+                                    <th class="text-center row col-sm-2">Nombre de lots</th>
+                                    <th></th>
                                     <th></th>
                                 </tr>
                             </thead>
                             <tbody>
                                 <tr>
                                     <td class="text-center"><h4>0 €</h4></td>
-                                    <td><center>{{ form_widget(form.nbLots, { 'attr': {'class': 'number', 'min': '0'} }) }}</center></td>
+                                    <td></td>
+                                    {% if listProjet is defined %}
+                                        <td class="row col-sm-1">{{ form_widget(form.nbLots, { 'attr': {'value': lot, 'readonly':'true', 'class': 'textcenter' } }) }}</td>
+                                    {% else %}
+                                        <td class="row col-sm-1">{{ form_widget(form.nbLots, { 'attr': {'value': '0', 'readonly':'true', 'class': 'textcenter' } }) }}</td>
+                                    {% endif %}
+                                    <td></td>
                                     <td class="text-center">
                                         <a class="btn btn-warning"><span data-toggle="collapse" data-target="#collapseProjetGDD" class="clickable collapsed" title="Afficher" data-container="body">
                                             <span class='glyphicon glyphicon-list-alt'></span> Liste des Projets
@@ -127,7 +150,7 @@
                                 <h5 class="panel-title">Date de MEP: </h5>
                                 <div class="pull-right">              
                                     <span data-toggle="collapse" data-target="#collapseMEP" class="clickable collapsed" title="Afficher détails" data-container="body">
-                                        <i class="glyphicon glyphicon-plus"></i>
+                                        <i class="glyphicon glyphicon-plus-sign"></i>
                                     </span>
                                 </div>                
                             </div>   
@@ -170,22 +193,24 @@
                                             <th class="text-center">N°</th>
                                             <th class="text-center">Référence</th>
                                             <th class="text-center">Titre</th>
-                                            <th class="text-center">Enveloppe Budgétaire</th>
-                                            <th class="text-center">Budget Projet Actualisé</th>
-                                            <th class="text-center">TTD</th>
-                                            <th class="text-center">Phase Projet</th>
+                                            <th class="text-center">Budget (en k€)</th>
+                                            <th class="text-center">Date de MEP</th>
+                                            <th class="text-center">Phase</th>
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        <tr>
-                                            <td></td>
-                                            <td></td>
-                                            <td></td>
-                                            <td></td>
-                                            <td></td>
-                                            <td></td>
-                                            <td></td>
-                                        </tr>   
+                                        {% if listProjet is defined %}
+                                            {% for projet in listProjet %}
+                                                <tr>
+                                                    <td class="text-center">{{ loop.index }}</td>
+                                                    <td class="text-center">{{ projet.referenceProjet }}</td>
+                                                    <td class="text-center">{{ projet.titre }}</td>
+                                                    <td class="text-center">{{ projet.BudgetEnCours }}</td>
+                                                    <td class="text-center">{{ projet.dateMEP }}</td>
+                                                    <td class="text-center">{{ projet.phaseProjetEnCours }}</td>
+                                                </tr> 
+                                            {% endfor %}
+                                        {% endif %}
                                     </tbody>
                                 </table>
                             </div> 
@@ -210,7 +235,6 @@
                 <button class="btn btn-success" type="submit" DISABLED><span class='glyphicon glyphicon-check'></span> Valider</button>           
             {% endif %}
         </div> 
-            <p>* Champs obligatoire</p>  
             
     </form> 
     

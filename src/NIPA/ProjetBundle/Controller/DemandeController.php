@@ -202,7 +202,7 @@ class DemandeController extends Controller
 
         // On trie les budgets dans l'ordre CHRONO par date
         usort($listDemandeBudget, function($a, $b) {
-          return ($a->getDate() < $b->getDate()) ? -1 : 1;
+          return ($a->getDate() > $b->getDate()) ? -1 : 1;
         });
         /***************************************************************/
         
@@ -216,7 +216,7 @@ class DemandeController extends Controller
         
         // On trie les instances dans l'ordre CHRONO par date
         usort($listDemandeInstance, function($a, $b) {
-          return ($a->getDatePrev() < $b->getDatePrev()) ? -1 : 1;
+          return ($a->getDatePrev() > $b->getDatePrev()) ? -1 : 1;
         });        
         /***************************************************************/   
         
@@ -436,8 +436,19 @@ class DemandeController extends Controller
  
         // On trie les budgets dans l'ordre CHRONO par date
         usort($listDemandeBudget, function($a, $b) {
-          return ($a->getDate() < $b->getDate()) ? -1 : 1;
+          return ($a->getDate() > $b->getDate()) ? -1 : 1;
         });
+        /***************************************************************/        
+        
+        //On récupère tous les projets liés à la demande
+        $repository = $this->getDoctrine()->getManager()->getRepository('NIPAProjetBundle:Projet');
+        $listProjet = $repository->findBy(array('demande' => $demande)); // Critere
+ 
+        // On trie les budgets dans l'ordre CHRONO par date
+        usort($listProjet, function($a, $b) {
+        return strnatcmp($a->getReferenceProjet(), $b->getReferenceProjet());
+        });
+        
         /***************************************************************/
         
         // DemandeInstance Form
@@ -450,8 +461,9 @@ class DemandeController extends Controller
         
         // On trie les instances dans l'ordre CHRONO par date
         usort($listDemandeInstance, function($a, $b) {
-          return ($a->getDatePrev() < $b->getDatePrev()) ? -1 : 1;
-        });                
+          return ($a->getDatePrev() > $b->getDatePrev()) ? -1 : 1;
+        });     
+        
         /***************************************************************/         
 
         $form->handleRequest($request);
@@ -497,7 +509,9 @@ class DemandeController extends Controller
             'listPortefeuille' => $listPortefeuille, 
             'listPortefeuilleEnveloppe' => $listPortefeuilleEnveloppe, 
             'listPortefeuilleAnnee' => $listPortefeuilleAnnee, 
-            'listPortefeuilleStatut' => $listPortefeuilleStatut)); 
+            'listPortefeuilleStatut' => $listPortefeuilleStatut,
+            'listProjet' => $listProjet
+            )); 
     }      
     
     
@@ -656,7 +670,7 @@ class DemandeController extends Controller
  
         // On trie les budgets dans l'ordre CHRONO par date
         usort($listDemandeBudget, function($a, $b) {
-          return ($a->getDate() < $b->getDate()) ? -1 : 1;
+          return ($a->getDate() > $b->getDate()) ? -1 : 1;
         });
         /***************************************************************/
         
@@ -670,7 +684,7 @@ class DemandeController extends Controller
         
         // On trie les instances dans l'ordre CHRONO par date
         usort($listDemandeInstance, function($a, $b) {
-          return ($a->getDatePrev() < $b->getDatePrev()) ? -1 : 1;
+          return ($a->getDatePrev() > $b->getDatePrev()) ? -1 : 1;
         });        
         /***************************************************************/  
         
@@ -795,7 +809,7 @@ class DemandeController extends Controller
 
         // On trie les budgets dans l'ordre CHRONO par date
         usort($listDemandeBudget, function($a, $b) {
-          return ($a->getDate() < $b->getDate()) ? -1 : 1;
+          return ($a->getDate() > $b->getDate()) ? -1 : 1;
         });
         /***************************************************************/
    
@@ -915,7 +929,7 @@ class DemandeController extends Controller
  
         // On trie les budgets dans l'ordre CHRONO par date
         usort($listDemandeBudget, function($a, $b) {
-          return ($a->getDate() < $b->getDate()) ? -1 : 1;
+          return ($a->getDate() > $b->getDate()) ? -1 : 1;
         });
         /***************************************************************/
         
@@ -929,7 +943,7 @@ class DemandeController extends Controller
         
         // On trie les instances dans l'ordre CHRONO par date
         usort($listDemandeInstance, function($a, $b) {
-          return ($a->getDatePrev() < $b->getDatePrev()) ? -1 : 1;
+          return ($a->getDatePrev() > $b->getDatePrev()) ? -1 : 1;
         });        
         /***************************************************************/ 
         
@@ -1012,7 +1026,7 @@ class DemandeController extends Controller
  
         // On trie les budgets dans l'ordre CHRONO par date
         usort($listDemandeBudget, function($a, $b) {
-          return ($a->getDate() < $b->getDate()) ? -1 : 1;
+          return ($a->getDate() > $b->getDate()) ? -1 : 1;
         });
         /***************************************************************/     
         
@@ -1124,7 +1138,7 @@ class DemandeController extends Controller
         
         // On trie les instances dans l'ordre CHRONO par date
         usort($listDemandeInstance, function($a, $b) {
-          return ($a->getDatePrev() < $b->getDatePrev()) ? -1 : 1;
+          return ($a->getDatePrev() > $b->getDatePrev()) ? -1 : 1;
         });        
         /***************************************************************/        
         
@@ -1307,7 +1321,7 @@ class DemandeController extends Controller
  
         // On trie les budgets dans l'ordre CHRONO par date
         usort($listDemandeBudget, function($a, $b) {
-          return ($a->getDate() < $b->getDate()) ? -1 : 1;
+          return ($a->getDate() > $b->getDate()) ? -1 : 1;
         });
         /***************************************************************/
         
@@ -1321,7 +1335,7 @@ class DemandeController extends Controller
         
         // On trie les instances dans l'ordre CHRONO par date
         usort($listDemandeInstance, function($a, $b) {
-          return ($a->getDatePrev() < $b->getDatePrev()) ? -1 : 1;
+          return ($a->getDatePrev() > $b->getDatePrev()) ? -1 : 1;
         });        
         /***************************************************************/  
         

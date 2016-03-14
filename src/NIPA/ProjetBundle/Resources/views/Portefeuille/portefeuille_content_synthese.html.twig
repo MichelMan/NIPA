@@ -14,8 +14,10 @@
     }
   </style>    
 
+    <h4><span class='glyphicon glyphicon-list-alt'></span> {{ 'Synthèse'|trans }}: {% if portefeuille.referencePortefeuille %} {{ portefeuille.nom }} {% endif %} </h4>          
+  
     <!-- Container tables hide/show with charts -->
-  <div class="panel-group" id="accordion">
+<div class="panel-group" id="accordion">
     <div class="panel panel-default" id="panel1">
         <div class="panel-heading">
             <h4 class="panel-title">

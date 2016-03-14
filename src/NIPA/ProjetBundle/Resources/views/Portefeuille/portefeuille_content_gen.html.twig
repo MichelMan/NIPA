@@ -32,6 +32,10 @@
             width: 60px;
         }
         
+        #table_texte,#textinput, .textcenter{
+        text-align:center;
+        }       
+        
     </style>       
     
     {# TEST LES DROITS USER#}
@@ -65,12 +69,12 @@
                         <div class="panel panel-success">
                             <div class="panel-heading">  
                                 <center class="panel-title">
-                                    Budget prév: {{ prev|number_format(2, ',', ' ') }} k€  / 
-                                    Budget cons: {{ cons|number_format(2, ',', ' ') }} k€  / 
+                                    Budget prévu: <strong> {{ prev|number_format(2, ',', ' ') }} k€ </strong> / 
+                                    Budget consommé: <strong> {{ cons|number_format(2, ',', ' ') }} k€ </strong> / 
                                     {% if prev == 0 %}
-                                        Taux: {{ 0|number_format(2, ',', ' ') }}%                                    
+                                        Taux: <strong> {{ 0|number_format(2, ',', ' ') }}%  </strong>                                  
                                     {% else %}
-                                        Taux: {{ (cons/prev*100)|number_format(2, ',', ' ') }}%
+                                        Taux: <strong> {{ (cons/prev*100)|number_format(2, ',', ' ') }}% </strong>
                                     {% endif %}
                                 </center>       
                             </div>         
@@ -81,106 +85,85 @@
                 <div class="pull-left"><h4><span class='glyphicon glyphicon-plus-sign'></span> {{ 'Nouveau portefeuille'|trans }} </h4></div>
             {% endif %}
                      
-        <br><br>
+        <br><br><br>
         
         <div class="container">                   
             <div class="row col-md-13">
 
             <!-- PANEL -->          
-            <div class="panel panel-default" id="GPP">
+            <div class="panel panel-primary " id="GPP">
                 <div class="panel-heading" id="GPP">
-                    <h5 class="panel-title"> Informations générales du Portefeuille <strong>{% if portefeuille.referencePortefeuille %} {{ portefeuille.referencePortefeuille }} ({{ portefeuille.portefeuilleStatut.getNom() }}) {% endif %}</strong></h5>
+                    <h5 class="panel-title"> Informations générales du Portefeuille <strong>{% if portefeuille.referencePortefeuille %} {{ portefeuille.nom }} {% if portefeuille.portefeuilleStatut != null %} ({{ portefeuille.portefeuilleStatut.getNom() }}) {% endif %} {% endif %}</strong></h5>
                 </div>   
             <div id="collapseInfo" class="panel-collapse collapse-in">                                
-                <div class="panel-body">
                         
-                <div class="row">
-                    <div class="col-md-12">
-                        <label class="control-label" for="textarea">
-                          {{ form_errors(form.nom) }}
-                          {{ form_label(form.nom, 'Nom'|trans) }}          
-                        </label>  
-                        <div class="">
-                           {{ form_widget(form.nom, { 'attr': { 'readonly':'true'} }) }}
-                        </div>                    
-                    </div>
-                </div>            
-                <div class="row">
-                    <div class="col-md-12">
-                        <label class="control-label" for="textarea">
-                          {{ form_errors(form.description) }}
-                          {{ form_label(form.description, 'Description'|trans) }}        
-                        </label> 
-                        <i>(Champ facultatif)</i>   
-                        <div class="">
-                           {{ form_widget(form.description) }}
-                        </div>                    
-                    </div>
+                    <!-- row name, descritpion -->          
+                    <table class="table table-hover" id="GPP">
+                        <thead>
+                            <tr>
+                                <th class="text-center">Nom Portefeuille</th>
+                                <th class="text-center">{{ form_label(form.description) }}</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>{{ form_widget(form.nom, { 'attr': { 'class': 'textcenter', 'readonly':'true'} }) }}</td>
+                                <td>{{ form_widget(form.description, { 'attr': { "cols":"50", "rows":"2" } }) }}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                 
+                    <!-- row select enveloppe, annee, statut -->          
+                    <table class="table table-hover" id="GPP">
+                        <thead>
+                            <tr>
+                                <th class="text-center">{{ form_label(form.portefeuilleAnnee) }}</th>
+                                <th class="text-center">{{ form_label(form.portefeuilleEnveloppe) }}</th>
+                                <th class="text-center">{{ form_label(form.portefeuilleStatut) }}</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>{{ form_widget(form.portefeuilleAnnee) }}</td>
+                                <td>{{ form_widget(form.portefeuilleEnveloppe) }}</td>
+                                <td>{{ form_widget(form.portefeuilleStatut) }}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                        
+                    {# Pour l'erreur: "Le jeton CSRF est invalide" #}
+                    {{ form_widget(form._token) }}        
+                    {{form_errors(form)}} 
+                    
+                    <br>
+                    
                 </div>
-                <div class="row">
-                    <div class="col-md-12">
-                        <label class="control-label" for="select">
-                          {{ form_errors(form.portefeuilleAnnee) }}
-                          {{ form_label(form.portefeuilleAnnee) }}          
-                        </label>  
-                        <div class="">
-                           {{ form_widget(form.portefeuilleAnnee) }}
-                        </div>                    
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-md-12">
-                        <label class="control-label" for="select">
-                          {{ form_errors(form.portefeuilleEnveloppe) }}
-                          {{ form_label(form.portefeuilleEnveloppe) }}          
-                        </label>  
-                        <div class="">
-                           {{ form_widget(form.portefeuilleEnveloppe) }}
-                        </div>                    
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-md-12">
-                        <label class="control-label" for="select">
-                          {{ form_errors(form.portefeuilleStatut) }}
-                          {{ form_label(form.portefeuilleStatut) }}          
-                        </label>  
-                        <div class="">
-                           {{ form_widget(form.portefeuilleStatut) }}
-                        </div>                    
-                    </div>
-                </div>                    
-
-            {# Pour l'erreur: "Le jeton CSRF est invalide" #}
-            {{ form_widget(form._token) }}        
-            {{form_errors(form)}}
-
-            <br>
-
-            {% if droit != 0 %}
-                <div class="pull-right">
-                    {% if portefeuille.referencePortefeuille %} 
-                        {% if portefeuille.getDemandesToArray()|length == 0 %} {# On s'assure qu'il y a aucune demandes ou projets liés à ce portefeuille pour pouvoir le supprimer #}               
-                            <a href="{{ path('portefeuille_delete', {'reference': portefeuille.referencePortefeuille}) }}" class="confirmModalLinkPortefeuille btn btn-danger"><span class="glyphicon glyphicon-trash"></span> Supprimer </a>                                                
-                        {% else %}
-                            <a href="#" class="warningModalLinkPortefeuille btn btn-danger"><span class="glyphicon glyphicon-trash"></span> Supprimer </a>                                                
-                        {% endif %}
-                    {% endif %}
-                    <button class="btn btn-success" type="submit"><span class='glyphicon glyphicon-check'></span> Valider</button>           
-                </div>
-            {% else %}
-                <div class="pull-right">
-                    {% if portefeuille.referencePortefeuille %}                
-                        <a href="{{ path('portefeuille_delete', {'reference': portefeuille.referencePortefeuille}) }}" class="confirmModalLinkPortefeuille btn btn-danger" DISABLED><span class="glyphicon glyphicon-trash"></span> Supprimer </a>                                                
-                    {% endif %}
-                    <button class="btn btn-success" type="submit" DISABLED><span class='glyphicon glyphicon-check'></span> Valider</button>           
-                </div>
-            {% endif %}    
-                </div> 
-            </div>                    
             </div>
-        </div> 
-    </div>
+            </div> 
+        </div>
+            
+    <br>
+                    
+    {% if droit != 0 %}
+        <div class="pull-right">
+            {% if portefeuille.referencePortefeuille %} 
+                {% if portefeuille.getDemandesToArray()|length == 0 %} {# On s'assure qu'il y a aucune demandes ou projets liés à ce portefeuille pour pouvoir le supprimer #}               
+                    <a href="{{ path('portefeuille_delete', {'reference': portefeuille.referencePortefeuille}) }}" class="confirmModalLinkPortefeuille btn btn-danger"><span class="glyphicon glyphicon-trash"></span> Supprimer </a>                                                
+                {% else %}
+                    <a href="#" class="warningModalLinkPortefeuille btn btn-danger"><span class="glyphicon glyphicon-trash"></span> Supprimer </a>                                                
+                {% endif %}
+            {% endif %}
+            <button class="btn btn-success" type="submit"><span class='glyphicon glyphicon-check'></span> Valider</button>           
+        </div>
+    {% else %}
+        <div class="pull-right">
+            {% if portefeuille.referencePortefeuille %}                
+                <a href="{{ path('portefeuille_delete', {'reference': portefeuille.referencePortefeuille}) }}" class="confirmModalLinkPortefeuille btn btn-danger" DISABLED><span class="glyphicon glyphicon-trash"></span> Supprimer </a>                                                
+            {% endif %}
+            <button class="btn btn-success" type="submit" DISABLED><span class='glyphicon glyphicon-check'></span> Valider</button>           
+        </div>
+    {% endif %}       
+    
 </form>    
 
     <!-- MODAL DELETE -->

@@ -54,12 +54,11 @@
                                             {% for de in listDemande %} {# Puis on positionne chaque DE dans le bon chemin #}   
                                                 {% for pf2De in de.getPortefeuillesToArray() %}
                                                     {% if (pf2De.getReferencePortefeuille() ==  pf.getReferencePortefeuille()) %}    
-                                                        {# {% if portefeuille.referencePortefeuille == pf.referencePortefeuille %} #}  {# Si celui sélectionné -> on l'active #}                              
-                                                        {#    <li class="jstree-open"><a class="jstree-clicked" href="{% if pf.referencePortefeuille %} {{ path('portefeuille_edit',{'reference': pf.referencePortefeuille})}}{% endif %}" title="{{ pf.getPortefeuilleEnveloppe().getNom() }}: {{ pf.referencePortefeuille }}">{{ pf.nom }}</a>
-                                                        {% else %} #}
-                                                            <li><a  href="{% if de.referenceDemande %} {{ path('demande_edit',{'reference': de.referenceDemande}) }} {% endif %}" title="{% if de.referenceDemande %}  {{ de.referenceDemande }} {% endif %}">{{ de.nom }}</a>
-                                                        {# {% endif %}    #}
-                                                            </li> 
+                                                        {% if demande.referenceDemande == de.referenceDemande %} #}  {# Si celui sélectionné -> on l'active #}                              
+                                                            <li class="jstree-open"><a class="jstree-clicked" href="{% if de.referenceDemande %} {{ path('demande_edit',{'reference': de.referenceDemande}) }} {% endif %}" title="{% if de.referenceDemande %}  {{ de.referenceDemande }} {% endif %}">{{ de.nom }}</a></li> 
+                                                        {% else %} 
+                                                            <li><a  href="{% if de.referenceDemande %} {{ path('demande_edit',{'reference': de.referenceDemande}) }} {% endif %}" title="{% if de.referenceDemande %}  {{ de.referenceDemande }} {% endif %}">{{ de.nom }}</a></li> 
+                                                        {% endif %}   
                                                     {% endif %}
                                                 {% endfor %}
                                             {% endfor %}                                                                    

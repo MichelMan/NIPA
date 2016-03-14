@@ -61,14 +61,29 @@
     {% endfor %}     
     
     {% if projet.referenceProjet %}                
-        <h4 class=""><span class='glyphicon glyphicon-edit'></span> {{ 'Mise à jour Projet'|trans }}: {{ projet.titre }} </h4>            
+        <div class="pull-left"><h4 class=""><span class='glyphicon glyphicon-edit'></span> {{ 'Mise à jour Projet'|trans }}: {{ projet.titre }} </h4></div>   
+        <div class="pull-right">
+            <div class="col-md-12">
+                <div class="panel panel-success">
+                    <div class="panel-heading">  
+                        <center class="panel-title">
+                            Budget en cours: <strong>  k€ </strong> / 
+                            Phase: <strong> </strong> / 
+                            Date de MEP: <strong>   </strong>                                  
+                        </center>       
+                    </div>         
+                </div>
+            </div>
+        </div>   
     {% else %}
-        <h4 class=""><span class='glyphicon glyphicon-plus-sign'></span> {{ 'Nouveau Projet'|trans }} </h4>        
+        <div class="pull-left"><h4 class=""><span class='glyphicon glyphicon-plus-sign'></span> {{ 'Nouveau Projet'|trans }} </h4></div>   
     {% endif %}      
     
     <div class="loader" id="loader" style="display: none"></div>
     
-    <form action="{% if projet.referenceProjet %}{{ path('projet_edit', {'reference': projet.referenceProjet}) }}{% else %}{{ path('projet_new') }}{% endif %}" method="post" {{ form_enctype(form) }} >
+    <br><br><br>
+    
+    <form action="{% if projet.referenceProjet %}{{ path('projet_edit', {'reference': projet.referenceProjet}) }}{% else %}{{ path('projet_new') }}{% endif %}" method="post" {{ form_enctype(form) }} id="formProjet" onsubmit="return validateForm()" >
                   
         <div class="container">                   
             <div class="row col-md-13">
@@ -78,15 +93,28 @@
                     <div class="panel-heading" id="GDP">
                         <h5 class="panel-title">  <strong>Référence Demande:</strong></h5>
                         <div class="pull-right" id="pull-right">
-                            <select class="form-control" id="referenceDemande" name="referenceDemande">
+                        {% if projet.referenceProjet %}
+                            {% if user.getAdmin() == 1 %}
+                                <select class="form-control" id="referenceDemande" name="referenceDemande">
+                            {% else %}
+                                <select class="form-control" id="referenceDemande" name="referenceDemande" READONLY DISABLED>
+                            {% endif %}
                                {% for demande in listDemande %}
-                                    {% if projet.referenceProjet and projet.getDemande().getReferenceDemande() == demande.getReferenceDemande() %}
+                                    {% if projet.getDemande().getReferenceDemande() == demande.getReferenceDemande() %}
                                         <option value="{{demande.getReferenceDemande()}}" selected>{{ demande.getReferenceDemande() }} ({{ demande.getNom() }})</option>
                                     {% else %}
                                         <option value="{{demande.getReferenceDemande()}}">{{ demande.getReferenceDemande() }} ({{ demande.getNom() }})</option>
                                     {% endif %}
                                 {% endfor %}
                             </select>
+                        {% else %}
+                            <select class="form-control" id="referenceDemande" name="referenceDemande">
+                                <option value="" disabled selected hidden> Sélectionner une Demande...</option>
+                                {% for demande in listDemande %}
+                                        <option value="{{demande.getReferenceDemande()}}">{{ demande.getReferenceDemande() }} ({{ demande.getNom() }})</option>
+                                {% endfor %}
+                            </select>
+                        {% endif %}
                         </div> 
                     </div>   
                 <div id="collapseInfo" class="panel-collapse collapse-in">                                
@@ -161,6 +189,7 @@
                                 <tr>
                                     <td>
                                         <select class="form-control" id="interlocuteurMOA" name="interlocuteurMOA">
+                                            <option disabled selected hidden>...</option>
                                            {% for moa in listInterlocuteurMOA %}
                                                 {% if projet.referenceProjet and projet.getInterlocuteurMOA() == moa.getNom() %}
                                                     <option value="{{moa.getNom()}}" selected>{{ moa.getNom() }}</option>
@@ -172,7 +201,8 @@
                                     </td>
                                     <td>
                                         <select class="form-control" id="porteurMetier" name="porteurMetier">
-                                           {% for PE in listPorteurMetier %}
+                                            <option disabled selected hidden>...</option>
+                                            {% for PE in listPorteurMetier %}
                                                 {% if projet.referenceProjet and projet.getPorteurMetier() == PE.getNom() %}
                                                     <option value="{{PE.getNom()}}" selected>{{ PE.getNom() }}</option>
                                                 {% else %}
@@ -183,7 +213,8 @@
                                     </td>
                                     <td>
                                         <select class="form-control" id="SDM" name="SDM">
-                                           {% for SDM in listSDM %}
+                                            <option disabled selected hidden>...</option>
+                                            {% for SDM in listSDM %}
                                                 {% if projet.referenceProjet and projet.getSDM() == SDM.getNom() %}
                                                     <option value="{{SDM.getNom()}}" selected>{{ SDM.getNom() }}</option>
                                                 {% else %}
@@ -270,6 +301,18 @@
             });
         });
 
+
+        function validateForm() {
+            var x = document.forms["formProjet"]["referenceDemande"].value;
+            alertify.defaults.glossary.title = "Informations";
+            
+            if (x == null || x == "") 
+            {
+                alertify.alert("Veuillez sélectionner une Demande."); 
+                return false;
+            }
+            
+        }
 
     $(document).ready(function(){
       $("#referenceDemande").change( function() {
