@@ -2,6 +2,8 @@
 
 namespace NIPA\ProjetBundle\Entity;
 
+use NIPA\UserBundle\Entity\Utilisateur;
+
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -504,7 +506,7 @@ class DemandeSaveFiltres
     /**
      * Set utilisateur
      *
-     * @param Utilisateur $utilisateur
+     * @param NIPA\UserBundle\Entity\Utilisateur $utilisateur
      *
      * @return DemandeSaveFiltres
      */
@@ -514,7 +516,7 @@ class DemandeSaveFiltres
 
         return $this;
     }
-
+    
     /**
      * Get utilisateur
      *

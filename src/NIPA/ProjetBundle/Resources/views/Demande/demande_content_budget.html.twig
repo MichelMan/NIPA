@@ -32,9 +32,11 @@
                             {% set total = 0 %}
                             {% for portefeuille in demande.getPortefeuillesToArray() %}
                                 {% set counter = 0 %}
-                                {% for budget in listDemandeBudget %}
+                                {% set break = false %}
+                                {% for budget in listDemandeBudget if not break %}
                                     {% if budget.IPP == portefeuille.getNom() %}
                                         {% set counter = budget.montant %}
+                                        {% set break = true %}
                                     {% endif %}
                                 {% endfor %} 
                                 <strong>{{ portefeuille.getNom() }}</strong> <span class="glyphicon glyphicon-arrow-right"></span> {{ counter|number_format(2, ',', ' ') }} k€ /

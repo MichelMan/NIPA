@@ -12,7 +12,38 @@
         {% endif %}
     {% endfor %}     
     
-    <h4 class=""><i class="fa fa-pencil-square fa-fw"></i> {{ 'Description & Enjeux Business'|trans }}: {% if demande.referenceDemande %} {{ demande.nom }} {% endif %} </h4>        
+            
+
+    {% if demande.referenceDemande %}                
+        <div class="pull-left"><h4 class=""><i class="fa fa-pencil-square fa-fw"></i> {{ 'Description & Enjeux'|trans }}: {{ demande.nom }} </h4></div>            
+        <div class="pull-right">
+            <div class="col-md-12">
+                <div class="panel panel-success">
+                    <div class="panel-heading">  
+                        <center class="panel-title">
+                            {% set total = 0 %}
+                            {% for portefeuille in demande.getPortefeuillesToArray() %}
+                                {% set counter = 0 %}
+                                {% set break = false %}
+                                {% for budget in listDemandeBudget if not break %}
+                                    {% if budget.IPP == portefeuille.getNom() %}
+                                        {% set counter = budget.montant %}
+                                        {% set break = true %}
+                                    {% endif %}
+                                {% endfor %} 
+                            {% set total = total + counter %}
+                            {% endfor %}
+                            Budget en cours: <strong> {{ total|number_format(2, ',', ' ') }} k€ </strong> / 
+                            Phase: <strong> {{ demande.demandeStatut.getNom() }} </strong> / 
+                            Date de MEP: <strong> ? </strong>                                  
+                        </center>       
+                    </div>         
+                </div>
+            </div>
+        </div>       
+    {% endif %}      
+    
+    <br><br><br>
 
     <div class="container">                   
             <div class="row col-md-13">
@@ -20,7 +51,7 @@
                 <!-- PANEL -->          
                 <div class="panel panel-danger" id="GDD">
                     <div class="panel-heading" id="GDD">
-                        <h5 class="panel-title"> Informations R0 de la Demande <strong>{% if demande.referenceDemande %} {{ demande.referenceDemande }} ({{ demande.demandeStatut.getNom() }}) {% endif %}</strong></h5>                        
+                        <h5 class="panel-title"> Informations R0 de la Demande <strong>{% if demande.referenceDemande %} {{ demande.referenceDemande }} {% endif %}</strong></h5>                        
                         <div class="pull-right">
                         </div>
                     </div>   

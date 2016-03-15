@@ -24,23 +24,27 @@
 
                     <!-- PANEL(s) En Cadrage -->      
                 
-                    {% for phase in listProjetPhaseEtapeCadrage %}
-
+                    {% for phase in listProjetPhaseEtapeCadrage %}                        
+                        
                             <div class="panel panel-info" id="GDP">
                                 <div class="panel-heading" id="GDP">
                                     <h5 class="panel-title"> Informations liées à la phase <strong> {{ phase.getNom()}} </strong></h5>
                                     <div class="pull-right">
                                         Statut: <strong> OK/NOK </strong>
                                         {# <span data-toggle="collapse" data-target="#collapseInfo{{ phase.getNom() }}" class="clickable collapsed" title="Afficher détails" data-container="body"> #}
-                                        <span data-toggle="collapse" data-parent="#accordion1" href="#collapseEtape{{ phase.getNom() }}" class="clickable collapsed" title="Afficher détails" data-container="body">
-                                            <i class="glyphicon glyphicon-plus"></i>
+                                        <span data-toggle="collapse" data-parent="#accordion1" id="collapsePhaseCadrage{{ phase.getNom() }}"  href="#collapsePhase{{ phase.getNom() }}" class="clickable collapsed" title="Afficher détails" data-container="body">
+                                            {% if listProjetPhaseEtapeCadrage|length == 1 %}            
+                                                <i class="glyphicon glyphicon-chevron-down"></i> 
+                                            {% else %}
+                                                <i class="glyphicon glyphicon-chevron-right"></i> 
+                                            {% endif %}
                                         </span>
                                     </div>                      
                                 </div>
                                 {% if listProjetPhaseEtapeCadrage|length == 1 %}            
-                                    <div id="collapseEtape{{ phase.getNom() }}" class="panel-collapse collapse in"> 
+                                    <div id="collapsePhase{{ phase.getNom() }}" class="panel-collapse collapse in"> 
                                 {% else %}
-                                    <div id="collapseEtape{{ phase.getNom() }}" class="panel-collapse collapse"> 
+                                    <div id="collapsePhase{{ phase.getNom() }}" class="panel-collapse collapse"> 
                                 {% endif %}
                                     <div class="panel-body">
                                         
@@ -282,13 +286,13 @@
                                                             {% for instance in listProjetListeInstance %}
                                                                 {% if instance.getInstance().getRefPhase().getNom() == phase.getNom() %}
                                                                 <tr>
-                                                                    <td><h5><strong>{{ instance.getInstance().getNom() }}</strong></h5></td>
-                                                                    <td><h5>{{ instance.datePrev|date('d/m/Y') }}</h5></td>
+                                                                    <td class="text-center"><h5><strong>{{ instance.getInstance().getNom() }}</strong></h5></td>
+                                                                    <td class="text-center"><h5>{{ instance.datePrev|date('d/m/Y') }}</h5></td>
                                                                    {#<td><h5>{{ instance.dateRev }}</h5></td>#}
                                                                     {% if instance.validationEffective == true %}
-                                                                        <td><h5>OK</h5></td>
+                                                                        <td class="text-center"><h5>OK</h5></td>
                                                                     {% else %}
-                                                                        <td><h5>NOK</h5></td>
+                                                                        <td class="text-center"><h5>NOK</h5></td>
                                                                     {% endif %}
                                                                     <td><h5><textarea class="form-control" cols=30 rows=3 id="Remarques" READONLY>{{ instance.remarques }}</textarea></h5></td> 
                                                                     <td class="text-center"><h5>{{ instance.getStatutInstance() }}</h5></td>
@@ -447,6 +451,17 @@
 
                             <br>     
                         
+                            <script>
+                                $(document).ready(function(){
+                                  $("#collapsePhase{{ phase.getNom() }}").on("hide.bs.collapse", function(){
+                                    $("#collapsePhaseCadrage{{ phase.getNom() }}").html('<span class="glyphicon glyphicon-chevron-right"></span>');
+                                  });
+                                  $("#collapsePhase{{ phase.getNom() }}").on("show.bs.collapse", function(){
+                                    $("#collapsePhaseCadrage{{ phase.getNom() }}").html('<span class="glyphicon glyphicon-chevron-down"></span>');
+                                  });
+                                });
+                            </script>    
+                            
                     {% endfor %}
                     
                         </div>
