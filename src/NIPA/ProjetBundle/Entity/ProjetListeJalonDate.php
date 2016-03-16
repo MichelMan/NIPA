@@ -197,7 +197,7 @@ class ProjetListeJalonDate
     /**
      * Set projet
      *
-     * @param Demande $projet
+     * @param Projet $projet
      *
      * @return ProjetListeSteps
      */

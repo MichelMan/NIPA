@@ -45,7 +45,7 @@
     {% endfor %}     
     
     {% if demande.referenceDemande %}                
-        <div class="pull-left"><h4 class=""><span class='glyphicon glyphicon-edit'></span> {{ 'Mise à jour Demande'|trans }}: {{ demande.nom }}</h4></div>            
+        <div class="pull-left"><h4 class=""><span class='glyphicon glyphicon-edit'></span> {{ 'Mise à jour Demande'|trans }}: {{ demande.referenceDemande }}</h4></div>            
         <div class="pull-right">
             <div class="col-md-12">
                 <div class="panel panel-success">
@@ -63,7 +63,7 @@
                                 {% endfor %} 
                             {% set total = total + counter %}
                             {% endfor %}
-                            Budget en cours: <strong> {{ total|number_format(2, ',', ' ') }} k€ </strong> / 
+                            Budget: <strong> {{ total|number_format(2, ',', ' ') }} k€ </strong> / 
                             Phase: <strong> {{ demande.demandeStatut.getNom() }} </strong> / 
                             Date de MEP: <strong> ? </strong>                                  
                         </center>       
@@ -85,7 +85,7 @@
                 <!-- PANEL -->          
                 <div class="panel panel-danger" id="GDD">
                     <div class="panel-heading" id="GDD">
-                        <h5 class="panel-title"> Informations générales de la Demande <strong>{% if demande.referenceDemande %} {{ demande.referenceDemande }} {% endif %}</strong></h5>
+                        <h5 class="panel-title"> Informations générales de la Demande <strong>{% if demande.referenceDemande %} {{ demande.nom }} {% endif %}</strong></h5>
                     </div>   
                 <div id="collapseInfo" class="panel-collapse collapse-in">                                
                     <div class="panel-body">

@@ -203,8 +203,8 @@
                                             {% for projet in listProjet %}
                                                 <tr>
                                                     <td class="text-center">{{ loop.index }}</td>
-                                                    <td class="text-center">{{ projet.referenceProjet }}</td>
-                                                    <td class="text-center">{{ projet.titre }}</td>
+                                                    <td class="text-center" title="Code OGP: {{ projet.codeOGP }}">{{ projet.referenceProjet }}</td>
+                                                    <td class="text-center"><a  href="{{ path('projet_edit',{'reference': projet.referenceProjet}) }}" title="Afficher Projet">{{ projet.titre }}</a></td>
                                                     <td class="text-center">{{ projet.BudgetEnCours }}</td>
                                                     <td class="text-center">{{ projet.dateMEP }}</td>
                                                     <td class="text-center">{{ projet.phaseProjetEnCours }}</td>

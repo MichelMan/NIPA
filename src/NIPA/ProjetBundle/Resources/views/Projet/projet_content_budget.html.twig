@@ -12,18 +12,32 @@
         {% endif %}
     {% endfor %}  
 
-    <h4 class=""><span class='glyphicon glyphicon-usd'></span> {{ 'Budget'|trans }}: {% if projet.referenceProjet %}{{ projet.titre }}{% endif %} </h4>        
-        
+    <h4 class=""><span class='glyphicon glyphicon-usd'></span> {{ 'Informations Budget Projet'|trans }}: {% if projet.referenceProjet %}{{ projet.titre }}{% endif %} </h4>        
+
         <div class="row col-md-13">
 
             <!-- PANEL -->          
             <div class="panel panel-info">
                 <div class="panel-heading">
                     <h3 class="panel-title">  
-                        Informations Budget Projet
+                        {% if projet.referenceProjet %} 
+                            {% set total = 0 %}
+                            {% for etape in listProjetEtape %}
+                                {% set counter = 0 %}
+                                {% set break = false %}
+                                {% for budget in listProjetBudget if not break %}
+                                    {% if budget.etapeProjet == etape.getNom() %}
+                                        {% set counter = budget.montant %}
+                                        {% set break = true %}
+                                    {% endif %}
+                                {% endfor %} 
+                                <strong>{{ etape.getNom() }}</strong> <span class="glyphicon glyphicon-arrow-right"></span> {{ counter|number_format(2, ',', ' ') }} k€ /
+                            {% set total = total + counter %}
+                            {% endfor %}
+                            <strong>Total </strong> <span class="glyphicon glyphicon-arrow-right"></span> {{ total|number_format(2, ',', ' ') }} k€ /
+                        {% endif %}        
                     </h3>
                     <div class="pull-right">  
-                         xxx
                         <span data-toggle="collapse" data-target="#collapseInstances" class="clickable collapsed" title="Afficher détails" data-container="body">
                             <i class="glyphicon glyphicon-plus"></i>
                         </span>

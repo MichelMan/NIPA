@@ -16,6 +16,10 @@
             border-top-right-radius: 3px;
         }
 
+        .center{
+            text-align: center;
+        }
+        
         .table#GDP {
             width: 100%;
             max-width: 100%;
@@ -67,9 +71,81 @@
                 <div class="panel panel-success">
                     <div class="panel-heading">  
                         <center class="panel-title">
-                            Budget en cours: <strong>  k€ </strong> / 
+                           {# CALCUL BUDGET #} 
+                           {% set total = 0 %}
+                            {% for etape in listProjetEtape %}
+                                {% set counter = 0 %}
+                                {% set break = false %}
+                                {% for budget in listProjetBudget if not break %}
+                                    {% if budget.etapeProjet == etape.getNom() %}
+                                        {% set counter = budget.montant %}
+                                        {% set break = true %}
+                                    {% endif %}
+                                {% endfor %} 
+                            {% set total = total + counter %}
+                            {% endfor %}
+                            
+                            {# CALCUL DATE DE MEP si MEP #}
+                            {% set MEP = null %}
+                            {% set MEP_RZO = null %}
+                            {% set MEP_SI = null %}
+                            {% for livJalon in listProjetListeJalonDateEnRealisation %}
+                                    
+                                {# Si MEP SI #}
+                                {% if livJalon.getJalonDate().getNom() == "MEP SI" and livJalon.getValidationEffective() == true %}
+                                    {% if livJalon.dateRev() != "" %}
+                                        {% set MEP_SI = livJalon.dateRev() %}
+                                    {% elseif livJalon.datePrev() != "" %}
+                                        {% set MEP_SI = livJalon.datePrev() %}
+                                    {% else %}
+                                        {% set MEP_SI = "" %}
+                                    {% endif %}
+                                {% endif %}
+                                {# Si MEP RZO #}
+                                {% if livJalon.getJalonDate().getNom() == "MEP Réseau" and livJalon.getValidationEffective() == true %}
+                                    {% if livJalon.dateRev() != "" %}
+                                        {% set MEP_RZO = livJalon.dateRev() %}
+                                    {% elseif livJalon.datePrev() != "" %}
+                                        {% set MEP_RZO = livJalon.datePrev() %}
+                                    {% else %}
+                                        {% set MEP_RZO = "" %}
+                                    {% endif %}
+                                {% endif %}
+
+
+                                {# Si Dev SI #}
+                                {% if projet.getDevSI() == true and projet.getDevRZO() == false %}
+                                    {% if MEP_SI != null %}
+                                        {% set MEP = MEP_SI %}
+                                    {% endif %}
+                                {% endif %}
+
+                                {# Si Dev RZO #}
+                                {% if projet.getDevSI() == false and projet.getDevRZO() == true %}
+                                    {% if MEP_RZO != null %}
+                                        {% set MEP = MEP_RZO %}
+                                    {% endif %}
+                                {% endif %}
+
+                                {# Si Dev SI et RZO #}
+                                {% if projet.getDevSI() == true and projet.getDevRZO() == true  %}
+                                    {% if MEP_SI != null and MEP_RZO != null %}
+                                        {% if MEP_RZO|date('Ymd') > MEP_SI|date('Ymd') %}
+                                            {% set MEP = MEP_RZO %}
+                                        {% else %}
+                                            {% set MEP = MEP_SI %}
+                                        {% endif %}
+                                    {% elseif MEP_SI != null %}
+                                        {% set MEP = MEP_SI %}
+                                    {% elseif MEP_RZO != null %}
+                                        {% set MEP = MEP_RZO %}
+                                    {% endif %}
+                                {% endif %}
+                            {% endfor %}                                            
+                            
+                            Budget: <strong> {{ total }} k€ </strong> / 
                             Phase: <strong> </strong> / 
-                            Date de MEP: <strong>   </strong>                                  
+                            Date de MEP: <strong> {% if MEP != null %} {{ MEP|date('d/m/Y') }} {% endif %} </strong>                                  
                         </center>       
                     </div>         
                 </div>
@@ -142,6 +218,7 @@
                         <table class="table table-hover" id="GDP">
                             <thead>
                                 <tr>
+                                    <th class="text-center">Code OGP</th>
                                     <th class="text-center">Enveloppe Budgétaire</th>
                                     <th class="text-center">Priorité</th>
                                     <th class="text-center">Divers</th>
@@ -149,9 +226,10 @@
                             </thead>
                             <tbody>
                                 <tr>
-                                    <td>{{ form_widget(form.enveloppe, { 'attr': { 'readonly':'true'} }) }}</td>
-                                    <td>{{ form_widget(form.priorite, { 'attr': { 'readonly':'true'} }) }}</td>
-                                    <td>{{ form_widget(form.divers, { 'attr': { 'readonly':'true'} }) }}</td>
+                                    <td>{{ form_widget(form.codeOGP, { 'attr': { 'required':'true', 'class':'center'} }) }}</td>
+                                    <td>{{ form_widget(form.enveloppe, { 'attr': { 'readonly':'true', 'class':'center'} }) }}</td>
+                                    <td>{{ form_widget(form.priorite, { 'attr': { 'readonly':'true', 'class':'center'} }) }}</td>
+                                    <td>{{ form_widget(form.divers, { 'attr': { 'readonly':'true', 'class':'center'} }) }}</td>
                                 </tr>
                             </tbody>
                         </table>
@@ -168,10 +246,10 @@
                             </thead>
                             <tbody>
                                 <tr>
-                                    <td>{{ form_widget(form.direction , { 'attr': { 'readonly':'true'} }) }}</td>
-                                    <td>{{ form_widget(form.entiteMetier, { 'attr': { 'readonly':'true'} }) }}</td>
-                                    <td>{{ form_widget(form.offres, { 'attr': { 'readonly':'true'} }) }}</td>
-                                    <td>{{ form_widget(form.typeProjet, { 'attr': { 'readonly':'true'} }) }}</td>
+                                    <td>{{ form_widget(form.direction , { 'attr': { 'readonly':'true', 'class':'center'} }) }}</td>
+                                    <td>{{ form_widget(form.entiteMetier, { 'attr': { 'readonly':'true', 'class':'center'} }) }}</td>
+                                    <td>{{ form_widget(form.offres, { 'attr': { 'readonly':'true', 'class':'center'} }) }}</td>
+                                    <td>{{ form_widget(form.typeProjet, { 'attr': { 'readonly':'true', 'class':'center'} }) }}</td>
                                 </tr>
                             </tbody>
                         </table>

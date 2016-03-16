@@ -14,6 +14,8 @@ use NIPA\ProjetBundle\Entity\ProjetListeLivrable;
 use NIPA\ProjetBundle\Entity\ProjetListeInstance;
 use NIPA\ProjetBundle\Entity\ProjetListeJalonDate;
 use NIPA\ProjetBundle\Entity\ProjetBudget;
+use NIPA\ProjetBundle\Entity\ProjetValidationPhase;
+
 
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
@@ -977,7 +979,7 @@ class ProjetController extends Controller
                 //\Doctrine\Common\Util\Debug::dump($data["Livrable"]["dateRev"]);
                 //\Doctrine\Common\Util\Debug::dump($data["Livrable"]["validation"]);
                 //\Doctrine\Common\Util\Debug::dump($data["Livrable"]["remarques"]);
-                
+                //\Doctrine\Common\Util\Debug::dump($data["Jalon"]["phase"]);
                 
                 //On regard s'il existe déjà des données (Livrables)
                 $repository = $this->getDoctrine()->getManager()->getRepository('NIPAProjetBundle:ProjetListeLivrable');
@@ -987,8 +989,23 @@ class ProjetController extends Controller
                 $repository = $this->getDoctrine()->getManager()->getRepository('NIPAProjetBundle:ProjetListeJalonDate');
                 $listProjetJalonDate = $repository->getJalonDateProjetEnRealisation($projet); 
                 
+                //On regard s'il existe déjà des données (Validation)
+                $repository = $this->getDoctrine()->getManager()->getRepository('NIPAProjetBundle:ProjetValidationPhase');
+                $listProjetValidationPhase = $repository->getValidationProjetEnRealisation($projet); 
+                
                 $em = $this->getDoctrine()->getEntityManager();
 
+                /***Validation RESET***/
+                if(sizeof($listProjetValidationPhase) != 0)
+                {
+                    // On supprime tout?
+                    foreach($listProjetValidationPhase as $validation)
+                    {
+                        $em->remove($validation);
+                        $em->flush();
+                    }
+                }                
+                
                 /***********/               
                 // LIVRABLES
                 if(isset($data["Livrable"]))
@@ -1007,7 +1024,8 @@ class ProjetController extends Controller
                     foreach ($data["Livrable"]["id"] as $liv)
                     {
                         $stepLivrable = new ProjetListeLivrable;
-
+                        $ProjetValidationPhase = new ProjetValidationPhase();
+                        
                         // On récupère le livrable correspondant à l'id
                         $id = $data["Livrable"]["id"][$i];
                         $repository = $this->getDoctrine()->getManager()->getRepository('NIPAProjetBundle:ProjetLivrable');            
@@ -1015,7 +1033,7 @@ class ProjetController extends Controller
 
                         $stepLivrable->setLivrable($livrable);
                         $stepLivrable->setProjet($projet);
-
+                        
                         //Date Prev
                         if($data["Livrable"]["datePrev"][$i] != "")
                         {
@@ -1037,13 +1055,26 @@ class ProjetController extends Controller
                         }
 
                         // Si checkbox validation coché
-                        if(isset($data["Livrable"]["validation"]["Ref".$id]))
+                        if(isset($data["Livrable"]["validation"][$id]))
                         {
                             $stepLivrable->setValidationEffective(1);
+                            $ProjetValidationPhase->setValidationJalon("OK");
                         }
 
                         $stepLivrable->setRemarques($data["Livrable"]["remarques"][$i]);
 
+                        
+                        /******Validation SETTER*******/
+                        $nomPhaseLiv = $data["Livrable"]["phase"][$i];
+                        $repository = $this->getDoctrine()->getManager()->getRepository('NIPAProjetBundle:ProjetPhase');            
+                        $phase = $repository->findOneBy(array('nom' => $nomPhaseLiv));
+                        
+                        $ProjetValidationPhase->setNom($livrable->getNom()); 
+                        $ProjetValidationPhase->setProjet($projet);
+                        $ProjetValidationPhase->setRefPhase($phase);
+                        /************/
+                        
+                        $em->persist($ProjetValidationPhase);
                         $em->persist($stepLivrable);
                         $em->flush();
 
@@ -1070,7 +1101,8 @@ class ProjetController extends Controller
                     foreach ($data["Jalon"]["id"] as $jal)
                     {
                         $stepJalon = new ProjetListeJalonDate();
-
+                        $ProjetValidationPhase = new ProjetValidationPhase();
+                        
                         // On récupère le Jalon correspondant à l'id
                         $id = $data["Jalon"]["id"][$j];
                         $repository = $this->getDoctrine()->getManager()->getRepository('NIPAProjetBundle:ProjetJalonDate');            
@@ -1100,13 +1132,25 @@ class ProjetController extends Controller
                         }
 
                         // Si checkbox validation coché
-                        if(isset($data["Jalon"]["validation"]["Ref".$id]))
+                        if(isset($data["Jalon"]["validation"][$id]))
                         {
                             $stepJalon->setValidationEffective(1);
+                            $ProjetValidationPhase->setValidationJalon("OK");
                         }
 
                         $stepJalon->setRemarques($data["Jalon"]["remarques"][$j]);
 
+                        /******Validation SETTER*******/
+                        $nomPhaseJalon = $data["Jalon"]["phase"][$j];
+                        $repository = $this->getDoctrine()->getManager()->getRepository('NIPAProjetBundle:ProjetPhase');            
+                        $phase = $repository->findOneBy(array('nom' => $nomPhaseJalon));
+                        
+                        $ProjetValidationPhase->setNom($jalon->getNom()); 
+                        $ProjetValidationPhase->setProjet($projet);
+                        $ProjetValidationPhase->setRefPhase($phase);
+                        /************/                        
+                        
+                        $em->persist($ProjetValidationPhase);
                         $em->persist($stepJalon);
                         $em->flush();
 
@@ -1228,7 +1272,7 @@ class ProjetController extends Controller
                         }
 
                         // Si checkbox validation coché
-                        if(isset($data["Livrable"]["validation"]["Ref".$id]))
+                        if(isset($data["Livrable"]["validation"][$id]))
                         {
                             $stepLivrable->setValidationEffective(1);
                         }
@@ -1291,7 +1335,7 @@ class ProjetController extends Controller
                         }
 
                         // Si checkbox validation coché
-                        if(isset($data["Jalon"]["validation"]["Ref".$id]))
+                        if(isset($data["Jalon"]["validation"][$id]))
                         {
                             $stepJalon->setValidationEffective(1);
                         }
@@ -1419,7 +1463,7 @@ class ProjetController extends Controller
                         }
 
                         // Si checkbox validation coché
-                        if(isset($data["Livrable"]["validation"]["Ref".$id]))
+                        if(isset($data["Livrable"]["validation"][$id]))
                         {
                             $stepLivrable->setValidationEffective(1);
                         }
@@ -1482,7 +1526,7 @@ class ProjetController extends Controller
                         }
 
                         // Si checkbox validation coché
-                        if(isset($data["Jalon"]["validation"]["Ref".$id]))
+                        if(isset($data["Jalon"]["validation"][$id]))
                         {
                             $stepJalon->setValidationEffective(1);
                         }
@@ -1557,7 +1601,7 @@ class ProjetController extends Controller
             $datePrev = new \DateTime($format);
             $stepInstance->setDatePrev($datePrev);
 
-            if($data["validation"] == true)
+            if($data["validation"] == "true")
             {
                 $stepInstance->setValidationEffective(1);
             }

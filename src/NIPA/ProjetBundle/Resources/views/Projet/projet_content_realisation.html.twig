@@ -28,10 +28,138 @@
                             
                             <div class="panel panel-info" id="GDP">
                                 <div class="panel-heading" id="GDP">
-                                    <h5 class="panel-title"> Informations liées à la phase <strong> {{ phase.getNom()}} </strong></h5>
+                                    <h5 class="panel-title"> Informations liées à la phase <strong> {{ phase.getNom()}} </strong>
+                                        
+                                        {# AFFICHAGE DATE DE MEP si MEP #}
+                                        {% if (phase.getNom() == "MEP")%}
+                                            {% set MEP = null %}
+                                            {% set MEP_RZO = null %}
+                                            {% set MEP_SI = null %}
+                                            {% for livJalon in listProjetListeJalonDateEnRealisation %}
+                                                {% if livJalon.getJalonDate().getRefPhase().getNom() == phase.getNom()%}
+                                                    
+                                                    {# Si MEP SI #}
+                                                    {% if livJalon.getJalonDate().getNom() == "MEP SI" and livJalon.getValidationEffective() == true %}
+                                                        {% if livJalon.dateRev() != "" %}
+                                                            {% set MEP_SI = livJalon.dateRev() %}
+                                                        {% elseif livJalon.datePrev() != "" %}
+                                                            {% set MEP_SI = livJalon.datePrev() %}
+                                                        {% else %}
+                                                            {% set MEP_SI = "" %}
+                                                        {% endif %}
+                                                    {% endif %}
+                                                    {# Si MEP RZO #}
+                                                    {% if livJalon.getJalonDate().getNom() == "MEP Réseau" and livJalon.getValidationEffective() == true %}
+                                                        {% if livJalon.dateRev() != "" %}
+                                                            {% set MEP_RZO = livJalon.dateRev() %}
+                                                        {% elseif livJalon.datePrev() != "" %}
+                                                            {% set MEP_RZO = livJalon.datePrev() %}
+                                                        {% else %}
+                                                            {% set MEP_RZO = "" %}
+                                                        {% endif %}
+                                                    {% endif %}
+                                                        
+                                                    
+                                                    {# Si Dev SI #}
+                                                    {% if projet.getDevSI() == true and projet.getDevRZO() == false %}
+                                                        {% if MEP_SI != null %}
+                                                            {% set MEP = MEP_SI %}
+                                                        {% endif %}
+                                                    {% endif %}
+                                                    
+                                                    {# Si Dev RZO #}
+                                                    {% if projet.getDevSI() == false and projet.getDevRZO() == true %}
+                                                        {% if MEP_RZO != null %}
+                                                            {% set MEP = MEP_RZO %}
+                                                        {% endif %}
+                                                    {% endif %}
+                                                    
+                                                    {# Si Dev SI et RZO #}
+                                                    {% if projet.getDevSI() == true and projet.getDevRZO() == true  %}
+                                                        {% if MEP_SI != null and MEP_RZO != null %}
+                                                            {% if MEP_RZO|date('Ymd') > MEP_SI|date('Ymd') %}
+                                                                {% set MEP = MEP_RZO %}
+                                                            {% else %}
+                                                                {% set MEP = MEP_SI %}
+                                                            {% endif %}
+                                                        {% elseif MEP_SI != null %}
+                                                            {% set MEP = MEP_SI %}
+                                                        {% elseif MEP_RZO != null %}
+                                                            {% set MEP = MEP_RZO %}
+                                                        {% endif %}
+                                                    {% endif %}
+                                                {% endif %}
+                                            {% endfor %}                                            
+                                            
+                                                (Date MEP: <strong> {% if MEP != null %} {{ MEP|date('d/m/Y') }} {% endif %}</strong>)
+                                        {% endif %}  
+                                        
+                                    </h5>
                                     <div class="pull-right">
-                                        Statut: <strong> OK/NOK </strong>
-                                        {# <span data-toggle="collapse" data-target="#collapseInfo{{ phase.getNom() }}" class="clickable collapsed" title="Afficher détails" data-container="body"> #}
+                                        
+                                        Statut Jalon:                                                 
+                                        {# Validation ok Liste Jalons #}
+                                        {% if listProjetListeLivrableEnRealisation is defined and listProjetListeLivrableEnRealisation|length != 0 %}
+                                            {% set ValidationLivData = 0 %}
+                                            {% set TotalLivDataPhase = 0 %}
+                                            {% for livData in listProjetListeLivrableEnRealisation %}
+                                                {% if livData.getLivrable().getRefPhase().getNom() == phase.getNom()%}
+                                                    {% if livData.getValidationEffective() == true %}
+                                                        {% set ValidationLivData = ValidationLivData + 1 %}
+                                                    {% endif %}
+                                                    {% set TotalLivDataPhase = TotalLivDataPhase + 1 %}
+                                                {% endif %}
+                                            {% endfor %}
+                                        {% else %}
+                                            {% set ValidationLivData = 123 %}
+                                            {% set TotalLivDataPhase = 123 %}
+                                        {% endif %}                               
+                                        {% if listProjetListeJalonDateEnRealisation is defined and listProjetListeJalonDateEnRealisation|length != 0%}
+                                            {% set ValidationJalonData = 0 %}
+                                            {% set TotaJalonDataPhase = 0 %}
+                                            {% for livJalon in listProjetListeJalonDateEnRealisation %}
+                                                {% if livJalon.getJalonDate().getRefPhase().getNom() == phase.getNom()%}
+                                                    {% if livJalon.getValidationEffective() == true %}
+                                                        {% set ValidationJalonData = ValidationJalonData + 1 %}
+                                                    {% endif %}
+                                                    {% set TotaJalonDataPhase = TotaJalonDataPhase + 1 %}
+                                                {% endif %}
+                                            {% endfor %}
+                                        {% else %}
+                                            {% set ValidationJalonData = 123 %}
+                                            {% set TotaJalonDataPhase = 123 %}
+                                        {% endif %} 
+
+                                        {% if (listProjetListeLivrableEnRealisation|length != 0) or (listProjetListeJalonDateEnRealisation|length != 0)%}
+                                            {% if (ValidationLivData + ValidationJalonData) == (TotalLivDataPhase + TotaJalonDataPhase) %}
+                                                <strong> OK </strong>
+                                            {% endif %}                                                   
+                                        {% endif %}                                                  
+                                        |
+                                        Statut Instance:                                
+                                        {# Validation ok Liste Instances #}
+                                        {% if countInstance[phase.getId()-1][1] != 0 %} {# On test si on des instances pour cette phase Projet #}
+                                            {% if listProjetListeInstance is defined %}
+                                                {% set ValidationInstanceData = null %}
+                                                {% set indexInstance = 0 %}
+                                                {% for instance in listProjetListeInstance %}
+                                                    {% if instance.getInstance().getRefPhase().getNom() == phase.getNom() %}
+                                                        {% if instance.getInstance().getReference() > indexInstance %}
+                                                            {% if instance.getStatutInstance() == "GO" %}                                                    
+                                                               {% set ValidationInstanceData = true %}
+                                                            {% endif %}
+                                                            {% set indexInstance = instance.getInstance().getReference() %}
+                                                        {% endif %}                                                           
+                                                    {% endif %}
+                                                {% endfor %}  
+                                                {% if ValidationInstanceData == true %}
+                                                    <strong> OK </strong>
+                                                {% endif %}
+                                            {% endif %}
+                                        {% else %}
+                                            <strong> X </strong>
+                                        {% endif %} 
+                                        
                                         {# <span data-toggle="collapse" data-target="#collapseInfo{{ phase.getNom() }}" class="clickable collapsed" title="Afficher détails" data-container="body"> #}
                                         <span data-toggle="collapse" data-parent="#accordion3" id="collapsePhaseRealisation{{ phase.getNom() }}"  href="#collapsePhase{{ phase.getNom() }}" class="clickable collapsed" title="Afficher détails" data-container="body">
                                             {% if listProjetPhaseEtapeRealisation|length == 1 %}            
@@ -54,6 +182,13 @@
                                             <div class="panel-heading">
                                                 <h5 class="panel-title"> Liste Jalons</h5>
                                                 <div class="pull-right">
+                                                    
+                                                    {% if (listProjetListeLivrableEnRealisation|length != 0) or (listProjetListeJalonDateEnRealisation|length != 0)%}
+                                                        {% if (ValidationLivData + ValidationJalonData) == (TotalLivDataPhase + TotaJalonDataPhase) %}
+                                                            <strong> OK </strong>
+                                                        {% endif %}                                                   
+                                                    {% endif %}      
+                                                    
                                                     <span data-toggle="collapse" data-target="#collapseJalon{{ phase.getNom() }}" class="clickable collapsed" title="Jalons" data-container="body">
                                                         <i class="glyphicon glyphicon-plus-sign"></i>
                                                     </span>
@@ -88,6 +223,7 @@
                                                                         <td><input type="text" class="form-control input-md date textinput" id="dateRevLivrable{{ liv.getReference() }}" class="dateRevLivrable{{ liv.getReference() }}" name="Livrable[dateRev][]" style="text-align:center;"></td>
                                                                         <td class="text-center"><input type="checkbox" id="validationLivrable{{ liv.getReference() }}" name="Livrable[validation][{{ liv.getReference() }}]" /></td>
                                                                         <td class="text-center"><textarea class="form-control input-md" rows="2" cols="50" id="remarquesLivrable{{ liv.getReference() }}" placeholder="..." name="Livrable[remarques][]"></textarea></td>
+                                                                        <input type="HIDDEN" name="Livrable[phase][]" value="{{ phase.getNom() }}"> 
                                                                     </tr>
                                                                     <script>
 
@@ -131,6 +267,7 @@
                                                                             <td class="text-center"><input type="checkbox" id="validationLivrable{{ livData.getLivrable().getReference() }}" name="Livrable[validation][{{ livData.getLivrable().getReference() }}]" /></td>
                                                                         {% endif %}
                                                                         <td class="text-center"><textarea class="form-control input-md" rows="2" cols="50" id="remarquesLivrable{{ livData.getLivrable().getReference() }}" placeholder="..." name="Livrable[remarques][]">{{ livData.getRemarques() }}</textarea></td>
+                                                                        <input type="HIDDEN" name="Livrable[phase][]" value="{{ phase.getNom() }}"> 
                                                                     </tr>
                                                                     <script>
 
@@ -175,6 +312,7 @@
                                                                         <td><input type="text" class="form-control input-md date textinput" id="dateRevJalon{{ jal.getReference() }}" class="dateRevJalon{{ jal.getReference() }}" name="Jalon[dateRev][]" style="text-align:center;"></td>
                                                                         <td class="text-center"><input type="checkbox" id="validationJalon{{ jal.getReference() }}" name="Jalon[validation][{{ jal.getReference() }}]" /></td>
                                                                         <td class="text-center"><textarea class="form-control input-md" rows="2" cols="50" id="remarquesJalon{{ jal.getReference() }}" placeholder="..." name="Jalon[remarques][]"></textarea></td>
+                                                                        <input type="HIDDEN" name="Jalon[phase][]" value="{{ phase.getNom() }}"> 
                                                                     </tr>    
                                                                     <script>
 
@@ -218,6 +356,7 @@
                                                                             <td class="text-center"><input type="checkbox" id="validationJalon{{ jalonData.getJalonDate().getReference() }}" name="Jalon[validation][{{ jalonData.getJalonDate().getReference() }}]" /></td>
                                                                         {% endif %}                                                                            
                                                                         <td class="text-center"><textarea class="form-control input-md" rows="2" cols="50" id="remarquesJalon{{ jalonData.getJalonDate().getReference() }}" placeholder="..." name="Jalon[remarques][]">{{ jalonData.getRemarques() }}</textarea></td>
+                                                                        <input type="HIDDEN" name="Jalon[phase][]" value="{{ phase.getNom() }}"> 
                                                                     </tr>
                                                                     <script>
 
@@ -262,6 +401,24 @@
                                             <div class="panel-heading">
                                                 <h5 class="panel-title"> Liste Instances</h5>
                                                 <div class="pull-right">
+                                                    
+                                                    {# Affichage dernière Instances #}
+                                                        {% set derniereInstance = null %}
+                                                        {% set derniereInstanceDate = null %}
+                                                        {% set indexInstance = 0 %}
+                                                        {% if listProjetListeInstance is defined %} 
+                                                        {% for instance in listProjetListeInstance %}
+                                                            {% if instance.getInstance().getRefPhase().getNom() == phase.getNom() %}
+                                                                {% if instance.getInstance().getReference() > indexInstance %}
+                                                                    {% set indexInstance = instance.getInstance().getReference() %}
+                                                                    {% set derniereInstance = instance.getInstance().getNom() %}
+                                                                    {% set derniereInstanceDate = instance.datePrev() %}
+                                                                {% endif %}
+                                                            {% endif %}
+                                                        {% endfor %}      
+                                                    {% endif %}
+                                                    Dernière instance: <strong> {{ derniereInstance }} </strong> | Date: <strong> {% if derniereInstanceDate != null %}  {{ derniereInstanceDate|date('d/m/Y') }} {% endif %} </strong>
+                                                                                             
                                                     <span data-toggle="collapse" data-target="#collapseInstance{{ phase.getNom() }}" class="clickable collapsed" title="Instances" data-container="body">
                                                         <i class="glyphicon glyphicon-plus-sign"></i>
                                                     </span>

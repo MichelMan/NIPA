@@ -46,7 +46,14 @@ class Projet
      * @ORM\Column(name="titreLot", type="string", length=50, nullable=true)
      */
     private $titreLot;
-
+    
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="codeOGP", type="string", length=50, nullable=true)
+     */
+    private $codeOGP;
+    
     /**
      * @var string
      *
@@ -293,6 +300,31 @@ class Projet
         return $this->titre;
     }
 
+    /**
+     * Set codeOGP
+     *
+     * @param string $codeOGP
+     *
+     * @return Projet
+     */
+    public function setCodeOGP($codeOGP)
+    {
+        $this->codeOGP = $codeOGP;
+
+        return $this;
+    }
+
+    /**
+     * Get codeOGP
+     *
+     * @return string
+     */
+    public function getCodeOGP()
+    {
+        return $this->codeOGP;
+    }    
+    
+    
     /**
      * Set titreLot
      *

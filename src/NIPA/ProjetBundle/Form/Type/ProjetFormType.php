@@ -16,6 +16,7 @@ class ProjetFormType extends AbstractType
         $builder->add('referenceProjet', 'hidden');        
         $builder->add('titre');
         $builder->add('titreLot', 'text', array('required' => false));
+        $builder->add('codeOGP', 'text');
         $builder->add('enveloppe');
         $builder->add('priorite', 'text', array('required' => false));
         $builder->add('direction');

@@ -12,7 +12,96 @@
         {% endif %}
     {% endfor %}     
     
-    <h4 class=""><i class="fa fa-pencil-square fa-fw"></i> {{ 'Informations Projet'|trans }}: {% if projet.referenceProjet %}{{ projet.titre }}{% endif %}</h4>        
+    {% if projet.referenceProjet %}                
+        <div class="pull-left"><h4 class=""><i class="fa fa-pencil-square fa-fw"></i> {{ 'Informations Projet'|trans }}: {{ projet.titre }}</h4></div>   
+        <div class="pull-right">
+            <div class="col-md-12">
+                <div class="panel panel-success">
+                    <div class="panel-heading">  
+                        <center class="panel-title">
+                           {# CALCUL BUDGET #} 
+                           {% set total = 0 %}
+                            {% for etape in listProjetEtape %}
+                                {% set counter = 0 %}
+                                {% set break = false %}
+                                {% for budget in listProjetBudget if not break %}
+                                    {% if budget.etapeProjet == etape.getNom() %}
+                                        {% set counter = budget.montant %}
+                                        {% set break = true %}
+                                    {% endif %}
+                                {% endfor %} 
+                            {% set total = total + counter %}
+                            {% endfor %}
+                            
+                            {# CALCUL DATE DE MEP si MEP #}
+                            {% set MEP = null %}
+                            {% set MEP_RZO = null %}
+                            {% set MEP_SI = null %}
+                            {% for livJalon in listProjetListeJalonDateEnRealisation %}
+                                    
+                                {# Si MEP SI #}
+                                {% if livJalon.getJalonDate().getNom() == "MEP SI" and livJalon.getValidationEffective() == true %}
+                                    {% if livJalon.dateRev() != "" %}
+                                        {% set MEP_SI = livJalon.dateRev() %}
+                                    {% elseif livJalon.datePrev() != "" %}
+                                        {% set MEP_SI = livJalon.datePrev() %}
+                                    {% else %}
+                                        {% set MEP_SI = "" %}
+                                    {% endif %}
+                                {% endif %}
+                                {# Si MEP RZO #}
+                                {% if livJalon.getJalonDate().getNom() == "MEP Réseau" and livJalon.getValidationEffective() == true %}
+                                    {% if livJalon.dateRev() != "" %}
+                                        {% set MEP_RZO = livJalon.dateRev() %}
+                                    {% elseif livJalon.datePrev() != "" %}
+                                        {% set MEP_RZO = livJalon.datePrev() %}
+                                    {% else %}
+                                        {% set MEP_RZO = "" %}
+                                    {% endif %}
+                                {% endif %}
+
+
+                                {# Si Dev SI #}
+                                {% if projet.getDevSI() == true and projet.getDevRZO() == false %}
+                                    {% if MEP_SI != null %}
+                                        {% set MEP = MEP_SI %}
+                                    {% endif %}
+                                {% endif %}
+
+                                {# Si Dev RZO #}
+                                {% if projet.getDevSI() == false and projet.getDevRZO() == true %}
+                                    {% if MEP_RZO != null %}
+                                        {% set MEP = MEP_RZO %}
+                                    {% endif %}
+                                {% endif %}
+
+                                {# Si Dev SI et RZO #}
+                                {% if projet.getDevSI() == true and projet.getDevRZO() == true  %}
+                                    {% if MEP_SI != null and MEP_RZO != null %}
+                                        {% if MEP_RZO|date('Ymd') > MEP_SI|date('Ymd') %}
+                                            {% set MEP = MEP_RZO %}
+                                        {% else %}
+                                            {% set MEP = MEP_SI %}
+                                        {% endif %}
+                                    {% elseif MEP_SI != null %}
+                                        {% set MEP = MEP_SI %}
+                                    {% elseif MEP_RZO != null %}
+                                        {% set MEP = MEP_RZO %}
+                                    {% endif %}
+                                {% endif %}
+                            {% endfor %}                                            
+                            
+                            Budget: <strong> {{ total }} k€ </strong> / 
+                            Phase: <strong> </strong> / 
+                            Date de MEP: <strong> {% if MEP != null %} {{ MEP|date('d/m/Y') }} {% endif %} </strong>    
+                        </center>       
+                    </div>         
+                </div>
+            </div>
+        </div>   
+    {% endif %}          
+            
+    <br><br><br>
 
     <div class="container">                   
             <div class="row col-md-13">
@@ -34,15 +123,30 @@
                                 <tr>
                                     <th class="text-center">Développement</th>
                                     <th class="text-center">Indicateur</th>
-                                    <th class="text-center">Phase Projet</th>
+                                    <th class="text-center">Phase Projet calculée</th>
+                                    <th class="text-center" title="Prise en compte de la phase Projet calculée si vide">Phase Projet manuel</th>
                                     <th class="text-center">Projet</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 <tr>
                                     <td>SI{{ form_widget(form.devSI) }} Réseau{{ form_widget(form.devRZO) }}</td>
-                                    <td>{{ form_widget(form.indicateur) }}</td>
-                                    <td>{{ form_widget(form.phaseProjet) }}</td>
+                                    <td class="col-md-1">{{ form_widget(form.indicateur) }}</td>
+                                    <td  class="col-md-3">{{ form_widget(form.phaseProjet) }}</td>
+                                    <td>
+                                        <select class="form-control" name="phaseProjetManuel">
+                                            <option value=""> </option> 
+                                            {% for phaseEnCadrage in listProjetPhaseEtapeCadrage%}
+                                                <option value="{{ phaseEnCadrage.getNom() }}">{{ phaseEnCadrage.getNom() }}</option>
+                                            {% endfor %}
+                                            {% for phaseEnConception in listProjetPhaseEtapeConception%}
+                                                <option value="{{ phaseEnConception.getNom() }}">{{ phaseEnConception.getNom() }}</option>
+                                            {% endfor %}
+                                            {% for phaseEnRealisation in listProjetPhaseEtapeRealisation%}
+                                                <option value="{{ phaseEnRealisation.getNom() }}">{{ phaseEnRealisation.getNom() }}</option>
+                                            {% endfor %}
+                                        </select>
+                                    </td>
                                     <td>Annuler{{ form_widget(form.annuler) }} Suspendre{{ form_widget(form.suspendre) }}</td>
                                 </tr>
                             </tbody>
