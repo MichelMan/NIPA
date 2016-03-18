@@ -32,7 +32,9 @@
                                     {% endif %}
                                 {% endfor %} 
                                 <strong>{{ etape.getNom() }}</strong> <span class="glyphicon glyphicon-arrow-right"></span> {{ counter|number_format(2, ',', ' ') }} k€ /
-                            {% set total = total + counter %}
+                                {% if counter != 0 %}
+                                    {% set total = counter %}
+                                {% endif %}
                             {% endfor %}
                             <strong>Total </strong> <span class="glyphicon glyphicon-arrow-right"></span> {{ total|number_format(2, ',', ' ') }} k€ /
                         {% endif %}        

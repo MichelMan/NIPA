@@ -133,6 +133,8 @@
                                         {% if (listProjetListeLivrableEnCadrage|length != 0) or (listProjetListeJalonDateEnCadrage|length != 0)%}
                                             {% if (ValidationLivData + ValidationJalonData) == (TotalLivDataPhase + TotaJalonDataPhase) %}
                                                 <strong> OK </strong>
+                                            {% else %}
+                                                <strong> En cours </strong> 
                                             {% endif %}                                                   
                                         {% endif %}                                                   
                                         |
@@ -142,23 +144,37 @@
                                             {% if listProjetListeInstance is defined %}
                                                 {% set ValidationInstanceData = null %}
                                                 {% set indexInstance = 0 %}
-                                                {% for instance in listProjetListeInstance %}
-                                                    {% if instance.getInstance().getRefPhase().getNom() == phase.getNom() %}
-                                                        {% if instance.getInstance().getReference() > indexInstance %}
-                                                            {% if instance.getStatutInstance() == "GO" %}                                                    
-                                                               {% set ValidationInstanceData = true %}
-                                                            {% endif %}
-                                                            {% set indexInstance = instance.getInstance().getReference() %}
-                                                        {% endif %}                                                           
+                                                {% set lastInstance = null %}
+                                                {# On détermine la dernière instance de la phase P #}
+                                                {% for ins in listProjetInstance %}
+                                                    {% if ins.getRefPhase().getNom() == phase.getNom() %}
+                                                        {% if ins.getReference() > indexInstance %}
+                                                            {% set lastInstance = ins.getNom() %}
+                                                        {% endif %}   
                                                     {% endif %}
-                                                {% endfor %}  
+                                                {% endfor %} 
+                                                {# Validation de l'instance de la phase P #}
+                                                {% set indexInstance = 0 %}
+                                                {% for instance in listProjetListeInstance %}
+                                                    {% if instance.getInstance().getRefPhase().getNom() == phase.getNom() %} 
+                                                        {% if instance.getInstance().getReference() > indexInstance %}
+                                                            {% if instance.getInstance().getNom() == lastInstance %}                                            
+                                                                {% if instance.getStatutInstance() == "GO" %}                                              
+                                                                   {% set ValidationInstanceData = true %}
+                                                                {% endif %}
+                                                            {% endif %}
+                                                        {% set indexInstance = instance.getInstance().getReference() %}
+                                                        {% endif %}
+                                                    {% endif %}
+                                                {% endfor %}         
+                                                
                                                 {% if ValidationInstanceData == true %}
                                                     <strong> OK </strong>
                                                 {% endif %}
                                             {% endif %}
                                         {% else %}
                                             <strong> X </strong>
-                                        {% endif %}   
+                                        {% endif %}  
                                                     
                                         {# <span data-toggle="collapse" data-target="#collapseInfo{{ phase.getNom() }}" class="clickable collapsed" title="Afficher détails" data-container="body"> #}
                                         <span data-toggle="collapse" data-parent="#accordion1" id="collapsePhaseCadrage{{ phase.getNom() }}"  href="#collapsePhase{{ phase.getNom() }}" class="clickable collapsed" title="Afficher détails" data-container="body">
@@ -186,6 +202,8 @@
                                                     {% if (listProjetListeLivrableEnCadrage|length != 0) or (listProjetListeJalonDateEnCadrage|length != 0)%}
                                                         {% if (ValidationLivData + ValidationJalonData) == (TotalLivDataPhase + TotaJalonDataPhase) %}
                                                             <strong> OK </strong>
+                                                        {% else %}
+                                                            <strong> En cours </strong> 
                                                         {% endif %}                                                   
                                                     {% endif %}   
                                                     
@@ -217,12 +235,13 @@
                                                             {% for liv in listProjetLivrable %}
                                                                 {% if liv.getRefPhase().getNom() == phase.getNom()%}
                                                                     <tr>    
-                                                                        <td style="display:none"><input type="text" class="form-control input-md date textinput" value="{{ liv.getId() }}" id="IdLivrable{{ liv.getReference() }}" class="IdLivrable{{ liv.getReference() }}" name="Livrable[id][]" style="text-align:center;"></td>
+                                                                        <td style="display:none"><input type="text" class="form-control input-md date textinput" value="{{ liv.getId() }}" id="IdLivrable{{ liv.getReference() }}" name="Livrable[id][]" style="text-align:center;"></td>
                                                                         <td class="text-center" title="{{ liv.description }}"><strong>{{ liv.getNom() }}</strong></td>
-                                                                        <td><input type="text" class="form-control input-md date textinput" id="datePrevLivrable{{ liv.getReference() }}" class="datePrevLivrable{{ liv.getReference() }}" name="Livrable[datePrev][]" style="text-align:center;"></td>
-                                                                        <td><input type="text" class="form-control input-md date textinput" id="dateRevLivrable{{ liv.getReference() }}" class="dateRevLivrable{{ liv.getReference() }}" name="Livrable[dateRev][]" style="text-align:center;"></td>
+                                                                        <td><input type="text" class="form-control input-md date textinput" id="datePrevLivrable{{ liv.getReference() }}" name="Livrable[datePrev][]" style="text-align:center;"></td>
+                                                                        <td><input type="text" class="form-control input-md date textinput" id="dateRevLivrable{{ liv.getReference() }}" name="Livrable[dateRev][]" style="text-align:center;"></td>
                                                                         <td class="text-center"><input type="checkbox" id="validationLivrable{{ liv.getReference() }}" name="Livrable[validation][{{ liv.getReference() }}]" /></td>
                                                                         <td class="text-center"><textarea class="form-control input-md" rows="2" cols="50" id="remarquesLivrable{{ liv.getReference() }}" placeholder="..." name="Livrable[remarques][]"></textarea></td>
+                                                                        <input type="HIDDEN" name="Livrable[phase][]" value="{{ phase.getNom() }}"> 
                                                                     </tr>
                                                                     <script>
 
@@ -256,16 +275,17 @@
                                                             {% for livData in listProjetListeLivrableEnCadrage %}
                                                                 {% if livData.getLivrable().getRefPhase().getNom() == phase.getNom()%}
                                                                     <tr>    
-                                                                        <td style="display:none"><input type="text" class="form-control input-md date textinput" value="{{ livData.getLivrable().getId() }}" id="IdLivrable{{ livData.getLivrable().getReference() }}" class="IdLivrable{{ livData.getLivrable().getReference() }}" name="Livrable[id][]" style="text-align:center;" ></td>
+                                                                        <td style="display:none"><input type="text" class="form-control input-md date textinput" value="{{ livData.getLivrable().getId() }}" id="IdLivrable{{ livData.getLivrable().getReference() }}"  name="Livrable[id][]" style="text-align:center;" ></td>
                                                                         <td class="text-center" title="{{ livData.getLivrable().description }}"><strong>{{ livData.getLivrable().getNom() }}</strong></td>
-                                                                        <td><input type="text" class="form-control input-md date textinput" id="datePrevLivrable{{ livData.getLivrable().getReference() }}" class="datePrevLivrable{{ livData.getLivrable().getReference() }}" name="Livrable[datePrev][]" style="text-align:center;" value="{% if livData.getDatePrev() != null %}{{ livData.getDatePrev()|date('d/m/Y') }}{% endif %}"></td>
-                                                                        <td><input type="text" class="form-control input-md date textinput" id="dateRevLivrable{{ livData.getLivrable().getReference() }}" class="dateRevLivrable{{ livData.getLivrable().getReference() }}" name="Livrable[dateRev][]" style="text-align:center;" value="{% if livData.getDateRev() != null %}{{ livData.getDateRev()|date('d/m/Y') }}{% endif %}"></td>
+                                                                        <td><input type="text" class="form-control input-md date textinput" id="datePrevLivrable{{ livData.getLivrable().getReference() }}"  name="Livrable[datePrev][]" style="text-align:center;" value="{% if livData.getDatePrev() != null %}{{ livData.getDatePrev()|date('d/m/Y') }}{% endif %}"></td>
+                                                                        <td><input type="text" class="form-control input-md date textinput" id="dateRevLivrable{{ livData.getLivrable().getReference() }}"  name="Livrable[dateRev][]" style="text-align:center;" value="{% if livData.getDateRev() != null %}{{ livData.getDateRev()|date('d/m/Y') }}{% endif %}"></td>
                                                                         {% if livData.getValidationEffective() == true %}
                                                                             <td class="text-center"><input type="checkbox" id="validationLivrable{{ livData.getLivrable().getReference() }}" name="Livrable[validation][{{ livData.getLivrable().getReference() }}]" checked/></td>
                                                                         {% else %}
                                                                             <td class="text-center"><input type="checkbox" id="validationLivrable{{ livData.getLivrable().getReference() }}" name="Livrable[validation][{{ livData.getLivrable().getReference() }}]" /></td>
                                                                         {% endif %}
                                                                         <td class="text-center"><textarea class="form-control input-md" rows="2" cols="50" id="remarquesLivrable{{ livData.getLivrable().getReference() }}" placeholder="..." name="Livrable[remarques][]">{{ livData.getRemarques() }}</textarea></td>
+                                                                        <input type="HIDDEN" name="Livrable[phase][]" value="{{ phase.getNom() }}"> 
                                                                     </tr>
                                                                     <script>
 
@@ -304,12 +324,13 @@
                                                             {% for jal in listProjetJalonDate %}
                                                                 {% if jal.getRefPhase().getNom() == phase.getNom()%}
                                                                     <tr>    
-                                                                        <td style="display:none"><input type="text" class="form-control input-md date textinput" value="{{ jal.getId() }}" id="IdJalon{{ jal.getReference() }}" class="IdJalon{{ jal.getReference() }}" name="Jalon[id][]" style="text-align:center;"></td>
+                                                                        <td style="display:none"><input type="text" class="form-control input-md date textinput" value="{{ jal.getId() }}" id="IdJalon{{ jal.getReference() }}" name="Jalon[id][]" style="text-align:center;"></td>
                                                                         <td class="text-center" title="{{ jal.description }}"><strong>{{ jal.getNom() }}</strong></td>
-                                                                        <td><input type="text" class="form-control input-md date textinput" id="datePrevJalon{{ jal.getReference() }}" class="datePrevJalon{{ jal.getReference() }}" name="Jalon[datePrev][]" style="text-align:center;"></td>
-                                                                        <td><input type="text" class="form-control input-md date textinput" id="dateRevJalon{{ jal.getReference() }}" class="dateRevJalon{{ jal.getReference() }}" name="Jalon[dateRev][]" style="text-align:center;"></td>
+                                                                        <td><input type="text" class="form-control input-md date textinput" id="datePrevJalon{{ jal.getReference() }}" name="Jalon[datePrev][]" style="text-align:center;"></td>
+                                                                        <td><input type="text" class="form-control input-md date textinput" id="dateRevJalon{{ jal.getReference() }}" name="Jalon[dateRev][]" style="text-align:center;"></td>
                                                                         <td class="text-center"><input type="checkbox" id="validationJalon{{ jal.getReference() }}" name="Jalon[validation][{{ jal.getReference() }}]" /></td>
                                                                         <td class="text-center"><textarea class="form-control input-md" rows="2" cols="50" id="remarquesJalon{{ jal.getReference() }}" placeholder="..." name="Jalon[remarques][]"></textarea></td>
+                                                                        <input type="HIDDEN" name="Jalon[phase][]" value="{{ phase.getNom() }}"> 
                                                                     </tr>    
                                                                     <script>
 
@@ -343,16 +364,17 @@
                                                             {% for jalonData in listProjetListeJalonDateEnCadrage %}
                                                                 {% if jalonData.getJalonDate().getRefPhase().getNom() == phase.getNom()%}
                                                                     <tr>    
-                                                                        <td style="display:none"><input type="text" class="form-control input-md date textinput" value="{{ jalonData.getJalonDate().getId() }}" id="IdJalon{{ jalonData.getJalonDate().getReference() }}" class="IdJalon{{ jalonData.getJalonDate().getReference() }}" name="Jalon[id][]" style="text-align:center;"></td>
+                                                                        <td style="display:none"><input type="text" class="form-control input-md date textinput" value="{{ jalonData.getJalonDate().getId() }}" id="IdJalon{{ jalonData.getJalonDate().getReference() }}" name="Jalon[id][]" style="text-align:center;"></td>
                                                                         <td class="text-center" title="{{ jalonData.getJalonDate().description }}"><strong>{{ jalonData.getJalonDate().getNom() }}</strong></td>
-                                                                        <td><input type="text" class="form-control input-md date textinput" id="datePrevJalon{{ jalonData.getJalonDate().getReference() }}" class="datePrevJalon{{ jalonData.getJalonDate().getReference() }}" name="Jalon[datePrev][]" style="text-align:center;" value="{% if jalonData.getDatePrev() != null %}{{ jalonData.getDatePrev()|date('d/m/Y') }}{% endif%}"></td>
-                                                                        <td><input type="text" class="form-control input-md date textinput" id="dateRevJalon{{ jalonData.getJalonDate().getReference() }}" class="dateRevJalon{{ jalonData.getJalonDate().getReference() }}" name="Jalon[dateRev][]" style="text-align:center;" value="{% if jalonData.getDateRev() != null %}{{ jalonData.getDateRev()|date('d/m/Y') }}{% endif %}"></td>
+                                                                        <td><input type="text" class="form-control input-md date textinput" id="datePrevJalon{{ jalonData.getJalonDate().getReference() }}" name="Jalon[datePrev][]" style="text-align:center;" value="{% if jalonData.getDatePrev() != null %}{{ jalonData.getDatePrev()|date('d/m/Y') }}{% endif%}"></td>
+                                                                        <td><input type="text" class="form-control input-md date textinput" id="dateRevJalon{{ jalonData.getJalonDate().getReference() }}"  name="Jalon[dateRev][]" style="text-align:center;" value="{% if jalonData.getDateRev() != null %}{{ jalonData.getDateRev()|date('d/m/Y') }}{% endif %}"></td>
                                                                         {% if jalonData.getValidationEffective() == true %}
                                                                             <td class="text-center"><input type="checkbox" id="validationJalon{{ jalonData.getJalonDate().getReference() }}" name="Jalon[validation][{{ jalonData.getJalonDate().getReference() }}]" checked/></td>
                                                                         {% else %}
                                                                             <td class="text-center"><input type="checkbox" id="validationJalon{{ jalonData.getJalonDate().getReference() }}" name="Jalon[validation][{{ jalonData.getJalonDate().getReference() }}]" /></td>
                                                                         {% endif %}                                                                            
                                                                         <td class="text-center"><textarea class="form-control input-md" rows="2" cols="50" id="remarquesJalon{{ jalonData.getJalonDate().getReference() }}" placeholder="..." name="Jalon[remarques][]">{{ jalonData.getRemarques() }}</textarea></td>
+                                                                        <input type="HIDDEN" name="Jalon[phase][]" value="{{ phase.getNom() }}"> 
                                                                     </tr>
                                                                     <script>
 
@@ -399,6 +421,7 @@
                                                     {# Affichage dernière Instances #}
                                                         {% set derniereInstance = null %}
                                                         {% set derniereInstanceDate = null %}
+                                                        {% set dernierStatut = null %}
                                                         {% set indexInstance = 0 %}
                                                         {% if listProjetListeInstance is defined %} 
                                                         {% for instance in listProjetListeInstance %}
@@ -407,11 +430,12 @@
                                                                     {% set indexInstance = instance.getInstance().getReference() %}
                                                                     {% set derniereInstance = instance.getInstance().getNom() %}
                                                                     {% set derniereInstanceDate = instance.datePrev() %}
+                                                                    {% set dernierStatut = instance.statutInstance() %}
                                                                 {% endif %}
                                                             {% endif %}
                                                         {% endfor %}      
                                                     {% endif %}
-                                                    Dernière instance: <strong> {{ derniereInstance }} </strong> | Date: <strong> {% if derniereInstanceDate != null %}  {{ derniereInstanceDate|date('d/m/Y') }} {% endif %} </strong>
+                                                    Dernière instance: <strong> {{ derniereInstance }} </strong> | Statut: <strong> {{ dernierStatut }} </strong> | Date: <strong> {% if derniereInstanceDate != null %}  {{ derniereInstanceDate|date('d/m/Y') }} {% endif %} </strong>
                                                     
                                                     <span data-toggle="collapse" data-target="#collapseInstance{{ phase.getNom() }}" class="clickable collapsed" title="Instances" data-container="body">
                                                         <i class="glyphicon glyphicon-plus-sign"></i>
@@ -488,8 +512,8 @@
                                                                         {% endfor %}
                                                                     </select> 
                                                                 </td>
-                                                                <td><input type="text" class="form-control input-md date textinput" id="datePrevInstance{{phase.getNom()}}" class="datePrevInstance{{phase.getNom()}}" name="datePrevInstance{{phase.getNom()}}" style="text-align:center;"></td>
-                                                                {# <td><input type="text" class="form-control input-md date textinput" id="dateRevInstance{{phase.getNom()}}" class="dateRevInstance{{phase.getNom()}}" name="dateRevInstance{{phase.getNom()}}" style="text-align:center;"></td> #}
+                                                                <td><input type="text" class="form-control input-md date textinput" id="datePrevInstance{{phase.getNom()}}" name="datePrevInstance{{phase.getNom()}}" style="text-align:center;"></td>
+                                                                {# <td><input type="text" class="form-control input-md date textinput" id="dateRevInstance{{phase.getNom()}}" name="dateRevInstance{{phase.getNom()}}" style="text-align:center;"></td> #}
                                                                 <td class="text-center"><input type="checkbox" id="validationInstance{{phase.getNom()}}" name="validationInstance{{phase.getNom()}}" value="false" onchange="if(this.checked) this.value='true'; else this.value='false';" /></td>
                                                                 <td class="text-center"><textarea class="form-control input-md" rows="2" cols="30" id="remarquesInstance{{phase.getNom()}}" placeholder="..." name="remarquesInstance{{phase.getNom()}}"></textarea></td>
                                                                 <td class="text-center">                                    

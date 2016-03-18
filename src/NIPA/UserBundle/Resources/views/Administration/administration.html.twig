@@ -76,6 +76,7 @@
                     <li class="active"><a href="" data-target-id="projet"><i class="fa fa-book fa-fw"></i>Projets</a></li>
                     <li><a href="#" data-target-id="champs_P"><i class="fa fa-pencil-square fa-fw"></i>Champs personnalisés Portefeuille</a></li>                                   
                     <li><a href="#" data-target-id="champs_D"><i class="fa fa-pencil-square fa-fw"></i>Champs personnalisés Demande</a></li>
+                    <li><a href="#" data-target-id="champs_Pr"><i class="fa fa-pencil-square fa-fw"></i>Champs personnalisés Projet</a></li>
                     <li><a href="#" data-target-id="user"><i class="fa fa-users fa-fw"></i>Utilisateurs</a></li>
                     <li><a href="#" data-target-id="groupe"><i class="fa fa-list-alt fa-fw"></i>Groupes</a></li>
                 </ul>
@@ -89,6 +90,9 @@
             </div>  
             <div class="col-md-9 well admin-content" id="champs_D">
                 {% include "NIPAUserBundle:Administration:administration_content_champs_demande.html.twig" %}
+            </div> 
+            <div class="col-md-9 well admin-content" id="champs_Pr">
+                {% include "NIPAUserBundle:Administration:administration_content_champs_projet.html.twig" %}
             </div> 
             <div class="col-md-9 well admin-content" id="user">
                 {% include "NIPAUserBundle:Administration:administration_content_users.html.twig" %}

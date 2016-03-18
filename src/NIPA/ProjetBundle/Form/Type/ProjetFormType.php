@@ -30,7 +30,6 @@ class ProjetFormType extends AbstractType
         $builder->add('devSI');
         $builder->add('devRZO');
         $builder->add('indicateur', 'text', array('required' => false));
-        $builder->add('phaseProjet', 'text', array('required' => false));
         $builder->add('annuler');
         $builder->add('suspendre');
         

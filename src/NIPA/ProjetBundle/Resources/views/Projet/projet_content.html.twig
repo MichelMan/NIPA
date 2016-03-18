@@ -58,7 +58,13 @@
                                                         {#    <li class="jstree-open"><a class="jstree-clicked" href="{% if pf.referencePortefeuille %} {{ path('portefeuille_edit',{'reference': pf.referencePortefeuille})}}{% endif %}" title="{{ pf.getPortefeuilleEnveloppe().getNom() }}: {{ pf.referencePortefeuille }}">{{ pf.nom }}</a>
                                                         {% else %} #}
                                                             <li><a  href="{% if de.referenceDemande %} {{ path('demande_edit',{'reference': de.referenceDemande}) }} {% endif %}" title="{% if de.referenceDemande %}  {{ de.referenceDemande }} {% endif %}">{{ de.nom }}</a>
-                                                        {# {% endif %}    #}
+                                                                <ul>
+                                                                    {% for pr in listProjet %} {# Puis on positionne chaque Pr dans le bon chemin #}   
+                                                                        {% if (pr.getDemande().getReferenceDemande() ==  de.referenceDemande()) %}    
+                                                                            <li><a  href="{% if pr.getReferenceProjet %} {{ path('projet_edit',{'reference': pr.getReferenceProjet}) }} {% endif %}" title="{% if pr.getReferenceProjet %}  {{ pr.getReferenceProjet }} {% endif %}">{% if pr.titreLot == "" %} {{ pr.titre }} {% else %} {{ pr.titreLot }} {% endif %}</a>
+                                                                        {% endif %}
+                                                                {% endfor %}                                                   
+                                                                </ul>                                        
                                                             </li> 
                                                     {% endif %}
                                                 {% endfor %}
@@ -86,21 +92,27 @@
    
 
     <script>
+    /*************TREE JS***************/
     $(function () {
       // 6 create an instance when the DOM is ready
       $('#jstreeprojet').jstree();
       
       // 7 bind to events triggered on the tree
       $('#jstreeprojet').on("changed.jstree", function (e, data) {
-        console.log(data.selected);
       });
       
+      $('#jstreeprojet').on('select_node.jstree', function(e,data) { 
+        var href = data.node.a_attr.href;
+        document.location.href = href;      
+      });
+        
       // 8 interact with the tree - either way is OK
       $('button').on('click', function () {
         $('#jstreeprojet').jstree(true).select_node('child_node_1');
         $('#jstreeprojet').jstree('select_node', 'child_node_1');
         $.jstree.reference('#jstreeprojet').select_node('child_node_1');
       });
-    });
+    });  
+    </script>  
     </script>    
 {% endblock %}

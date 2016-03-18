@@ -1,0 +1,54 @@
+{% trans_default_domain 'NIPAUserBundle' %}
+
+{% block nipa_users_div %}
+    
+    <!-- Container table filter -->
+    <div class="col-md-12">
+        
+        <br>
+        
+        <!-- PANEL -->          
+        <div class="panel panel-primary">
+            <div class="panel-heading">
+                <h3 class="panel-title">Champs personnalisés Projet</h3>
+                <div class="pull-right">
+                    <span class="clickable filter" data-toggle="tooltip" title="Filtre" data-container="body">
+                        <i class="glyphicon glyphicon-filter"></i>
+                    </span>
+                </div>
+            </div>
+             <div class="panel-body">
+                <input type="text" class="form-control" id="champs-table-demande-filter" data-action="filter" data-filters="#champs-table-demande" placeholder="Filtres champs" />
+             </div>
+            
+            <center><h1><span class="glyphicon glyphicon-warning-sign"></span> EN CHANTIER</h1></center>
+                
+        </div>
+        
+        <!-- PAGINATION -->  
+        <nav>
+          <ul class="pagination">
+            <li class="disabled">
+              <a href="#" aria-label="Previous">
+                <span aria-hidden="true">&laquo;</span>
+                <span class="sr-only">Previous</span>
+              </a>
+            </li>
+            <li class="active">
+              <a href="#">1 <span class="sr-only">(current)</span></a>
+            </li>
+            <li><a href="#">2</a></li>
+            <li><a href="#">3</a></li>
+            <li>
+              <a href="#" aria-label="Next">
+                <span aria-hidden="true">&raquo;</span>
+                <span class="sr-only">Next</span>
+              </a>
+            </li>
+          </ul>
+        </nav>  
+        
+    </div>
+    
+
+{% endblock nipa_users_div %}

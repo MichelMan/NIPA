@@ -71,4 +71,14 @@ class DemandeInstanceRepository extends \Doctrine\ORM\EntityRepository
         return $query->getSingleResult();
     } 
     
+    public function getLastInstanceProjet($phase)
+    {
+        $query = $this->_em->createQuery('SELECT a FROM NIPAProjetBundle:DemandeInstance a JOIN a.refPhase r WHERE a.type = :type AND r.nom = :phase ORDER BY a.reference DESC');
+        $query->setParameter('type', "Projet");
+        $query->setParameter('phase', $phase);
+
+        // Utilisation de getSingleResult car la requête ne doit retourner qu'un seul résultat
+        $query->setMaxResults(1);
+        return $query->getSingleResult();
+    }     
 }

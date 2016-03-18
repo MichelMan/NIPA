@@ -118,7 +118,7 @@
                                 <tr>
                                     <th class="text-center">Σ  Budgets Projet</th>
                                     <th></th>
-                                    <th class="text-center row col-sm-2">Nombre de lots</th>
+                                    <th class="text-center row col-sm-2">Nb de lots actifs</th>
                                     <th></th>
                                     <th></th>
                                 </tr>
@@ -191,11 +191,11 @@
                                     <thead>
                                         <tr>
                                             <th class="text-center">N°</th>
-                                            <th class="text-center">Référence</th>
+                                            <th class="text-center">Code OGP</th>
                                             <th class="text-center">Titre</th>
                                             <th class="text-center">Budget (en k€)</th>
-                                            <th class="text-center">Date de MEP</th>
                                             <th class="text-center">Phase</th>
+                                            <th class="text-center">Date de MEP</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -203,11 +203,15 @@
                                             {% for projet in listProjet %}
                                                 <tr>
                                                     <td class="text-center">{{ loop.index }}</td>
-                                                    <td class="text-center" title="Code OGP: {{ projet.codeOGP }}">{{ projet.referenceProjet }}</td>
-                                                    <td class="text-center"><a  href="{{ path('projet_edit',{'reference': projet.referenceProjet}) }}" title="Afficher Projet">{{ projet.titre }}</a></td>
-                                                    <td class="text-center">{{ projet.BudgetEnCours }}</td>
-                                                    <td class="text-center">{{ projet.dateMEP }}</td>
+                                                    <td class="text-center" title="Référence Projet: {{ projet.referenceProjet }}">{{ projet.codeOGP }}</td>
+                                                    {% if projet.titreLot == "" %}
+                                                        <td class="text-center"><a  href="{{ path('projet_edit',{'reference': projet.referenceProjet}) }}" title="Afficher Projet">{{ projet.titre }}</a></td>
+                                                    {% else %}
+                                                        <td class="text-center"><a  href="{{ path('projet_edit',{'reference': projet.referenceProjet}) }}" title="Afficher Projet">{{ projet.titreLot }}</a></td>
+                                                    {% endif %}
+                                                    <td class="text-center">{{ projet.BudgetEnCours|number_format(2, ',', ' ') }}</td>
                                                     <td class="text-center">{{ projet.phaseProjetEnCours }}</td>
+                                                    <td class="text-center">{{ projet.dateMEP|date('d/m/Y') }}</td>
                                                 </tr> 
                                             {% endfor %}
                                         {% endif %}

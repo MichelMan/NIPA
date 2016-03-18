@@ -29,10 +29,14 @@
                                         {% set counter = budget.montant %}
                                         {% set break = true %}
                                     {% endif %}
-                                {% endfor %} 
-                            {% set total = total + counter %}
+                                {% endfor %}
+                                {% if counter != 0 %}
+                                    {% set total = counter %}
+                                {% endif %}
                             {% endfor %}
                             
+    {#########################################################}
+    
                             {# CALCUL DATE DE MEP si MEP #}
                             {% set MEP = null %}
                             {% set MEP_RZO = null %}
@@ -91,9 +95,149 @@
                                 {% endif %}
                             {% endfor %}                                            
                             
-                            Budget: <strong> {{ total }} k€ </strong> / 
-                            Phase: <strong> </strong> / 
-                            Date de MEP: <strong> {% if MEP != null %} {{ MEP|date('d/m/Y') }} {% endif %} </strong>    
+    {#########################################################}
+    
+                                {# VALIDATION PHASE PAR ETAPE  #}
+                            {% set break = false %}
+                            {% set phaseEnCours = null %}
+                            {# En Cadrage #}
+                            {% for phase in listProjetPhaseEtapeCadrage if not break %}
+                                {% set phaseEnCours = phase.getNom() %}
+                                {% for validationEnCadrage in listProjetValidationPhaseEnCadrage %} 
+                                    {% if validationEnCadrage.getRefPhase().getNom() == phase.getNom() %}
+                                        {% if validationEnCadrage.validationJalon != "OK" %} {# Test si tous les Jalons sont en VALIDATION OK #}
+                                            {% set break = true %}
+                                        {% endif %}
+                                    {% endif %}
+                                {% endfor %}
+                                {# Validation ok Liste Instances #}
+                                {% if countInstance[phase.getId()-1][1] != 0 %} {# On test si on des instances pour cette phase Projet #}
+                                    {% if listProjetListeInstance is defined %}
+                                        {% set ValidationInstanceData = null %}
+                                        {% set indexInstance = 0 %}
+                                        {% set lastInstance = null %}
+                                        {# On détermine la dernière instance de la phase P #}
+                                        {% for ins in listProjetInstance %}
+                                            {% if ins.getRefPhase().getNom() == phase.getNom() %}
+                                                {% if ins.getReference() > indexInstance %}
+                                                    {% set lastInstance = ins.getNom() %}
+                                                {% endif %}   
+                                            {% endif %}
+                                        {% endfor %} 
+                                        {# Validation de l'instance de la phase P #}
+                                        {% set indexInstance = 0 %}
+                                        {% for instance in listProjetListeInstance %}
+                                            {% if instance.getInstance().getRefPhase().getNom() == phase.getNom() %} 
+                                                {% if instance.getInstance().getReference() > indexInstance %}
+                                                    {% if instance.getInstance().getNom() == lastInstance %}                                            
+                                                        {% if instance.getStatutInstance() == "GO" %}                                              
+                                                           {% set ValidationInstanceData = true %}
+                                                        {% endif %}
+                                                    {% endif %}
+                                                {% set indexInstance = instance.getInstance().getReference() %}
+                                                {% endif %}
+                                            {% endif %}
+                                        {% endfor %}         
+                                        {% if ValidationInstanceData == false %}
+                                            {% set break = true %}
+                                        {% endif %}
+                                    {% endif %}
+                                {% endif %}          
+                            {% endfor %}
+
+                            {# En Conception #}
+                            {% for phase in listProjetPhaseEtapeConception if not break %}
+                                {% set phaseEnCours = phase.getNom() %}
+                                {% for validationEnConception in listProjetValidationPhaseEnConception %} 
+                                    {% if validationEnConception.getRefPhase().getNom() == phase.getNom() %}
+                                        {% if validationEnConception.validationJalon != "OK" %} {# Test si tous les Jalons sont en VALIDATION OK #}
+                                            {% set break = true %}
+                                        {% endif %}
+                                    {% endif %}
+                                {% endfor %}
+                                {# Validation ok Liste Instances #}
+                                {% if countInstance[phase.getId()-1][1] != 0 %} {# On test si on des instances pour cette phase Projet #}
+                                    {% if listProjetListeInstance is defined %}
+                                        {% set ValidationInstanceData = null %}
+                                        {% set indexInstance = 0 %}
+                                        {% set lastInstance = null %}
+                                        {# On détermine la dernière instance de la phase P #}
+                                        {% for ins in listProjetInstance %}
+                                            {% if ins.getRefPhase().getNom() == phase.getNom() %}
+                                                {% if ins.getReference() > indexInstance %}
+                                                    {% set lastInstance = ins.getNom() %}
+                                                {% endif %}   
+                                            {% endif %}
+                                        {% endfor %} 
+                                        {# Validation de l'instance de la phase P #}
+                                        {% set indexInstance = 0 %}
+                                        {% for instance in listProjetListeInstance %}
+                                            {% if instance.getInstance().getRefPhase().getNom() == phase.getNom() %} 
+                                                {% if instance.getInstance().getReference() > indexInstance %}
+                                                    {% if instance.getInstance().getNom() == lastInstance %}                                            
+                                                        {% if instance.getStatutInstance() == "GO" %}                                              
+                                                           {% set ValidationInstanceData = true %}
+                                                        {% endif %}
+                                                    {% endif %}
+                                                {% set indexInstance = instance.getInstance().getReference() %}
+                                                {% endif %}
+                                            {% endif %}
+                                        {% endfor %}         
+                                        {% if ValidationInstanceData == false %}
+                                            {% set break = true %}
+                                        {% endif %}
+                                    {% endif %}
+                                {% endif %}         
+                            {% endfor %}
+
+                            {# En Réalisation #}
+                            {% for phase in listProjetPhaseEtapeRealisation if not break %}
+                                {% set phaseEnCours = phase.getNom() %}
+                                {% for validationEnRealisation in listProjetValidationPhaseEnRealisation %} 
+                                    {% if validationEnRealisation.getRefPhase().getNom() == phase.getNom() %}
+                                        {% if validationEnRealisation.validationJalon != "OK" %} {# Test si tous les Jalons sont en VALIDATION OK #}
+                                            {% set break = true %}
+                                        {% endif %}
+                                    {% endif %}
+                                {% endfor %}
+                                {# Validation ok Liste Instances #}
+                                {% if countInstance[phase.getId()-1][1] != 0 %} {# On test si on des instances pour cette phase Projet #}
+                                    {% if listProjetListeInstance is defined %}
+                                        {% set ValidationInstanceData = null %}
+                                        {% set indexInstance = 0 %}
+                                        {% set lastInstance = null %}
+                                        {# On détermine la dernière instance de la phase P #}
+                                        {% for ins in listProjetInstance %}
+                                            {% if ins.getRefPhase().getNom() == phase.getNom() %}
+                                                {% if ins.getReference() > indexInstance %}
+                                                    {% set lastInstance = ins.getNom() %}
+                                                {% endif %}   
+                                            {% endif %}
+                                        {% endfor %} 
+                                        {# Validation de l'instance de la phase P #}
+                                        {% set indexInstance = 0 %}
+                                        {% for instance in listProjetListeInstance %}
+                                            {% if instance.getInstance().getRefPhase().getNom() == phase.getNom() %} 
+                                                {% if instance.getInstance().getReference() > indexInstance %}
+                                                    {% if instance.getInstance().getNom() == lastInstance %}                                            
+                                                        {% if instance.getStatutInstance() == "GO" %}                                              
+                                                           {% set ValidationInstanceData = true %}
+                                                        {% endif %}
+                                                    {% endif %}
+                                                {% set indexInstance = instance.getInstance().getReference() %}
+                                                {% endif %}
+                                            {% endif %}
+                                        {% endfor %}         
+                                        {% if ValidationInstanceData == false %}
+                                            {% set break = true %}
+                                        {% endif %}
+                                    {% endif %}
+                                {% endif %}          
+                            {% endfor %}                            
+                            
+                            Budget: <strong> {{ total|number_format(2, ',', ' ') }} k€ </strong> / 
+                            Phase: <strong> {% if projet.phaseProjet != "" %} {{ projet.phaseProjet }} {% else %} {{ phaseEnCours }} {% endif %} </strong> / 
+                            Date de MEP: <strong> {% if MEP != null %} {{ MEP|date('d/m/Y') }} {% endif %} </strong>   
                         </center>       
                     </div>         
                 </div>
@@ -132,22 +276,55 @@
                                 <tr>
                                     <td>SI{{ form_widget(form.devSI) }} Réseau{{ form_widget(form.devRZO) }}</td>
                                     <td class="col-md-1">{{ form_widget(form.indicateur) }}</td>
-                                    <td  class="col-md-3">{{ form_widget(form.phaseProjet) }}</td>
+                                    <td  class="col-md-3"><input type="text" class="form-control input-md textinput center" id="phaseProjetEnCours" name="phaseProjetEnCours" value="{% if projet.referenceProjet %}{{ phaseEnCours }}{% endif %}" readonly="true"></td>
                                     <td>
                                         <select class="form-control" name="phaseProjetManuel">
-                                            <option value=""> </option> 
-                                            {% for phaseEnCadrage in listProjetPhaseEtapeCadrage%}
-                                                <option value="{{ phaseEnCadrage.getNom() }}">{{ phaseEnCadrage.getNom() }}</option>
-                                            {% endfor %}
-                                            {% for phaseEnConception in listProjetPhaseEtapeConception%}
-                                                <option value="{{ phaseEnConception.getNom() }}">{{ phaseEnConception.getNom() }}</option>
-                                            {% endfor %}
-                                            {% for phaseEnRealisation in listProjetPhaseEtapeRealisation%}
-                                                <option value="{{ phaseEnRealisation.getNom() }}">{{ phaseEnRealisation.getNom() }}</option>
-                                            {% endfor %}
+                                            {% if projet.phaseProjet is defined and projet.phaseProjet != "" %}
+                                                <option value="">(vide)</option> 
+                                                {% for phaseEnCadrage in listProjetPhaseEtapeCadrage%}
+                                                        {% if projet.phaseProjet == phaseEnCadrage.getNom() %}
+                                                            <option value="{{ phaseEnCadrage.getNom() }}" selected>{{ phaseEnCadrage.getNom() }}</option>
+                                                        {% else %}
+                                                            <option value="{{ phaseEnCadrage.getNom() }}">{{ phaseEnCadrage.getNom() }}</option>
+                                                        {% endif %}
+                                                {% endfor %}
+                                                {% for phaseEnConception in listProjetPhaseEtapeConception%}
+                                                        {% if projet.phaseProjet == phaseEnConception.getNom() %}
+                                                            <option value="{{ phaseEnConception.getNom() }}" selected>{{ phaseEnConception.getNom() }}</option>
+                                                        {% else %}
+                                                            <option value="{{ phaseEnConception.getNom() }}">{{ phaseEnConception.getNom() }}</option>
+                                                        {% endif %}                                                       
+                                                {% endfor %}
+                                                {% for phaseEnRealisation in listProjetPhaseEtapeRealisation%}
+                                                        {% if projet.phaseProjet == phaseEnRealisation.getNom() %}
+                                                            <option value="{{ phaseEnRealisation.getNom() }}" selected>{{ phaseEnRealisation.getNom() }}</option>
+                                                        {% else %}
+                                                            <option value="{{ phaseEnRealisation.getNom() }}">{{ phaseEnRealisation.getNom() }}</option>
+                                                        {% endif %}                                                        
+                                                {% endfor %}
+                                                {% if projet.phaseProjet == "Clos" %}
+                                                    <option value="Clos" selected> Clos</option> 
+                                                {% else %}
+                                                    <option value="Clos"> Clos</option> 
+                                                {% endif %}  
+                                            {% else %}
+                                                <option value="">(vide)</option> 
+                                                {% for phaseEnCadrage in listProjetPhaseEtapeCadrage%}
+                                                    <option value="{{ phaseEnCadrage.getNom() }}">{{ phaseEnCadrage.getNom() }}</option>
+                                                {% endfor %}
+                                                {% for phaseEnConception in listProjetPhaseEtapeConception%}
+                                                    <option value="{{ phaseEnConception.getNom() }}">{{ phaseEnConception.getNom() }}</option>
+                                                {% endfor %}
+                                                {% for phaseEnRealisation in listProjetPhaseEtapeRealisation %}
+                                                    <option value="{{ phaseEnRealisation.getNom() }}">{{ phaseEnRealisation.getNom() }}</option>
+                                                {% endfor %}
+                                                <option value="Clos"> Clos</option> 
+                                            {% endif %}
                                         </select>
                                     </td>
                                     <td>Annuler{{ form_widget(form.annuler) }} Suspendre{{ form_widget(form.suspendre) }}</td>
+                                    <input type="HIDDEN" name="dateDeMEP" value="{% if projet.referenceProjet %} {% if MEP != null %} {{ MEP|date('d/m/Y') }} {% endif %} {% endif %}"> 
+                                    <input type="HIDDEN" name="budgetEnCours" value="{% if projet.referenceProjet %} {{ total }} {% endif %}"> 
                                 </tr>
                             </tbody>
                         </table>  
