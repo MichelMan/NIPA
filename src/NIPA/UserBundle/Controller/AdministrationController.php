@@ -106,8 +106,31 @@ class AdministrationController extends Controller
         $repository = $this->getDoctrine()->getManager()->getRepository('NIPAProjetBundle:DemandeTypeProjet');
         $listTypeProjets = $repository->findAll(); 
         
-        /***********************************************************/
-     
+        
+        /**************************CHAMPS PROJET*********************************/
+        
+        //On récupère toutes les Etapes
+        $repository = $this->getDoctrine()->getManager()->getRepository('NIPAProjetBundle:ProjetEtape');
+        $listEtapes = $repository->findAll();          
+
+        //On récupère toutes les Phases
+        $repository = $this->getDoctrine()->getManager()->getRepository('NIPAProjetBundle:ProjetPhase');
+        $listPhases = $repository->findAll();     
+        
+        //On récupère toutes les instances
+        $repository = $this->getDoctrine()->getManager()->getRepository('NIPAProjetBundle:DemandeInstance');
+        $listProjetInstances = $repository->findAll();  
+        
+        //On récupère tous ls jalons Date
+        $repository = $this->getDoctrine()->getManager()->getRepository('NIPAProjetBundle:ProjetJalonDate');
+        $listJalonDates = $repository->findAll();   
+        
+        //On récupère tous les livrables
+        $repository = $this->getDoctrine()->getManager()->getRepository('NIPAProjetBundle:ProjetLivrable');
+        $listLivrables = $repository->findAll();             
+        
+         /***********************************************************/
+       
       return $this->render('NIPAUserBundle:Administration:administration.html.twig', array(
           'users' => $users,
           'groupes' => $groupes, 
@@ -125,7 +148,12 @@ class AdministrationController extends Controller
           'listSDM' => $listSDM,
           'listDemandeStatuts' => $listDemandeStatuts,
           'listStatutInstances' => $listStatutInstances,
-          'listTypeProjets' => $listTypeProjets
+          'listTypeProjets' => $listTypeProjets,
+          'listEtapes' => $listEtapes,
+          'listPhases' => $listPhases,
+          'listProjetInstances' => $listProjetInstances,
+          'listJalonDates' => $listJalonDates,
+          'listLivrables' => $listLivrables
           ));       
     }
     

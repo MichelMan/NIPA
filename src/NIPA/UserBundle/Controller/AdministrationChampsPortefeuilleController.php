@@ -24,17 +24,7 @@ class AdministrationChampsPortefeuilleController extends Controller
     * 
     */
     public function editChampEnveloppeAction()    
-    {
-
-        /**********************DROIT SECTION************************/
-        $requests = Request::createFromGlobals();
-        $droit = $requests->query->get('droit');
-               
-        if ($droit == "denied") { // On test si user pour avoir accès à la section 
-            //throw new AccessDeniedException("Section autorisée uniquement pour les administrateurs!");
-            $this->get('session')->getFlashBag()->set('error', "Vous n'avez pas les droits requis pour accéder à cette section!");            
-        }        
-        /***********************************************************/        
+    {    
         
         $request = $this->get('request');
 
@@ -65,17 +55,7 @@ class AdministrationChampsPortefeuilleController extends Controller
     * 
     */
     public function deleteChampEnveloppeAction()    
-    {
-        
-        /**********************DROIT SECTION************************/
-        $requests = Request::createFromGlobals();
-        $droit = $requests->query->get('droit');
-               
-        if ($droit == "denied") { // On test si user pour avoir accès à la section 
-            //throw new AccessDeniedException("Section autorisée uniquement pour les administrateurs!");
-            $this->get('session')->getFlashBag()->set('error', "Vous n'avez pas les droits requis pour accéder à cette section!");            
-        }        
-        /***********************************************************/        
+    {       
   
         $request = $this->get('request');
 
@@ -105,17 +85,7 @@ class AdministrationChampsPortefeuilleController extends Controller
     * 
     */
     public function addChampEnveloppeAction()    
-    {
-        
-        /**********************DROIT SECTION************************/
-        $requests = Request::createFromGlobals();
-        $droit = $requests->query->get('droit');
-               
-        if ($droit == "denied") { // On test si user pour avoir accès à la section 
-            //throw new AccessDeniedException("Section autorisée uniquement pour les administrateurs!");
-            $this->get('session')->getFlashBag()->set('error', "Vous n'avez pas les droits requis pour accéder à cette section!");            
-        }        
-        /***********************************************************/        
+    {     
         
         $request = $this->get('request');
 
@@ -156,17 +126,7 @@ class AdministrationChampsPortefeuilleController extends Controller
     * 
     */
     public function editChampAnneeAction()    
-    {
-
-        /**********************DROIT SECTION************************/
-        $requests = Request::createFromGlobals();
-        $droit = $requests->query->get('droit');
-               
-        if ($droit == "denied") { // On test si user pour avoir accès à la section 
-            //throw new AccessDeniedException("Section autorisée uniquement pour les administrateurs!");
-            $this->get('session')->getFlashBag()->set('error', "Vous n'avez pas les droits requis pour accéder à cette section!");            
-        }        
-        /***********************************************************/        
+    {       
         
         $request = $this->get('request');
 
@@ -197,17 +157,7 @@ class AdministrationChampsPortefeuilleController extends Controller
     * 
     */
     public function deleteChampAnneeAction()    
-    {
-        
-        /**********************DROIT SECTION************************/
-        $requests = Request::createFromGlobals();
-        $droit = $requests->query->get('droit');
-               
-        if ($droit == "denied") { // On test si user pour avoir accès à la section 
-            //throw new AccessDeniedException("Section autorisée uniquement pour les administrateurs!");
-            $this->get('session')->getFlashBag()->set('error', "Vous n'avez pas les droits requis pour accéder à cette section!");            
-        }        
-        /***********************************************************/        
+    {       
         
         $request = $this->get('request');
 
@@ -237,17 +187,7 @@ class AdministrationChampsPortefeuilleController extends Controller
     * 
     */
     public function addChampAnneeAction()    
-    {
-        
-        /**********************DROIT SECTION************************/
-        $requests = Request::createFromGlobals();
-        $droit = $requests->query->get('droit');
-               
-        if ($droit == "denied") { // On test si user pour avoir accès à la section 
-            //throw new AccessDeniedException("Section autorisée uniquement pour les administrateurs!");
-            $this->get('session')->getFlashBag()->set('error', "Vous n'avez pas les droits requis pour accéder à cette section!");            
-        }        
-        /***********************************************************/        
+    {        
         
         $request = $this->get('request');
 
@@ -289,15 +229,6 @@ class AdministrationChampsPortefeuilleController extends Controller
     */
     public function editChampStatutAction()    
     {
-        /**********************DROIT SECTION************************/
-        $requests = Request::createFromGlobals();
-        $droit = $requests->query->get('droit');
-               
-        if ($droit == "denied") { // On test si user pour avoir accès à la section 
-            //throw new AccessDeniedException("Section autorisée uniquement pour les administrateurs!");
-            $this->get('session')->getFlashBag()->set('error', "Vous n'avez pas les droits requis pour accéder à cette section!");            
-        }        
-        /***********************************************************/
         
         $request = $this->get('request');
 
@@ -330,16 +261,6 @@ class AdministrationChampsPortefeuilleController extends Controller
     public function deleteChampStatutAction()    
     {
         
-        /**********************DROIT SECTION************************/
-        $requests = Request::createFromGlobals();
-        $droit = $requests->query->get('droit');
-               
-        if ($droit == "denied") { // On test si user pour avoir accès à la section 
-            //throw new AccessDeniedException("Section autorisée uniquement pour les administrateurs!");
-            $this->get('session')->getFlashBag()->set('error', "Vous n'avez pas les droits requis pour accéder à cette section!");            
-        }        
-        /***********************************************************/
-        
         $request = $this->get('request');
 
         if ($request->isXmlHttpRequest()) {
@@ -368,16 +289,7 @@ class AdministrationChampsPortefeuilleController extends Controller
     * 
     */
     public function addChampStatutAction()    
-    {
-        /**********************DROIT SECTION************************/
-        $requests = Request::createFromGlobals();
-        $droit = $requests->query->get('droit');
-               
-        if ($droit == "denied") { // On test si user pour avoir accès à la section 
-            //throw new AccessDeniedException("Section autorisée uniquement pour les administrateurs!");
-            $this->get('session')->getFlashBag()->set('error', "Vous n'avez pas les droits requis pour accéder à cette section!");            
-        }        
-        /***********************************************************/        
+    {       
         
         $request = $this->get('request');
 

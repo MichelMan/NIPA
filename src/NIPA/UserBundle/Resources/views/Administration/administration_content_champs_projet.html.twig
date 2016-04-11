@@ -21,8 +21,35 @@
                 <input type="text" class="form-control" id="champs-table-demande-filter" data-action="filter" data-filters="#champs-table-demande" placeholder="Filtres champs" />
              </div>
             
-            <center><h1><span class="glyphicon glyphicon-warning-sign"></span> EN CHANTIER</h1></center>
-                
+            {% set fields = ["Etape Projet", "Phase Projet", "Instance Projet"] %}
+            <table class="table table-hover" id="champs-table-demande">
+                <thead>
+                    <tr>
+                        <th>Nom</th>
+                        <th>Format</th>
+                        <th>Editer</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for var in fields %}
+                    <tr>
+                        <td>{{ var }}</td>
+                        <td>Liste</td>
+                        <td>
+                            {% if loop.index - 1 == 0  %}
+                                <a href="#" data-id="{{ loop.index - 1 }}" class="confirmModalEditEtape" href=""><span class="glyphicon glyphicon-edit icon-edit"></span></a>
+                            {% elseif loop.index - 1 == 1  %}
+                                <a href="#" data-id="{{ loop.index - 1 }}" class="confirmModalEditPhase" href=""><span class="glyphicon glyphicon-edit icon-edit"></span></a>
+                            {% elseif loop.index - 1 == 2  %}
+                                <a href="#" data-id="{{ loop.index - 1 }}" class="confirmModalEditInstance" href=""><span class="glyphicon glyphicon-edit icon-edit"></span></a>                            
+                            {% endif  %}
+                        
+                        </td>
+                        
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>                
         </div>
         
         <!-- PAGINATION -->  
@@ -49,6 +76,10 @@
         </nav>  
         
     </div>
-    
+
+        {% include "NIPAUserBundle:Administration:ChampsProjet/champs_projet_etape.html.twig" %}
+        {% include "NIPAUserBundle:Administration:ChampsProjet/champs_projet_phase.html.twig" %}
+        {% include "NIPAUserBundle:Administration:ChampsProjet/champs_projet_instance.html.twig" %}
+                        
 
 {% endblock nipa_users_div %}
