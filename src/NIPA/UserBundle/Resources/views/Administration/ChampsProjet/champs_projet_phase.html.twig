@@ -1,1 +1,274 @@
 {# empty Twig template #}
+{% trans_default_domain 'NIPAUserBundle' %}
+
+{% block nipa_users_champs_phase %}       
+    
+    <!-- Utilisation de la librairie jQuery UI pour le Drag&Drop -->
+    <script src="{{ asset('bundles/nipauserbundle/js/jquery-ui.min.js') }}"></script>
+    
+    <style>
+   
+    .connectedSortable tr, .ui-sortable-helper {
+        cursor: pointer;
+    }     
+    
+    .hidden {
+        opacity:0;
+    }    
+        
+    </style>
+    
+    <!-- MODAL EDIT Phase  -->
+    <div id="myModalEditPhase" class="modal fade in" style="">
+        <div class="modal-dialog"  style="width: 800px;">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                    <h3 id="myModalLabel"><span class="glyphicon glyphicon-edit"></span> Administration</h3>
+                </div>
+                
+                <div class="modal-body" id="tabbable">
+                    <!--  <div id="jsGrid"></div> -->      
+                    <!-- <input type="text" name="Id" id="Id" value=""/> -->
+
+                    <!-- PANEL -->          
+                    <div class="panel panel-info">
+                        <div class="panel-heading">               
+                            <h3 class="panel-title"><i class="glyphicon glyphicon-share-alt"></i> Champ "Phase Projet"</h3>
+                            <div class="pull-right">              
+                                <span class="clickable filter" data-toggle="tooltip" title="Afficher détails" data-container="body">
+                                    <i class="glyphicon glyphicon-plus"></i>
+                                </span>
+                            </div>                
+                        </div>        
+                        <div class="panel-body" style="display: none;">
+
+                            <table class="table table-hover" id="champs-table-phase">
+                                <thead>
+                                    <tr>
+                                        <th>N° Référence</th>
+                                        <th style="opacity:0;">ID</th>  
+                                        <th>Valeur</th>
+                                        <th>Edition</th>                                        
+                                    </tr>
+                                </thead>
+                                <tbody id="table">
+                                    {% if listPhases is empty %}
+                                        <center><p>(Aucune donnée)</p></center>
+                                    {% else %}    
+                                        {% for phase in listPhases %}
+                                            <tr data-id="{{ loop.index }}" id="{{ phase.id }}">
+                                                <td data-field="reference" class="reference" id="{{ phase.reference }}">{{ phase.reference }}</td>
+                                                <td data-field="id" class="id" id="{{ phase.id }}" style="opacity:0;">{{ phase.id }}</td>                                            
+                                                <td data-field="nom" class="nom" id="{{ phase.nom }}">{{ phase.nom }}</td>
+                                                <td>
+                                                    <a class="button button-small edit" title="Edit"><i class="glyphicon glyphicon-pencil"></i></a>
+                                                    <!-- <a class="button button-small cancel" title="Annuler"><i class="glyphicon glyphicon-remove"></i></a> -->                                                
+                                                </td>                                            
+                                            </tr>
+                                        {% endfor %}  
+                                    {% endif%}    
+                                </tbody>
+                            </table>
+
+                        </div>  
+                    </div>
+
+                </div>
+
+                                
+                <div class="modal-footer">
+                    <a href="#" class="btn btn-danger" id="confirmModalEditPhaseNo">Fermer</a>
+                </div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal-dalog -->
+    </div><!-- /.modal -->    
+    
+    <script>
+
+        $(document).ready(function () {
+            var theHREF;
+
+            $(".confirmModalEditPhase").click(function(e) {
+                e.preventDefault();
+                theHREF = $(this).attr("href");          
+                $("#myModalEditPhase").modal("show");
+                //var Id = $(this).data('id');
+                //$(".modal-body #Id").val( Id );              
+            });
+
+            $("#confirmModalEditPhaseNo").click(function(e) {
+                $("#myModalEditPhase").modal("hide");
+            });
+        });
+    
+
+    /*********Phase Projet*************/
+
+    $('#champs-table-phase tr').editable({
+
+      // enable keyboard support
+      keyboard: true,
+
+      // double click to start editing
+      dblclick: true,
+
+      // enable edit buttons
+      button: true,
+
+      // CSS selector for edit buttons
+      buttonSelector: ".edit",
+
+      // uses select dropdown instead of input field
+      dropdowns: {},
+
+      // maintains column width when editing
+      maintainWidth: true,
+
+      // callbacks for edit, save and cancel actions
+      edit: function(values) {
+            $(".cancel i", this)
+            .show();
+
+            $(".edit i", this)
+            .removeClass('glyphicon-pencil')
+            .addClass('glyphicon-save')
+            .attr('title', 'Save');  
+        },
+
+      save: function(values) {
+            $(".cancel i", this)
+            .hide();     
+
+            $(".edit i", this)
+            .removeClass('glyphicon-save')
+            .addClass('glyphicon-pencil')
+            .attr('title', 'Edit');  
+
+
+            /* Test contre les valeurs dupliquées */
+             var chemin =  $(".nom", this); 
+             var boolean = 0;
+             $('#champs-table-phase').find("tbody").find("tr").each(function(){
+               var identifiant= $(this).find(".id").text();
+               var nom= $(this).find(".nom").text();
+               
+               /*Pour enlever les espaces qui empechent la comparaison*/
+               var nom_X = nom.replace(/ /g, '_');
+               var nom_Y = values["nom"].replace(/ /g, '_');
+               //console.log(nom_X);
+               //console.log(nom_Y);
+
+                if(nom_X == nom_Y && identifiant != values["id"])
+                {
+                    boolean = 1;
+                }
+            });
+            
+            if(boolean == 1)
+            {
+                alert("Phase déjà existante!");
+                chemin.html("");
+                return;                  
+            }
+            else
+            {
+                /* Si ok on post*/
+                var id = $(this).data('id');
+                $.post('{{ path('administration_projet_champ_phase_edit')}}', values);        
+            } 
+
+        },
+
+      cancel: function(values) {
+            $(".edit i", this)
+            .removeClass('glyphicon-save')
+            .addClass('glyphicon-pencil')
+            .attr('title', 'Edit');  
+        }
+
+    });
+
+/*********************/  
+
+$(document).ready(function() {
+    $tabs = $("#tabbable");
+    
+    /* Pour garder la bonne longueur et largeur la ligne sélectionnée en DRAG */
+    var fixHelperModified = function(e, tr) {
+        var $originals = tr.children();
+        var $helper = tr.clone();
+        $helper.children().each(function(index)
+        {
+          $(this).width($originals.eq(index).width())
+        });
+        return $helper;
+    };    
+    
+    $("#tabbable #champs-table-phase #table")
+        .sortable({
+            connectWith: "#tabbable #champs-table-phase #table",
+            appendTo: $tabs,
+            helper: fixHelperModified,
+            zIndex: 999990,
+            /*handle: ".nom", // Le drag ne peut se faire que sur l'élément .nom (le texte) */
+            start: function(){ $tabs.addClass("dragging") },
+            /*stop: function(){ $tabs.removeClass("dragging") }*/          
+            stop: function(event, ui){
+                    // Pour chaque item de liste
+                    $("#tabbable table tbody").find("tr").each(function(){
+                            // On actualise sa position
+                            index = parseInt($(this).index()+1);
+                            // On la met à jour dans la page (ie. La Référence alias la position)
+                            $(this).find(".reference").text(index);
+                    });
+            },
+            update: function(event, ui)
+            {
+                // On prépare la variable contenant les paramètres
+                //var order = $(this).sortable('serialize');
+                //var order = $( ".connectedSortable" ).sortable("serialize");
+                var array = $(this).sortable('toArray');
+                var data = $(this).sortable("serialize", {
+                    attribute: "id"
+                });                
+                // $(this).sortable("serialize") sera le paramètre "element", un tableau contenant les différents "id"
+
+                console.log(array);
+                // Ensuite on appelle notre Route vers le controlleur en lui passant en paramètre la variable order
+                $.ajax({
+                    type: 'post',
+                    url: "{{ path('administration_projet_champ_phase_edit_ALL')}}",
+                    data: {array:array},
+                    success: function(data)
+                    {
+                        //alert("Mise à jour ordre! (TEST)");
+                    },
+                    error: function(e) {
+                       console.log(e);
+                     }      
+                });               
+    
+            }            
+        })
+        .disableSelection()
+    ;
+    /*
+    var $tab_items = $( ".nav-tabs > li", $tabs ).droppable({
+      accept: ".connectedSortable tr",
+      hoverClass: "ui-state-hover",
+      over: function( event, ui ) {
+        var $item = $( this );
+        $item.find("a").tab("show");
+        
+      },
+      drop: function( event, ui ) {
+        return false;
+      }
+    });
+    */
+});
+
+    </script>
+    
+{% endblock %}

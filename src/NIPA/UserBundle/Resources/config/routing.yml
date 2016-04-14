@@ -210,7 +210,7 @@ administration_demande_champ_demande_statut_edit:
     defaults: { _controller: NIPAUserBundle:AdministrationChampsDemande:editChampStatut }
 
 administration_demande_champ_demande_statut_delete:
-    path: champ/demande_statut/deadministration_demande_champ_SDM_deletelete
+    path: champ/demande_statut/delete
     defaults: { _controller: NIPAUserBundle:AdministrationChampsDemande:deleteChampStatut }
 
 administration_demande_champ_statut_instance_add:
@@ -222,7 +222,7 @@ administration_demande_champ_statut_instance_edit:
     defaults: { _controller: NIPAUserBundle:AdministrationChampsDemande:editChampStatutInstance }
 
 administration_demande_champ_statut_instance_delete:
-    path: champ/statut_instance/deadministration_demande_champ_SDM_deletelete
+    path: champ/statut_instance/delete
     defaults: { _controller: NIPAUserBundle:AdministrationChampsDemande:deleteChampStatutInstance }
 
 administration_demande_champ_type_projet_add:
@@ -234,8 +234,20 @@ administration_demande_champ_type_projet_edit:
     defaults: { _controller: NIPAUserBundle:AdministrationChampsDemande:editChampTypeProjet }
 
 administration_demande_champ_type_projet_delete:
-    path: champ/type_projet/deadministration_demande_champ_SDM_deletelete
+    path: champ/type_projet/delete
     defaults: { _controller: NIPAUserBundle:AdministrationChampsDemande:deleteChampTypeProjet }
+
+administration_projet_champ_etape_edit:
+    path: champ/etape/edit
+    defaults: { _controller: NIPAUserBundle:AdministrationChampsProjet:editChampEtape }
+
+administration_projet_champ_phase_edit:
+    path: champ/phase/edit
+    defaults: { _controller: NIPAUserBundle:AdministrationChampsProjet:editChampPhase }
+
+administration_projet_champ_phase_edit_ALL:
+    path: champ/phase/edit/ALL
+    defaults: { _controller: NIPAUserBundle:AdministrationChampsProjet:editChampPhaseALL }
 
 groupe_permission_add:
     path: groupe/permission/add/{groupeId}

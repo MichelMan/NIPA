@@ -20,7 +20,7 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 class AdministrationChampsProjetController extends Controller
 {
     /**
-    *  EDIT Champs Enveloppe
+    *  EDIT Champs Etape
     * 
     */
     public function editChampEtapeAction()    
@@ -49,5 +49,71 @@ class AdministrationChampsProjetController extends Controller
                 
         }
     }  
-  
+    
+    /**
+    *  EDIT Champs Phase
+    * 
+    */
+    public function editChampPhaseAction()    
+    {
+        
+        $request = $this->get('request');
+
+        if ($request->isXmlHttpRequest()) {
+            
+                $data = $request->request->all();
+                //\Doctrine\Common\Util\Debug::dump($data);
+                
+                $repository = $this->getDoctrine()->getManager()->getRepository('NIPAProjetBundle:ProjetPhase');
+                $entity = $repository->findOneBy(array('id' => $data["id"]));
+                
+                $entity->setNom($data["nom"]);
+                $entity->setReference($data["reference"]);
+                $em = $this->getDoctrine()->getManager();
+                $em->persist($entity);
+                $em->flush();
+                
+                return new JsonResponse(array('message' => 'Success!'), 200);
+
+                $response = new JsonResponse(array('message' => 'Error'), 400);
+
+                return $response; 
+                
+        }
+    }      
+
+    /**
+    *  EDIT Champs Phase ALL DRAG & DROP
+    * 
+    */
+    public function editChampPhaseALLAction()    
+    {
+        
+        $request = $this->get('request');
+
+        if ($request->isXmlHttpRequest()) {
+            
+                $data = $request->request->all();
+                //\Doctrine\Common\Util\Debug::dump($data);
+                
+                for($i=0; $i<sizeof($data["array"]); $i++)
+                {
+                    $repository = $this->getDoctrine()->getManager()->getRepository('NIPAProjetBundle:ProjetPhase');
+                    $entity = $repository->findOneBy(array('id' => $data["array"][$i]));
+
+                    $entity->setReference($i+1);
+                    $em = $this->getDoctrine()->getManager();
+                    $em->persist($entity);
+                    $em->flush();             
+                }
+                
+                return new JsonResponse(array('message' => 'Success!'), 200);
+
+                $response = new JsonResponse(array('message' => 'Error'), 400);
+
+                return $response; 
+                
+        }
+    }     
+    
 }  

@@ -1,8 +1,7 @@
 {% trans_default_domain 'NIPAProjetBundle' %}
 
 {% block body %}   
-
-
+    
     {# TEST LES DROITS USER#}
     {% set droit = 0 %}
     {% for groupe in user.getGroupesToArray() %} 
@@ -13,7 +12,7 @@
         {% endif %}
     {% endfor %}      
     
-        <h4 class=""><span class='glyphicon glyphicon-list-alt'></span> {{ 'En cadrage'|trans }}: {% if projet.referenceProjet %}{{ projet.titre }}{% endif %} </h4>        
+        <h4 class=""><span class='glyphicon glyphicon-list-alt'></span> {{ listProjetEtape[0].nom }}: {% if projet.referenceProjet %}{{ projet.titre }}{% endif %} </h4>        
 
         <div class="row col-md-13">
             
@@ -95,86 +94,107 @@
                                         {% endif %}                                       
                                     
                                     </h5>
-                                    <div class="pull-right">
-
-                                        Statut Jalon:                                                 
-                                        {# Validation ok Liste Jalons #}
-                                        {% if listProjetListeLivrableEnCadrage is defined and listProjetListeLivrableEnCadrage|length != 0 %}
-                                            {% set ValidationLivData = 0 %}
-                                            {% set TotalLivDataPhase = 0 %}
-                                            {% for livData in listProjetListeLivrableEnCadrage %}
-                                                {% if livData.getLivrable().getRefPhase().getNom() == phase.getNom()%}
-                                                    {% if livData.getValidationEffective() == true %}
-                                                        {% set ValidationLivData = ValidationLivData + 1 %}
-                                                    {% endif %}
-                                                    {% set TotalLivDataPhase = TotalLivDataPhase + 1 %}
-                                                {% endif %}
-                                            {% endfor %}
-                                        {% else %}
-                                            {% set ValidationLivData = 123 %}
-                                            {% set TotalLivDataPhase = 123 %}
-                                        {% endif %}                               
-                                        {% if listProjetListeJalonDateEnCadrage is defined and listProjetListeJalonDateEnCadrage|length != 0%}
-                                            {% set ValidationJalonData = 0 %}
-                                            {% set TotaJalonDataPhase = 0 %}
-                                            {% for livJalon in listProjetListeJalonDateEnCadrage %}
-                                                {% if livJalon.getJalonDate().getRefPhase().getNom() == phase.getNom()%}
-                                                    {% if livJalon.getValidationEffective() == true %}
-                                                        {% set ValidationJalonData = ValidationJalonData + 1 %}
-                                                    {% endif %}
-                                                    {% set TotaJalonDataPhase = TotaJalonDataPhase + 1 %}
-                                                {% endif %}
-                                            {% endfor %}
-                                        {% else %}
-                                            {% set ValidationJalonData = 123 %}
-                                            {% set TotaJalonDataPhase = 123 %}
-                                        {% endif %} 
-
-                                        {% if (listProjetListeLivrableEnCadrage|length != 0) or (listProjetListeJalonDateEnCadrage|length != 0)%}
-                                            {% if (ValidationLivData + ValidationJalonData) == (TotalLivDataPhase + TotaJalonDataPhase) %}
-                                                <strong> OK </strong>
-                                            {% else %}
-                                                <strong> En cours </strong> 
-                                            {% endif %}                                                   
-                                        {% endif %}                                                   
-                                        |
-                                        Statut Instance:                                
-                                        {# Validation ok Liste Instances #}
-                                        {% if countInstance[phase.getId()-1][1] != 0 %} {# On test si on des instances pour cette phase Projet #}
-                                            {% if listProjetListeInstance is defined %}
-                                                {% set ValidationInstanceData = null %}
-                                                {% set indexInstance = 0 %}
-                                                {% set lastInstance = null %}
-                                                {# On détermine la dernière instance de la phase P #}
-                                                {% for ins in listProjetInstance %}
-                                                    {% if ins.getRefPhase().getNom() == phase.getNom() %}
-                                                        {% if ins.getReference() > indexInstance %}
-                                                            {% set lastInstance = ins.getNom() %}
-                                                        {% endif %}   
-                                                    {% endif %}
-                                                {% endfor %} 
-                                                {# Validation de l'instance de la phase P #}
-                                                {% set indexInstance = 0 %}
-                                                {% for instance in listProjetListeInstance %}
-                                                    {% if instance.getInstance().getRefPhase().getNom() == phase.getNom() %} 
-                                                        {% if instance.getInstance().getReference() > indexInstance %}
-                                                            {% if instance.getInstance().getNom() == lastInstance %}                                            
-                                                                {% if instance.getStatutInstance() == "GO" %}                                              
-                                                                   {% set ValidationInstanceData = true %}
-                                                                {% endif %}
-                                                            {% endif %}
-                                                        {% set indexInstance = instance.getInstance().getReference() %}
-                                                        {% endif %}
-                                                    {% endif %}
-                                                {% endfor %}         
-                                                
-                                                {% if ValidationInstanceData == true %}
-                                                    <strong> OK </strong>
+                                    <div class="pull-right" id="navbarCadrage{{ phase.getNom() }}">
+                                    
+                                        {# BY PASS PHASE #}
+                                        {% set checked = false %}
+                                        {% for byPass in listProjetByPassPhase %}
+                                            {% if byPass.refPhase.getNom() == phase.getNom() %}
+                                                {% if byPass.ByPass == 'OK' %}
+                                                    {%set checked = true %}
                                                 {% endif %}
                                             {% endif %}
+                                        {% endfor %}
+                                        
+                                        {% if checked == true %}
+                                            ByPass:
+                                            <input type="checkbox" id="ByPass{{phase.getNom()}}" name="ByPass{{phase.getNom()}}" value="true" onchange="if(this.checked) this.value='true'; else this.value='false';" checked/>
+                                            | Statut Jalon: <strong> BY PASS </strong> | Statut Instance: <strong> BY PASS </strong>                                                 
                                         {% else %}
-                                            <strong> X </strong>
-                                        {% endif %}  
+                                            ByPass:
+                                            <input type="checkbox" id="ByPass{{phase.getNom()}}" name="ByPass{{phase.getNom()}}" value="false" onchange="if(this.checked) this.value='true'; else this.value='false';"/>
+                                            |
+                                            Statut Jalon:                                                 
+                                            {# Validation ok Liste Jalons #}
+                                            {% if listProjetListeLivrableEnCadrage is defined and listProjetListeLivrableEnCadrage|length != 0 %}
+                                                {% set ValidationLivData = 0 %}
+                                                {% set TotalLivDataPhase = 0 %}
+                                                {% for livData in listProjetListeLivrableEnCadrage %}
+                                                    {% if livData.getLivrable().getRefPhase().getNom() == phase.getNom()%}
+                                                        {% if livData.getValidationEffective() == true %}
+                                                            {% set ValidationLivData = ValidationLivData + 1 %}
+                                                        {% endif %}
+                                                        {% set TotalLivDataPhase = TotalLivDataPhase + 1 %}
+                                                    {% endif %}
+                                                {% endfor %}
+                                            {% else %}
+                                                {% set ValidationLivData = 123 %}
+                                                {% set TotalLivDataPhase = 123 %}
+                                            {% endif %}                               
+                                            {% if listProjetListeJalonDateEnCadrage is defined and listProjetListeJalonDateEnCadrage|length != 0%}
+                                                {% set ValidationJalonData = 0 %}
+                                                {% set TotaJalonDataPhase = 0 %}
+                                                {% for livJalon in listProjetListeJalonDateEnCadrage %}
+                                                    {% if livJalon.getJalonDate().getRefPhase().getNom() == phase.getNom()%}
+                                                        {% if livJalon.getValidationEffective() == true %}
+                                                            {% set ValidationJalonData = ValidationJalonData + 1 %}
+                                                        {% endif %}
+                                                        {% set TotaJalonDataPhase = TotaJalonDataPhase + 1 %}
+                                                    {% endif %}
+                                                {% endfor %}
+                                            {% else %}
+                                                {% set ValidationJalonData = 123 %}
+                                                {% set TotaJalonDataPhase = 123 %}
+                                            {% endif %} 
+
+                                            {% if (listProjetListeLivrableEnCadrage|length != 0) or (listProjetListeJalonDateEnCadrage|length != 0)%}
+                                                {% if (ValidationLivData + ValidationJalonData) == (TotalLivDataPhase + TotaJalonDataPhase) %}
+                                                    <strong> OK </strong>
+                                                {% else %}
+                                                    <strong> En cours </strong> 
+                                                {% endif %}                                                   
+                                            {% endif %}                                                   
+                                            |
+                                            Statut Instance:                                
+                                            {# Validation ok Liste Instances #}
+                                            {% if countInstance[phase.getId()-1][1] != 0 %} {# On test si on a des instances pour cette phase Projet #}
+                                                {% if listProjetListeInstance is defined %}
+                                                    {% set ValidationInstanceData = null %}
+                                                    {% set indexInstance = 0 %}
+                                                    {% set lastInstance = null %}
+                                                    {# On détermine la dernière instance de la phase P #}
+                                                    {% for ins in listProjetInstance %}
+                                                        {% if ins.getRefPhase().getNom() == phase.getNom() %}
+                                                            {% if ins.getReference() > indexInstance %}
+                                                                {% set lastInstance = ins.getNom() %}
+                                                            {% endif %}   
+                                                        {% endif %}
+                                                    {% endfor %} 
+                                                    {# Validation de l'instance de la phase P #}
+                                                    {% set indexInstance = 0 %}
+                                                    {% for instance in listProjetListeInstance %}
+                                                        {% if instance.getInstance().getRefPhase().getNom() == phase.getNom() %} 
+                                                            {% if instance.getInstance().getReference() > indexInstance %}
+                                                                {% if instance.getInstance().getNom() == lastInstance %}                                            
+                                                                    {% if instance.getStatutInstance() == "GO" %}                                              
+                                                                       {% set ValidationInstanceData = true %}
+                                                                    {% endif %}
+                                                                {% endif %}
+                                                            {% set indexInstance = instance.getInstance().getReference() %}
+                                                            {% endif %}
+                                                        {% endif %}
+                                                    {% endfor %}         
+
+                                                    {% if ValidationInstanceData == true %}
+                                                        <strong> OK </strong>
+                                                    {% endif %}
+                                                {% endif %}
+                                            {% else %}
+                                                <strong> X </strong>
+                                            {% endif %}  
+                                        
+                                        {% endif %}
+                                        
                                                     
                                         {# <span data-toggle="collapse" data-target="#collapseInfo{{ phase.getNom() }}" class="clickable collapsed" title="Afficher détails" data-container="body"> #}
                                         <span data-toggle="collapse" data-parent="#accordion1" id="collapsePhaseCadrage{{ phase.getNom() }}"  href="#collapsePhase{{ phase.getNom() }}" class="clickable collapsed" title="Afficher détails" data-container="body">
@@ -199,14 +219,18 @@
                                                 <h5 class="panel-title"> Liste Jalons</h5>
                                                 <div class="pull-right">
 
-                                                    {% if (listProjetListeLivrableEnCadrage|length != 0) or (listProjetListeJalonDateEnCadrage|length != 0)%}
-                                                        {% if (ValidationLivData + ValidationJalonData) == (TotalLivDataPhase + TotaJalonDataPhase) %}
-                                                            <strong> OK </strong>
-                                                        {% else %}
-                                                            <strong> En cours </strong> 
-                                                        {% endif %}                                                   
+                                                    {% if checked == false %}
+                                                        {% if (listProjetListeLivrableEnCadrage|length != 0) or (listProjetListeJalonDateEnCadrage|length != 0)%}
+                                                            {% if (ValidationLivData + ValidationJalonData) == (TotalLivDataPhase + TotaJalonDataPhase) %}
+                                                                <strong> OK </strong>
+                                                            {% else %}
+                                                                <strong> En cours </strong> 
+                                                            {% endif %}                                                   
+                                                        {% endif %}
+                                                    {% else %}
+                                                        <strong> BY PASS </strong> 
                                                     {% endif %}   
-                                                    
+                                                        
                                                     <span data-toggle="collapse" data-target="#collapseJalon{{ phase.getNom() }}" class="clickable collapsed" title="Jalons" data-container="body">
                                                         <i class="glyphicon glyphicon-plus-sign"></i>
                                                     </span>
@@ -637,6 +661,33 @@
                                     $("#collapsePhaseCadrage{{ phase.getNom() }}").html('<span class="glyphicon glyphicon-chevron-down"></span>');
                                   });
                                 });
+                                
+                                
+                            // Au clic sur Checkbox BY PASS
+                            $("#navbarCadrage{{phase.getNom()}}").find("#ByPass{{phase.getNom()}}").click(function(){
+                                console.log("toto");
+                                var phase = "{{ phase.getNom() }}";
+                                console.log(phase);
+                                var valeur = $(this).val();
+                                console.log(valeur);  
+                                
+                                $.ajax({
+                                    type: 'post',
+                                    url: "{% if projet.referenceProjet %}{{ path('by_pass_projet_phase',{'reference': projet.referenceProjet, 'phase': phase.getNom() }) }}{% endif %}",
+                                    data: {valeur: valeur},
+                                    success: function()
+                                    {
+                                        alert("ByPass OK (TEST)");
+                                        var url = document.location.href;
+                                        $(location).attr('href',url+"#cadrage");                 
+                                        location.reload();        
+                                    },
+                                    error: function(e) {
+                                       console.log(e);
+                                     }      
+                                });                                 
+                            })                             
+                                
                             </script>    
                             
                     {% endfor %}

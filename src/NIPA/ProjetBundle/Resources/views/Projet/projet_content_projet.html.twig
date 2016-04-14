@@ -97,142 +97,196 @@
                             
     {#########################################################}
     
-                                {# VALIDATION PHASE PAR ETAPE  #}
+                            {# VALIDATION PHASE PAR ETAPE  #}
                             {% set break = false %}
                             {% set phaseEnCours = null %}
                             {# En Cadrage #}
                             {% for phase in listProjetPhaseEtapeCadrage if not break %}
                                 {% set phaseEnCours = phase.getNom() %}
-                                {% for validationEnCadrage in listProjetValidationPhaseEnCadrage %} 
-                                    {% if validationEnCadrage.getRefPhase().getNom() == phase.getNom() %}
-                                        {% if validationEnCadrage.validationJalon != "OK" %} {# Test si tous les Jalons sont en VALIDATION OK #}
-                                            {% set break = true %}
+                                    
+                                {# BY PASS PHASE #}
+                                {% set checked = false %}
+                                {% for byPass in listProjetByPassPhase %}
+                                    {% if byPass.refPhase.getNom() == phaseEnCours %}
+                                        {% if byPass.ByPass == 'OK' %}
+                                            {%set checked = true %}
                                         {% endif %}
                                     {% endif %}
-                                {% endfor %}
-                                {# Validation ok Liste Instances #}
-                                {% if countInstance[phase.getId()-1][1] != 0 %} {# On test si on des instances pour cette phase Projet #}
-                                    {% if listProjetListeInstance is defined %}
-                                        {% set ValidationInstanceData = null %}
-                                        {% set indexInstance = 0 %}
-                                        {% set lastInstance = null %}
-                                        {# On détermine la dernière instance de la phase P #}
-                                        {% for ins in listProjetInstance %}
-                                            {% if ins.getRefPhase().getNom() == phase.getNom() %}
-                                                {% if ins.getReference() > indexInstance %}
-                                                    {% set lastInstance = ins.getNom() %}
-                                                {% endif %}   
+                                {% endfor %}                                
+                                
+                                {# SI BY PASS #}
+                                {% if checked == true %}
+                                    {% set break = false %}
+                                {% else %}
+                                    {% for validationEnCadrage in listProjetValidationPhaseEnCadrage %} 
+                                        {% if validationEnCadrage.getRefPhase().getNom() == phase.getNom() %}
+                                            {% if validationEnCadrage.validationJalon != "OK" %} {# Test si tous les Jalons sont en VALIDATION OK #}
+                                                {% set break = true %}
                                             {% endif %}
-                                        {% endfor %} 
-                                        {# Validation de l'instance de la phase P #}
-                                        {% set indexInstance = 0 %}
-                                        {% for instance in listProjetListeInstance %}
-                                            {% if instance.getInstance().getRefPhase().getNom() == phase.getNom() %} 
-                                                {% if instance.getInstance().getReference() > indexInstance %}
-                                                    {% if instance.getInstance().getNom() == lastInstance %}                                            
-                                                        {% if instance.getStatutInstance() == "GO" %}                                              
-                                                           {% set ValidationInstanceData = true %}
-                                                        {% endif %}
-                                                    {% endif %}
-                                                {% set indexInstance = instance.getInstance().getReference() %}
+                                        {% endif %}
+                                    {% endfor %}
+                                    {# Validation ok Liste Instances #}
+                                    {% if countInstance[phase.getId()-1][1] != 0 %} {# On test si on des instances pour cette phase Projet #}
+                                        {% if listProjetListeInstance is defined %}
+                                            {% set ValidationInstanceData = null %}
+                                            {% set indexInstance = 0 %}
+                                            {% set lastInstance = null %}
+                                            {# On détermine la dernière instance de la phase P #}
+                                            {% for ins in listProjetInstance %}
+                                                {% if ins.getRefPhase().getNom() == phase.getNom() %}
+                                                    {% if ins.getReference() > indexInstance %}
+                                                        {% set lastInstance = ins.getNom() %}
+                                                    {% endif %}   
                                                 {% endif %}
+                                            {% endfor %} 
+                                            {# Validation de l'instance de la phase P #}
+                                            {% set indexInstance = 0 %}
+                                            {% for instance in listProjetListeInstance %}
+                                                {% if instance.getInstance().getRefPhase().getNom() == phase.getNom() %} 
+                                                    {% if instance.getInstance().getReference() > indexInstance %}
+                                                        {% if instance.getInstance().getNom() == lastInstance %}                                            
+                                                            {% if instance.getStatutInstance() == "GO" %}                                              
+                                                               {% set ValidationInstanceData = true %}
+                                                            {% endif %}
+                                                        {% endif %}
+                                                    {% set indexInstance = instance.getInstance().getReference() %}
+                                                    {% endif %}
+                                                {% endif %}
+                                            {% endfor %}         
+                                            {% if ValidationInstanceData == false %}
+                                                {% set break = true %}
                                             {% endif %}
-                                        {% endfor %}         
-                                        {% if ValidationInstanceData == false %}
-                                            {% set break = true %}
                                         {% endif %}
-                                    {% endif %}
-                                {% endif %}          
+                                    {% endif %} 
+                                    
+                                {% endif %}
                             {% endfor %}
 
                             {# En Conception #}
                             {% for phase in listProjetPhaseEtapeConception if not break %}
                                 {% set phaseEnCours = phase.getNom() %}
-                                {% for validationEnConception in listProjetValidationPhaseEnConception %} 
-                                    {% if validationEnConception.getRefPhase().getNom() == phase.getNom() %}
-                                        {% if validationEnConception.validationJalon != "OK" %} {# Test si tous les Jalons sont en VALIDATION OK #}
-                                            {% set break = true %}
+                                
+                                    
+                                {# BY PASS PHASE #}
+                                {% set checked = false %}
+                                {% for byPass in listProjetByPassPhase %}
+                                    {% if byPass.refPhase.getNom() == phaseEnCours %}
+                                        {% if byPass.ByPass == 'OK' %}
+                                            {%set checked = true %}
                                         {% endif %}
                                     {% endif %}
-                                {% endfor %}
-                                {# Validation ok Liste Instances #}
-                                {% if countInstance[phase.getId()-1][1] != 0 %} {# On test si on des instances pour cette phase Projet #}
-                                    {% if listProjetListeInstance is defined %}
-                                        {% set ValidationInstanceData = null %}
-                                        {% set indexInstance = 0 %}
-                                        {% set lastInstance = null %}
-                                        {# On détermine la dernière instance de la phase P #}
-                                        {% for ins in listProjetInstance %}
-                                            {% if ins.getRefPhase().getNom() == phase.getNom() %}
-                                                {% if ins.getReference() > indexInstance %}
-                                                    {% set lastInstance = ins.getNom() %}
-                                                {% endif %}   
+                                {% endfor %}                                
+                                
+                                {# SI BY PASS #}
+                                {% if checked == true %}
+                                    {% set break = false %}
+                                {% else %}
+                                    
+                                    {% for validationEnConception in listProjetValidationPhaseEnConception %} 
+                                        {% if validationEnConception.getRefPhase().getNom() == phase.getNom() %}
+                                            {% if validationEnConception.validationJalon != "OK" %} {# Test si tous les Jalons sont en VALIDATION OK #}
+                                                {% set break = true %}
                                             {% endif %}
-                                        {% endfor %} 
-                                        {# Validation de l'instance de la phase P #}
-                                        {% set indexInstance = 0 %}
-                                        {% for instance in listProjetListeInstance %}
-                                            {% if instance.getInstance().getRefPhase().getNom() == phase.getNom() %} 
-                                                {% if instance.getInstance().getReference() > indexInstance %}
-                                                    {% if instance.getInstance().getNom() == lastInstance %}                                            
-                                                        {% if instance.getStatutInstance() == "GO" %}                                              
-                                                           {% set ValidationInstanceData = true %}
-                                                        {% endif %}
-                                                    {% endif %}
-                                                {% set indexInstance = instance.getInstance().getReference() %}
+                                        {% endif %}
+                                    {% endfor %}
+                                    {# Validation ok Liste Instances #}
+                                    {% if countInstance[phase.getId()-1][1] != 0 %} {# On test si on des instances pour cette phase Projet #}
+                                        {% if listProjetListeInstance is defined %}
+                                            {% set ValidationInstanceData = null %}
+                                            {% set indexInstance = 0 %}
+                                            {% set lastInstance = null %}
+                                            {# On détermine la dernière instance de la phase P #}
+                                            {% for ins in listProjetInstance %}
+                                                {% if ins.getRefPhase().getNom() == phase.getNom() %}
+                                                    {% if ins.getReference() > indexInstance %}
+                                                        {% set lastInstance = ins.getNom() %}
+                                                    {% endif %}   
                                                 {% endif %}
+                                            {% endfor %} 
+                                            {# Validation de l'instance de la phase P #}
+                                            {% set indexInstance = 0 %}
+                                            {% for instance in listProjetListeInstance %}
+                                                {% if instance.getInstance().getRefPhase().getNom() == phase.getNom() %} 
+                                                    {% if instance.getInstance().getReference() > indexInstance %}
+                                                        {% if instance.getInstance().getNom() == lastInstance %}                                            
+                                                            {% if instance.getStatutInstance() == "GO" %}                                              
+                                                               {% set ValidationInstanceData = true %}
+                                                            {% endif %}
+                                                        {% endif %}
+                                                    {% set indexInstance = instance.getInstance().getReference() %}
+                                                    {% endif %}
+                                                {% endif %}
+                                            {% endfor %}         
+                                            {% if ValidationInstanceData == false %}
+                                                {% set break = true %}
                                             {% endif %}
-                                        {% endfor %}         
-                                        {% if ValidationInstanceData == false %}
-                                            {% set break = true %}
                                         {% endif %}
-                                    {% endif %}
+                                    {% endif %} 
+                                    
                                 {% endif %}         
                             {% endfor %}
 
                             {# En Réalisation #}
                             {% for phase in listProjetPhaseEtapeRealisation if not break %}
                                 {% set phaseEnCours = phase.getNom() %}
-                                {% for validationEnRealisation in listProjetValidationPhaseEnRealisation %} 
-                                    {% if validationEnRealisation.getRefPhase().getNom() == phase.getNom() %}
-                                        {% if validationEnRealisation.validationJalon != "OK" %} {# Test si tous les Jalons sont en VALIDATION OK #}
-                                            {% set break = true %}
+                                
+                                {# BY PASS PHASE #}
+                                {% set checked = false %}
+                                {% for byPass in listProjetByPassPhase %}
+                                    {% if byPass.refPhase.getNom() == phaseEnCours %}
+                                        {% if byPass.ByPass == 'OK' %}
+                                            {%set checked = true %}
                                         {% endif %}
                                     {% endif %}
-                                {% endfor %}
-                                {# Validation ok Liste Instances #}
-                                {% if countInstance[phase.getId()-1][1] != 0 %} {# On test si on des instances pour cette phase Projet #}
-                                    {% if listProjetListeInstance is defined %}
-                                        {% set ValidationInstanceData = null %}
-                                        {% set indexInstance = 0 %}
-                                        {% set lastInstance = null %}
-                                        {# On détermine la dernière instance de la phase P #}
-                                        {% for ins in listProjetInstance %}
-                                            {% if ins.getRefPhase().getNom() == phase.getNom() %}
-                                                {% if ins.getReference() > indexInstance %}
-                                                    {% set lastInstance = ins.getNom() %}
-                                                {% endif %}   
+                                {% endfor %}                                
+                                
+                                {# SI BY PASS #}
+                                {% if checked == true %}
+                                    {% set break = false %}
+                                {% else %} 
+                                    
+                                    {% for validationEnRealisation in listProjetValidationPhaseEnRealisation %} 
+                                        {% if validationEnRealisation.getRefPhase().getNom() == phase.getNom() %}
+                                            {% if validationEnRealisation.validationJalon != "OK" %} {# Test si tous les Jalons sont en VALIDATION OK #}
+                                                {% set break = true %}
                                             {% endif %}
-                                        {% endfor %} 
-                                        {# Validation de l'instance de la phase P #}
-                                        {% set indexInstance = 0 %}
-                                        {% for instance in listProjetListeInstance %}
-                                            {% if instance.getInstance().getRefPhase().getNom() == phase.getNom() %} 
-                                                {% if instance.getInstance().getReference() > indexInstance %}
-                                                    {% if instance.getInstance().getNom() == lastInstance %}                                            
-                                                        {% if instance.getStatutInstance() == "GO" %}                                              
-                                                           {% set ValidationInstanceData = true %}
-                                                        {% endif %}
-                                                    {% endif %}
-                                                {% set indexInstance = instance.getInstance().getReference() %}
+                                        {% endif %}
+                                    {% endfor %}
+                                    {# Validation ok Liste Instances #}
+                                    {% if countInstance[phase.getId()-1][1] != 0 %} {# On test si on des instances pour cette phase Projet #}
+                                        {% if listProjetListeInstance is defined %}
+                                            {% set ValidationInstanceData = null %}
+                                            {% set indexInstance = 0 %}
+                                            {% set lastInstance = null %}
+                                            {# On détermine la dernière instance de la phase P #}
+                                            {% for ins in listProjetInstance %}
+                                                {% if ins.getRefPhase().getNom() == phase.getNom() %}
+                                                    {% if ins.getReference() > indexInstance %}
+                                                        {% set lastInstance = ins.getNom() %}
+                                                    {% endif %}   
                                                 {% endif %}
+                                            {% endfor %} 
+                                            {# Validation de l'instance de la phase P #}
+                                            {% set indexInstance = 0 %}
+                                            {% for instance in listProjetListeInstance %}
+                                                {% if instance.getInstance().getRefPhase().getNom() == phase.getNom() %} 
+                                                    {% if instance.getInstance().getReference() > indexInstance %}
+                                                        {% if instance.getInstance().getNom() == lastInstance %}                                            
+                                                            {% if instance.getStatutInstance() == "GO" %}                                              
+                                                               {% set ValidationInstanceData = true %}
+                                                            {% endif %}
+                                                        {% endif %}
+                                                    {% set indexInstance = instance.getInstance().getReference() %}
+                                                    {% endif %}
+                                                {% endif %}
+                                            {% endfor %}         
+                                            {% if ValidationInstanceData == false %}
+                                                {% set break = true %}
                                             {% endif %}
-                                        {% endfor %}         
-                                        {% if ValidationInstanceData == false %}
-                                            {% set break = true %}
                                         {% endif %}
-                                    {% endif %}
-                                {% endif %}          
+                                    {% endif %}  
+                                    
+                                {% endif %}  
                             {% endfor %}                            
                             
                             Budget: <strong> {{ total|number_format(2, ',', ' ') }} k€ </strong> / 

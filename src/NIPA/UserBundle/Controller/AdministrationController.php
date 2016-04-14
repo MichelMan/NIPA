@@ -112,23 +112,43 @@ class AdministrationController extends Controller
         //On récupère toutes les Etapes
         $repository = $this->getDoctrine()->getManager()->getRepository('NIPAProjetBundle:ProjetEtape');
         $listEtapes = $repository->findAll();          
-
+        //On trie la liste
+        usort($listEtapes, function ($a, $b) {
+            return strnatcmp($a->getReference(), $b->getReference());
+        }); 
+        
+        
         //On récupère toutes les Phases
         $repository = $this->getDoctrine()->getManager()->getRepository('NIPAProjetBundle:ProjetPhase');
         $listPhases = $repository->findAll();     
+        //On trie la liste
+        usort($listPhases, function ($a, $b) {
+            return strnatcmp($a->getReference(), $b->getReference());
+        });         
         
         //On récupère toutes les instances
         $repository = $this->getDoctrine()->getManager()->getRepository('NIPAProjetBundle:DemandeInstance');
         $listProjetInstances = $repository->findAll();  
+        //On trie la liste
+        usort($listProjetInstances, function ($a, $b) {
+            return strnatcmp($a->getReference(), $b->getReference());
+        });            
         
         //On récupère tous ls jalons Date
         $repository = $this->getDoctrine()->getManager()->getRepository('NIPAProjetBundle:ProjetJalonDate');
         $listJalonDates = $repository->findAll();   
+        //On trie la liste
+        usort($listJalonDates, function ($a, $b) {
+            return strnatcmp($a->getReference(), $b->getReference());
+        });          
         
         //On récupère tous les livrables
         $repository = $this->getDoctrine()->getManager()->getRepository('NIPAProjetBundle:ProjetLivrable');
         $listLivrables = $repository->findAll();             
-        
+        //On trie la liste
+        usort($listLivrables, function ($a, $b) {
+            return strnatcmp($a->getReference(), $b->getReference());
+        });         
          /***********************************************************/
        
       return $this->render('NIPAUserBundle:Administration:administration.html.twig', array(

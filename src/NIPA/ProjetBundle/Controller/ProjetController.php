@@ -15,6 +15,7 @@ use NIPA\ProjetBundle\Entity\ProjetListeInstance;
 use NIPA\ProjetBundle\Entity\ProjetListeJalonDate;
 use NIPA\ProjetBundle\Entity\ProjetBudget;
 use NIPA\ProjetBundle\Entity\ProjetValidationPhase;
+use NIPA\ProjetBundle\Entity\ProjetByPassPhase;
 
 
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
@@ -98,6 +99,14 @@ class ProjetController extends Controller
         });  
         
         /************************************/
+
+         //return array() List 3 ETAPES
+        $repository = $this->getDoctrine()->getManager()->getRepository('NIPAProjetBundle:ProjetEtape');
+        $listProjetEtape = $repository->findAll();     
+        //On trie la liste
+        usort($listProjetEtape, function ($a, $b) {
+            return strnatcmp($a->getReference(), $b->getReference());
+        });           
         
         //return array() List Phases en etape CADRAGE
         $repository = $this->getDoctrine()->getManager()->getRepository('NIPAProjetBundle:ProjetPhase');
@@ -115,7 +124,7 @@ class ProjetController extends Controller
             return strnatcmp($a->getReference(), $b->getReference());
         });
         
-        //return array() List Etapes en etape REALISATION
+        //return array() List Phases en etape REALISATION
         $repository = $this->getDoctrine()->getManager()->getRepository('NIPAProjetBundle:ProjetPhase');
         $listProjetPhaseEtapeRealisation = $repository->findByrefEtape("3");     
         //On trie la liste
@@ -216,6 +225,7 @@ class ProjetController extends Controller
             'listInterlocuteurMOA' => $listInterlocuteurMOA,
             'listPorteurMetier' => $listPorteurMetier,
             'listSDM' => $listSDM,
+            'listProjetEtape' => $listProjetEtape,
             'listProjetPhaseEtapeCadrage' => $listProjetPhaseEtapeCadrage,
             'listProjetPhaseEtapeConception' => $listProjetPhaseEtapeConception,
             'listProjetPhaseEtapeRealisation' => $listProjetPhaseEtapeRealisation,
@@ -774,8 +784,14 @@ class ProjetController extends Controller
         $repository = $this->getDoctrine()->getManager()->getRepository('NIPAProjetBundle:ProjetValidationPhase');
         $listProjetValidationPhaseEnCadrage = $repository->getValidationProjetEnCadrage($projet);
         
-        /*************************************************/              
+        /*************************************************/ 
         
+         //return array() List ByPass Of a Projet
+        $repository = $this->getDoctrine()->getManager()->getRepository('NIPAProjetBundle:ProjetByPassPhase');
+        $listProjetByPassPhase = $repository->findByProjet($projet);
+        
+        /*************************************************/ 
+
         $form->handleRequest($request);
         if($form->isSubmitted()) {                                   
    
@@ -873,7 +889,8 @@ class ProjetController extends Controller
             'listProjetBudget' => $listProjetBudget,
             'listProjetValidationPhaseEnRealisation' => $listProjetValidationPhaseEnRealisation,
             'listProjetValidationPhaseEnConception' => $listProjetValidationPhaseEnConception,
-            'listProjetValidationPhaseEnCadrage' => $listProjetValidationPhaseEnCadrage
+            'listProjetValidationPhaseEnCadrage' => $listProjetValidationPhaseEnCadrage,
+            'listProjetByPassPhase' => $listProjetByPassPhase
             )); 
     }     
   
@@ -1919,5 +1936,73 @@ class ProjetController extends Controller
 
                 return $response; 
         }
+    }   
+    
+   /**
+    *  BYPASS Phase of a Projet
+    * 
+    */
+    public function byPassPhaseProjetAction($reference, $phase)    
+    {
+        $request = $this->get('request');
+
+        if ($request->isXmlHttpRequest()) {
+            
+                $data = $request->request->all();
+                //\Doctrine\Common\Util\Debug::dump($data);
+   
+                $projet = $this->get('nipa_projet.projet_manager')->loadProjet($reference);             
+            
+                $repository = $this->getDoctrine()->getManager()->getRepository('NIPAProjetBundle:ProjetPhase');
+                $phaseProjet = $repository->findOneBy(array('nom' => $phase));                
+                
+                // On vérifie que l'objet existe
+                if($bypass = $this->getDoctrine()->getManager()->getRepository('NIPAProjetBundle:ProjetByPassPhase')->findOneBy(array('projet' => $projet, 'refPhase'=> $phaseProjet))) {
+
+                    // Si checkbox validation coché
+                    if(isset($data["valeur"]) && ($data["valeur"] == "false"))
+                    {
+                        $bypass->setByPass("OK");
+                    }
+                    else 
+                    {
+                        $bypass->setByPass("NOK");
+                    }         
+                    $bypass->setProjet($projet);
+                    $bypass->setRefPhase($phaseProjet);
+                    $em = $this->getDoctrine()->getManager();
+                    $em->persist($bypass);
+                    $em->flush();
+                    
+                }
+                else
+                {
+                    // SI EXISTE PAS ON LE CREE
+                    $bypass = new ProjetByPassPhase();
+                    // Si checkbox validation coché
+                    if(isset($data["valeur"]) && ($data["valeur"] == "false"))
+                    {
+                        $bypass->setByPass("OK");
+                    }
+                    else 
+                    {
+                        $bypass->setByPass("NOK");
+                    }       
+                    $bypass->setProjet($projet);
+                    $bypass->setRefPhase($phaseProjet);
+                    $em = $this->getDoctrine()->getManager();
+                    $em->persist($bypass);
+                    $em->flush();
+                }
+                
+                $this->get('session')->getFlashBag()->set('success', "Phase ByPassée!");            
+                
+                return new JsonResponse(array('message' => 'Success!'), 200);
+
+                $response = new JsonResponse(array('message' => 'Error'), 400);
+
+                return $response; 
+        }
     }     
+    
 }

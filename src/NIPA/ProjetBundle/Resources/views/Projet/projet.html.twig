@@ -79,13 +79,13 @@
                     {% if projet.referenceProjet %}
                    
                         <li role="presentation">
-                            <a href="#cadrage" aria-controls="cadrage" role="tab" data-toggle="tab"><i class="fa fa-list-alt fa-fw"></i> Cadrage</a>
+                            <a href="#cadrage" aria-controls="cadrage" role="tab" data-toggle="tab"><i class="fa fa-list-alt fa-fw"></i> {{ listProjetEtape[0].nom }}</a>
                         </li>                    
                         <li role="presentation">
-                            <a href="#conception" aria-controls="conception" role="tab" data-toggle="tab"><i class="fa fa-list-alt fa-fw"></i> Conception</a>
+                            <a href="#conception" aria-controls="conception" role="tab" data-toggle="tab"><i class="fa fa-list-alt fa-fw"></i> {{ listProjetEtape[1].nom }}</a>
                         </li>                  
                         <li role="presentation">
-                            <a href="#realisation" aria-controls="realisation" role="tab" data-toggle="tab"><i class="fa fa-list-alt fa-fw"></i> Réalisation</a>
+                            <a href="#realisation" aria-controls="realisation" role="tab" data-toggle="tab"><i class="fa fa-list-alt fa-fw"></i> {{ listProjetEtape[2].nom }}</a>
                         </li>                    
                         <li role="presentation">
                             <a href="#budget" aria-controls="budget" role="tab" data-toggle="tab"><i class="fa fa-dollar fa-fw"></i> Budget</a>

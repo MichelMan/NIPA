@@ -110,6 +110,10 @@ delete_projet_instance:
     path: projet/delete/instance/{reference}
     defaults: { _controller: NIPAProjetBundle:Projet:deleteInstanceProjet }
 
+by_pass_projet_phase:
+    path: projet{reference}/byPass/phase/{phase}
+    defaults: { _controller: NIPAProjetBundle:Projet:byPassPhaseProjet }
+
 add_projet_budget:
     path: projet/add/budget/{reference}
     defaults: { _controller: NIPAProjetBundle:Projet:addBudgetProjet }
