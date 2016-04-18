@@ -35,7 +35,13 @@ class ProjetLivrable
      * @ORM\Column(name="Description", type="string", length=2500, nullable= true)
      */
     private $description;
-        
+       
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="Developpement", type="string", length=25, nullable= true)
+     */
+    private $developpement;
     
     /**
      * @var string
@@ -109,7 +115,29 @@ class ProjetLivrable
         return $this->description;
     }       
         
-    
+    /**
+     * Set developpement
+     *
+     * @param string $developpement
+     *
+     * @return ProjetLivrable
+     */
+    public function setDeveloppement($developpement)
+    {
+        $this->developpement = $developpement;
+
+        return $this;
+    }
+
+    /**
+     * Get developpement
+     *
+     * @return string
+     */
+    public function getDeveloppement()
+    {
+        return $this->developpement;
+    }     
     
     /**
      * Set reference

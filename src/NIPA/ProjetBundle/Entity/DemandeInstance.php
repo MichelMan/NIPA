@@ -42,6 +42,7 @@ class DemandeInstance
      */
     private $type;    
     
+    
     /**
      * @ORM\ManyToOne(targetEntity="NIPA\ProjetBundle\Entity\ProjetPhase")
      */

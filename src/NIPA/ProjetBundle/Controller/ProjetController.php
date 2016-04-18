@@ -1094,11 +1094,24 @@ class ProjetController extends Controller
                 {
                     if(sizeof($listProjetLivrable) != 0)
                     {
-                        // On supprime tout?
+                        // On supprime en fct si DEV SI, RZO ou les 2
                         foreach($listProjetLivrable as $livrable)
                         {
-                            $em->remove($livrable);
-                            $em->flush();
+                            if($projet->getDevSI() == true and $livrable->getLivrable()->getDeveloppement() == "SI")
+                            {
+                                $em->remove($livrable);
+                                $em->flush();
+                            }
+                            else if($projet->getDevRZO() == true and $livrable->getLivrable()->getDeveloppement() == "RZO")
+                            {
+                                $em->remove($livrable);
+                                $em->flush();
+                            }
+                            else if($livrable->getLivrable()->getDeveloppement() == null)
+                            {
+                                $em->remove($livrable);
+                                $em->flush();
+                            }
                         }
                     }
 
@@ -1175,11 +1188,24 @@ class ProjetController extends Controller
                 {
                     if(sizeof($listProjetJalonDate) != 0)
                     {
-                        // On supprime tout?
+                        // On supprime en fct si DEV SI, RZO ou les 2
                         foreach($listProjetJalonDate as $jalon)
                         {
-                            $em->remove($jalon);
-                            $em->flush();
+                            if($projet->getDevSI() == true and $jalon->getJalonDate()->getDeveloppement() == "SI")
+                            {
+                                $em->remove($jalon);
+                                $em->flush();
+                            }
+                            else if($projet->getDevRZO() == true and $jalon->getJalonDate()->getDeveloppement() == "RZO")
+                            {
+                                $em->remove($jalon);
+                                $em->flush();
+                            }
+                            else if($jalon->getJalonDate()->getDeveloppement() == null)
+                            {
+                                $em->remove($jalon);
+                                $em->flush();
+                            }
                         }
                     }
 
@@ -1335,11 +1361,24 @@ class ProjetController extends Controller
                 {
                     if(sizeof($listProjetLivrable) != 0)
                     {
-                        // On supprime tout?
+                        // On supprime en fct si DEV SI, RZO ou les 2
                         foreach($listProjetLivrable as $livrable)
                         {
-                            $em->remove($livrable);
-                            $em->flush();
+                            if($projet->getDevSI() == true and $livrable->getLivrable()->getDeveloppement() == "SI")
+                            {
+                                $em->remove($livrable);
+                                $em->flush();
+                            }
+                            else if($projet->getDevRZO() == true and $livrable->getLivrable()->getDeveloppement() == "RZO")
+                            {
+                                $em->remove($livrable);
+                                $em->flush();
+                            }
+                            else if($livrable->getLivrable()->getDeveloppement() == null)
+                            {
+                                $em->remove($livrable);
+                                $em->flush();
+                            }
                         }
                     }
 
@@ -1415,11 +1454,24 @@ class ProjetController extends Controller
                 {
                     if(sizeof($listProjetJalonDate) != 0)
                     {
-                        // On supprime tout?
+                        // On supprime en fct si DEV SI, RZO ou les 2
                         foreach($listProjetJalonDate as $jalon)
                         {
-                            $em->remove($jalon);
-                            $em->flush();
+                            if($projet->getDevSI() == true and $jalon->getJalonDate()->getDeveloppement() == "SI")
+                            {
+                                $em->remove($jalon);
+                                $em->flush();
+                            }
+                            else if($projet->getDevRZO() == true and $jalon->getJalonDate()->getDeveloppement() == "RZO")
+                            {
+                                $em->remove($jalon);
+                                $em->flush();
+                            }
+                            else if($jalon->getJalonDate()->getDeveloppement() == null)
+                            {
+                                $em->remove($jalon);
+                                $em->flush();
+                            }
                         }
                     }
 
@@ -1574,11 +1626,24 @@ class ProjetController extends Controller
                 {
                     if(sizeof($listProjetLivrable) != 0)
                     {
-                        // On supprime tout?
+                        // On supprime en fct si DEV SI, RZO ou les 2
                         foreach($listProjetLivrable as $livrable)
                         {
-                            $em->remove($livrable);
-                            $em->flush();
+                            if($projet->getDevSI() == true and $livrable->getLivrable()->getDeveloppement() == "SI")
+                            {
+                                $em->remove($livrable);
+                                $em->flush();
+                            }
+                            else if($projet->getDevRZO() == true and $livrable->getLivrable()->getDeveloppement() == "RZO")
+                            {
+                                $em->remove($livrable);
+                                $em->flush();
+                            }
+                            else if($livrable->getLivrable()->getDeveloppement() == null)
+                            {
+                                $em->remove($livrable);
+                                $em->flush();
+                            }
                         }
                     }
 
@@ -1655,11 +1720,24 @@ class ProjetController extends Controller
                 {
                     if(sizeof($listProjetJalonDate) != 0)
                     {
-                        // On supprime tout?
+                        // On supprime en fct si DEV SI, RZO ou les 2
                         foreach($listProjetJalonDate as $jalon)
                         {
-                            $em->remove($jalon);
-                            $em->flush();
+                            if($projet->getDevSI() == true and $jalon->getJalonDate()->getDeveloppement() == "SI")
+                            {
+                                $em->remove($jalon);
+                                $em->flush();
+                            }
+                            else if($projet->getDevRZO() == true and $jalon->getJalonDate()->getDeveloppement() == "RZO")
+                            {
+                                $em->remove($jalon);
+                                $em->flush();
+                            }
+                            else if($jalon->getJalonDate()->getDeveloppement() == null)
+                            {
+                                $em->remove($jalon);
+                                $em->flush();
+                            }
                         }
                     }
 
