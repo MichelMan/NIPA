@@ -68,7 +68,6 @@ class AdministrationChampsProjetController extends Controller
                 $entity = $repository->findOneBy(array('id' => $data["id"]));
                 
                 $entity->setNom($data["nom"]);
-                $entity->setReference($data["reference"]);
                 $em = $this->getDoctrine()->getManager();
                 $em->persist($entity);
                 $em->flush();
@@ -83,7 +82,7 @@ class AdministrationChampsProjetController extends Controller
     }      
 
     /**
-    *  EDIT Champs Phase ALL DRAG & DROP
+    *  EDIT ORDRE Champs Phase ALL DRAG & DROP
     * 
     */
     public function editChampPhaseALLAction()    
@@ -115,5 +114,45 @@ class AdministrationChampsProjetController extends Controller
                 
         }
     }     
+
+    /**
+    *  EDIT Champs Phase HIDE
+    * 
+    */
+    public function editChampPhaseHideAction()    
+    {
+        
+        $request = $this->get('request');
+
+        if ($request->isXmlHttpRequest()) {
+            
+                $data = $request->request->all();
+                //\Doctrine\Common\Util\Debug::dump($data);
+                
+                $repository = $this->getDoctrine()->getManager()->getRepository('NIPAProjetBundle:ProjetPhase');
+                $entity = $repository->findOneBy(array('id' => $data["id"]));
+                
+                // Si checkbox validation coché
+                if(isset($data["valeur"]) && ($data["valeur"] == "false"))
+                {
+                    $entity->setHidden(1);
+                }
+                else
+                {
+                    $entity->setHidden(0);
+                }
+                    
+                $em = $this->getDoctrine()->getManager();
+                $em->persist($entity);
+                $em->flush();
+                
+                return new JsonResponse(array('message' => 'Success!'), 200);
+
+                $response = new JsonResponse(array('message' => 'Error'), 400);
+
+                return $response; 
+                
+        }
+    }    
     
 }  

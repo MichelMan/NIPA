@@ -34,7 +34,8 @@
 		"friendsofsymfony/user-bundle": "~2.0@dev",
         "braincrafted/bootstrap-bundle": "~2.0", 
 		"twbs/bootstrap": "3.0.*",
-        "jquery/jquery":  "1.11.*"
+        "jquery/jquery":  "1.11.*",
+        "liuggio/excelbundle": "^2.0"
     },
     "require-dev": {
         "sensio/generator-bundle": "~2.3"

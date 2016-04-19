@@ -121,3 +121,11 @@ add_projet_budget:
 delete_projet_budget:
     path: projet/delete/budget/{reference}
     defaults: { _controller: NIPAProjetBundle:Projet:deleteBudgetProjet }
+
+export_data_csv:
+    path: projet/export/CSV
+    defaults: { _controller: NIPAProjetBundle:Default:generateCsv }
+
+export_data_csv2:
+    path: projet/export/CSV/{name}
+    defaults: { _controller: NIPAProjetBundle:Default:generateCsv2 }

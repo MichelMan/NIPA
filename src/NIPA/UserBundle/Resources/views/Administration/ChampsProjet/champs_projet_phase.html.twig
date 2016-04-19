@@ -12,10 +12,27 @@
         cursor: pointer;
     }     
     
-    .hidden {
+    .hiddenColonne {
         opacity:0;
+    }       
+
+    .ui-sortable-placeholder {
+        border: 3px dashed #00BFFF;
+        height: 45px;
+        width: 344px;
+        background: #FFFFFF;
     }    
-        
+ 
+    .bought {
+            text-decoration:line-through;
+            color:#888;
+            font-style:italic
+    }    
+
+    .icon-archive {
+        color: yellow;
+    }    
+    
     </style>
     
     <!-- MODAL EDIT Phase  -->
@@ -43,13 +60,14 @@
                         </div>        
                         <div class="panel-body" style="display: none;">
 
-                            <table class="table table-hover" id="champs-table-phase">
+                            <table class="table" id="champs-table-phase">
                                 <thead>
                                     <tr>
                                         <th>N° Référence</th>
-                                        <th style="opacity:0;">ID</th>  
+                                        <th class="hiddenColonne">ID</th>  
                                         <th>Valeur</th>
-                                        <th>Edition</th>                                        
+                                        <th>Edition</th>     
+                                        <th>Masqué</th>                                        
                                     </tr>
                                 </thead>
                                 <tbody id="table">
@@ -58,20 +76,49 @@
                                     {% else %}    
                                         {% for phase in listPhases %}
                                             <tr data-id="{{ loop.index }}" id="{{ phase.id }}">
-                                                <td data-field="reference" class="reference" id="{{ phase.reference }}">{{ phase.reference }}</td>
-                                                <td data-field="id" class="id" id="{{ phase.id }}" style="opacity:0;">{{ phase.id }}</td>                                            
-                                                <td data-field="nom" class="nom" id="{{ phase.nom }}">{{ phase.nom }}</td>
+                                                <td class="reference" id="{{ phase.reference }}">{{ phase.reference }}</td>
+                                                <td data-field="id" class="id hiddenColonne" id="{{ phase.id }}">{{ phase.id }}</td>                                            
+                                                    {% if phase.nom == "MEP" %}
+                                                        <td class="nom" id="{{ phase.nom }}">{{ phase.nom }}</td>
+                                                        <td>
+                                                            <a class="button button-small"><i class="glyphicon glyphicon-lock icon-archive"></i></a>
+                                                        </td>
+                                                    {% else %}
+                                                        <td data-field="nom" class="nom" id="{{ phase.nom }}">{{ phase.nom }}</td>
+                                                        <td>
+                                                            <a class="button button-small edit" title="Edit"><i class="glyphicon glyphicon-pencil"></i></a>
+                                                        </td>
+                                                    {% endif %}  
                                                 <td>
-                                                    <a class="button button-small edit" title="Edit"><i class="glyphicon glyphicon-pencil"></i></a>
-                                                    <!-- <a class="button button-small cancel" title="Annuler"><i class="glyphicon glyphicon-remove"></i></a> -->                                                
-                                                </td>                                            
+                                                    {% if phase.hidden == 0 %}
+                                                        <input type="checkbox" class="checkHide" id="{{ phase.id }}" value="false" onchange="if(this.checked) this.value='true'; else this.value='false';" />
+                                                    {% else %}
+                                                        <input type="checkbox" class="checkHide" id="{{ phase.id }}" value="true" onchange="if(this.checked) this.value='true'; else this.value='false';" checked/>
+                                                    {% endif %}    
+                                                </td>          
                                             </tr>
                                         {% endfor %}  
                                     {% endif%}    
                                 </tbody>
                             </table>
 
-                        </div>  
+                        </div>
+                        <!--        
+                            <table class="table" id="champs-table-phase-add">
+                            <thead>
+                                <tr>
+                                    <th class="text-center">Nouvelle valeur</th>
+                                    <th class="text-center">Action</th>                    
+                                </tr>
+                            </thead>                   
+                            <tbody>
+                                <tr class='add'>                                  
+                                    <td><input type="text" class="form-control input-md textinput addValue" id="nom" name="nom" required="true"></td>
+                                    <td class="text-center" id="add-SDM"><button type="submit" title="Ajouter" class="btn btn-success addBtn"><i class="glyphicon glyphicon-check"></i></button></td>
+                                 </tr>   
+                            </tbody>   
+                        </table>     
+                       -->         
                     </div>
 
                 </div>
@@ -104,96 +151,102 @@
     
 
     /*********Phase Projet*************/
+    
+    function editableTable()
+    {
+        $('#champs-table-phase tr').editable({
 
-    $('#champs-table-phase tr').editable({
+          // enable keyboard support
+          keyboard: true,
 
-      // enable keyboard support
-      keyboard: true,
+          // double click to start editing
+          dblclick: true,
 
-      // double click to start editing
-      dblclick: true,
+          // enable edit buttons
+          button: true,
 
-      // enable edit buttons
-      button: true,
+          // CSS selector for edit buttons
+          buttonSelector: ".edit",
 
-      // CSS selector for edit buttons
-      buttonSelector: ".edit",
+          // uses select dropdown instead of input field
+          dropdowns: {},
 
-      // uses select dropdown instead of input field
-      dropdowns: {},
+          // maintains column width when editing
+          maintainWidth: true,
 
-      // maintains column width when editing
-      maintainWidth: true,
+          // callbacks for edit, save and cancel actions
+          edit: function(values) {
+                $(".cancel i", this)
+                .show();
 
-      // callbacks for edit, save and cancel actions
-      edit: function(values) {
-            $(".cancel i", this)
-            .show();
+                $(".edit i", this)
+                .removeClass('glyphicon-pencil')
+                .addClass('glyphicon-save')
+                .attr('title', 'Save');  
+            },
 
-            $(".edit i", this)
-            .removeClass('glyphicon-pencil')
-            .addClass('glyphicon-save')
-            .attr('title', 'Save');  
-        },
+          save: function(values) {
+                $(".cancel i", this)
+                .hide();     
 
-      save: function(values) {
-            $(".cancel i", this)
-            .hide();     
-
-            $(".edit i", this)
-            .removeClass('glyphicon-save')
-            .addClass('glyphicon-pencil')
-            .attr('title', 'Edit');  
+                $(".edit i", this)
+                .removeClass('glyphicon-save')
+                .addClass('glyphicon-pencil')
+                .attr('title', 'Edit');  
 
 
-            /* Test contre les valeurs dupliquées */
-             var chemin =  $(".nom", this); 
-             var boolean = 0;
-             $('#champs-table-phase').find("tbody").find("tr").each(function(){
-               var identifiant= $(this).find(".id").text();
-               var nom= $(this).find(".nom").text();
-               
-               /*Pour enlever les espaces qui empechent la comparaison*/
-               var nom_X = nom.replace(/ /g, '_');
-               var nom_Y = values["nom"].replace(/ /g, '_');
-               //console.log(nom_X);
-               //console.log(nom_Y);
+                /* Test contre les valeurs dupliquées */
+                 var chemin =  $(".nom", this); 
+                 var boolean = 0;
+                 $('#champs-table-phase').find("tbody").find("tr").each(function(){
+                   var identifiant= $(this).find(".id").text();
+                   var nom= $(this).find(".nom").text();
 
-                if(nom_X == nom_Y && identifiant != values["id"])
+                   /*Pour enlever les espaces qui empechent la comparaison*/
+                   var nom_X = nom.replace(/ /g, '_');
+                   var nom_Y = values["nom"].replace(/ /g, '_');
+                   //console.log(nom_X);
+                   //console.log(nom_Y);
+
+                    if(nom_X == nom_Y && identifiant != values["id"])
+                    {
+                        boolean = 1;
+                    }
+                });
+
+                if(boolean == 1)
                 {
-                    boolean = 1;
+                    alert("Phase déjà existante!");
+                    chemin.html("");
+                    return;                  
                 }
-            });
-            
-            if(boolean == 1)
-            {
-                alert("Phase déjà existante!");
-                chemin.html("");
-                return;                  
+                else
+                {
+                    /* Si ok on post*/
+                    var id = $(this).data('id');
+                    $.post('{{ path('administration_projet_champ_phase_edit')}}', values);        
+                } 
+
+            },
+
+          cancel: function(values) {
+                $(".edit i", this)
+                .removeClass('glyphicon-save')
+                .addClass('glyphicon-pencil')
+                .attr('title', 'Edit');  
             }
-            else
-            {
-                /* Si ok on post*/
-                var id = $(this).data('id');
-                $.post('{{ path('administration_projet_champ_phase_edit')}}', values);        
-            } 
 
-        },
-
-      cancel: function(values) {
-            $(".edit i", this)
-            .removeClass('glyphicon-save')
-            .addClass('glyphicon-pencil')
-            .attr('title', 'Edit');  
-        }
-
-    });
-
+        });
+    }
+    
 /*********************/  
 
 $(document).ready(function() {
     $tabs = $("#tabbable");
     
+    /* On initialise le controle EDTION TABLE */
+    editableTable();
+
     /* Pour garder la bonne longueur et largeur la ligne sélectionnée en DRAG */
     var fixHelperModified = function(e, tr) {
         var $originals = tr.children();
@@ -209,20 +262,21 @@ $(document).ready(function() {
         .sortable({
             connectWith: "#tabbable #champs-table-phase #table",
             appendTo: $tabs,
+            placeholder: "ui-sortable-placeholder", 
             helper: fixHelperModified,
             zIndex: 999990,
             /*handle: ".nom", // Le drag ne peut se faire que sur l'élément .nom (le texte) */
-            start: function(){ $tabs.addClass("dragging") },
+            start: function(){ $tabs.addClass("dragging")},
             /*stop: function(){ $tabs.removeClass("dragging") }*/          
             stop: function(event, ui){
-                    // Pour chaque item de liste
-                    $("#tabbable table tbody").find("tr").each(function(){
-                            // On actualise sa position
-                            index = parseInt($(this).index()+1);
-                            // On la met à jour dans la page (ie. La Référence alias la position)
-                            $(this).find(".reference").text(index);
-                    });
-            },
+                // Pour chaque item de liste
+                $("#tabbable #champs-table-phase #table").find("tr").each(function(){
+                        // On actualise sa position
+                        index = parseInt($(this).index()+1);
+                        // On la met à jour dans la page (ie. La Référence alias la position)
+                        $(this).find(".reference").text(index);
+                });
+            },  
             update: function(event, ui)
             {
                 // On prépare la variable contenant les paramètres
@@ -251,23 +305,137 @@ $(document).ready(function() {
     
             }            
         })
-        .disableSelection()
-    ;
+        .disableSelection();
+
+    // On ajoute un petit formulaire pour ajouter des items
+
     /*
-    var $tab_items = $( ".nav-tabs > li", $tabs ).droppable({
-      accept: ".connectedSortable tr",
-      hoverClass: "ui-state-hover",
-      over: function( event, ui ) {
-        var $item = $( this );
-        $item.find("a").tab("show");
+    * Ajouter les controles sur le bouton "ajouter"
+    *
+    * @Return void
+    */
+    // Bouton ajouter
+    /* $(".addBtn").click(function(){
+            // Si le texte n'est pas vide
+            if($(".addValue").val() != "")
+            {
+                // On ajoute une nouvelle ligne à notre liste
+                var index = parseInt($("#tabbable #champs-table-phase #table").find("tr:last-child").index()+2);
+                $("#tabbable #champs-table-phase #table").append(
+                        '<tr data-id="'+index+'" id="'+index+'"> <td class="reference" id="'+index+'">'+index+'</td> <td data-field="id" class="id hiddenColonne" id="'+index+'">'+index+'</td> <td data-field="nom" class="nom" id="'+$(".addValue").val()+'">'+$(".addValue").val()+'</td> <td><a class="button button-small edit" title="Edit"><i class="glyphicon glyphicon-pencil"></i></a></td> </tr>'                  
+                );
         
-      },
-      drop: function( event, ui ) {
-        return false;
-      }
+                // TRAIMENT POST AJAX A FAIRE
+        
+                // On réinitialise le champ de texte pour l'ajout
+                $(".addValue").val("");
+                // On réapplique le controle EDTION TABLE
+                editableTable();
+            }
+    })
+    // On autorise également la validation de la saisie d'un nouvel item par pression de la touche entrée
+    $(this).on("keyup", '.addValue', function(e) {
+            if(e.keyCode == 13) {
+                    // On lance l'évènement click associé au bouton d'ajout d'item
+                    $(".addBtn").trigger("click");
+            }
     });
     */
+    
+    // Au clic sur le checkbox
+    $("#tabbable #champs-table-phase #table tr").find("td .checkHide").click(function(){
+            // On alterne la classe de l'item (le <li>), le CSS associé fera que l'élément sera barré
+            var valeur = $(this).val();
+            var id = $(this).attr('id');
+            
+            console.log(valeur);
+            console.log(id);
+            
+            $.ajax({
+                type: 'post',
+                url: "{{ path('administration_projet_champ_phase_edit_hide')}}",
+                data: {id:id, valeur:valeur},
+                success: function(data)
+                {
+                    //alert("Mise à jour ordre! (TEST)");
+                },
+                error: function(e) {
+                   console.log(e);
+                 }      
+            });              
+            
+            
+            $(this).parent().toggleClass("bought");
+
+            // Si cet élément est coché
+            if($(this).parent().hasClass("bought"))
+                // On modifie la classe en ajoutant la classe "checked"
+                $(this).removeClass("unchecked").addClass("checked");
+            // Le cas contraire
+            else
+                // On modifie la classe en retirant la classe "checked"
+                $(this).removeClass("checked").addClass("unchecked");
+    })    
+    
 });
+
+
+    /*
+    * Fonction qui ajoute les contrôles aux items
+    * @Paramètres
+    *  - elt: élément courant (liste courante)
+    *
+    * @Return void
+    */
+    function addControls(elt)
+    {
+            // On ajoute en premier l'élément textuel
+            $(elt).html("<span class='item'>"+$(elt).text()+"</item>");
+            // Puis l'élément de position
+            $(elt).prepend('<span class="count">'+parseInt($(elt).index()+1)+'</span>');
+            // Puis l'élément d'action (élément acheté)
+            $(elt).prepend('<span class="check unchecked"></span>');
+
+            // Au clic sur cet élément
+            $(elt).find(".check").click(function(){
+                    // On alterne la classe de l'item (le <li>), le CSS associé fera que l'élément sera barré
+                    $(this).parent().toggleClass("bought");
+
+                    // Si cet élément est acheté
+                    if($(this).parent().hasClass("bought"))
+                            // On modifie la classe en ajoutant la classe "checked"
+                            $(this).removeClass("unchecked").addClass("checked");
+                    // Le cas contraire
+                    else
+                            // On modifie la classe en retirant la classe "checked"
+                            $(this).removeClass("checked").addClass("unchecked");
+            })
+
+            // Au double clic sur le texte
+            $(elt).find(".nom").dblclick(function(){
+                    // On récupère sa valeur
+                    txt = $(this).text();
+                    // On ajoute un champ de saisie avec la valeur
+                    $(this).html("<input value='"+txt+"' />");
+                    // On la sélectionne par défaut
+                    $(this).find("input").select();
+            })
+
+            // Lorsque l'on quitte la zone de saisie du texte
+            $(elt).find(".nom").on("blur", "input", function(){
+                    // On récupère la valeur du champ de saisie
+                    txt = $(this).val();
+                    // On insère dans le <li> la nouvelle valeur textuelle
+                    $(this).parent().html(txt);
+            })
+
+            // On autorise la même action lorsque l'on valide par la touche entrée
+            $(elt).find(".nom").on("keyup", "input", function(e) {
+                    if(e.keyCode == 13) {
+                            $(this).trigger("blur");
+                    }
+            });
+    }
 
     </script>
     

@@ -25,7 +25,9 @@
                     <!-- PANEL(s) En Réalisation -->      
                 
                     {% for phase in listProjetPhaseEtapeRealisation %}
-                            
+                        {# SI PHASE NON MASQUEE#}
+                        {% if phase.hidden == 0 %}
+						
                             <div class="panel panel-info" id="GDP">
                                 <div class="panel-heading" id="GDP">
                                     <h5 class="panel-title"> Informations liées à la phase <strong> ({{ phase.getNom()}}) </strong>
@@ -993,8 +995,9 @@
                                     });                                 
                                 })   
                             
-                            </script>   
-                            
+                            </script> 
+							
+                        {% endif %}
                     {% endfor %}
                     
                         </div>

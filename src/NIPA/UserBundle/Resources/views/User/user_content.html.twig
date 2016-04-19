@@ -1,4 +1,14 @@
 {% trans_default_domain 'NIPAUserBundle' %}
 		
-{% block body %}		
+{% block body %}
+    
+    <!-- BOUTON EXPORT -->  
+    <div class="btn-toolbar">
+        <button data-toggle="tooltip" title="Exporter au format CSV" class="btn btn-success" onclick="window.location.href='{{ path('export_data_csv') }}'"><i class="glyphicon glyphicon-export"></i> Export DATA</button>
+    </div>
+    <br>    
+    <div class="btn-toolbar">
+        <button data-toggle="tooltip" title="Exporter au format CSV" class="btn btn-success" onclick="window.location.href='{{ path('export_data_csv2', {'name': "toto"}) }}'"><i class="glyphicon glyphicon-export"></i> Export DATA</button>
+    </div>
+
 {% endblock %}

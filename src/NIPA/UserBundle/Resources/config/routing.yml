@@ -249,6 +249,10 @@ administration_projet_champ_phase_edit_ALL:
     path: champ/phase/edit/ALL
     defaults: { _controller: NIPAUserBundle:AdministrationChampsProjet:editChampPhaseALL }
 
+administration_projet_champ_phase_edit_hide:
+    path: champ/phase/edit/hide
+    defaults: { _controller: NIPAUserBundle:AdministrationChampsProjet:editChampPhaseHide }
+
 groupe_permission_add:
     path: groupe/permission/add/{groupeId}
     defaults: { _controller: NIPAUserBundle:Groupe:addPermissionGroupe }

@@ -41,6 +41,12 @@ class ProjetPhase
      */
     private $refEtape;    
     
+    /**
+     * @var boolean
+     *
+     * @ORM\Column(name="Hidden", type="boolean")
+     */
+    private $hidden;    
     
     /**
      * Get id
@@ -123,6 +129,30 @@ class ProjetPhase
     public function getRefEtape()
     {
         return $this->refEtape;
+    }    
+    
+    /**
+     * Set hidden
+     *
+     * @param boolean $hidden
+     *
+     * @return ProjetPhase
+     */
+    public function setHidden($hidden)
+    {
+        $this->hidden = $hidden;
+
+        return $this;
+    }
+
+    /**
+     * Get hidden
+     *
+     * @return boolean
+     */
+    public function getHidden()
+    {
+        return $this->hidden;
     }    
     
 }
