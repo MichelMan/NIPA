@@ -24,7 +24,7 @@ class DefaultController extends Controller
         $conn = $this->get('database_connection');
 
         //Requête
-        $results = $conn->query('SELECT Port.Reference_Portefeuille, Port.Nom, PortA.Valeur, Dem.Reference_Demande, Pro.Reference_Projet FROM Portefeuille Port INNER JOIN Portefeuille_annee PortA ON Port.portefeuille_annee_id = PortA.id, Demande Dem INNER JOIN Projet Pro ON Dem.id = Pro.demande_id, portefeuilles_demandes P_D WHERE Dem.id = P_D. demande_id AND Port.id = P_D.portefeuille_id');
+        $results = $conn->query('SELECT Port.Reference_Portefeuille, Port.Nom, PortA.Valeur, PortEnv.Nom, PortStatut.Nom FROM Portefeuille Port INNER JOIN Portefeuille_annee PortA ON Port.portefeuille_annee_id = PortA.id INNER JOIN Portefeuille_Enveloppe PortEnv ON Port.portefeuille_enveloppe_id = PortEnv.id INNER JOIN Portefeuille_Statut PortStatut ON Port.portefeuille_statut_id = PortStatut.id');
 
         $response = new StreamedResponse();
         $response->setCallback(function() use($results){
@@ -34,8 +34,8 @@ class DefaultController extends Controller
             fputcsv($handle, array('Reference_Portefeuille',
                                    'Nom',
                                    'Annee',
-                                   'Reference_Demande',
-                                   'Reference_Projet',
+                                   'Env',
+                                   'Statut',
                   ),';');
 
             //Champs
@@ -45,8 +45,8 @@ class DefaultController extends Controller
                   fputcsv($handle,array($row['Reference_Portefeuille'],
                                         $row['Nom'],
                                         $row['Valeur'],
-                                        $row['Reference_Demande'],
-                                        $row['Reference_Projet'],
+                                        $row['Nom'],
+                                        $row['Nom'],
                          ),';');
 
              }
@@ -69,6 +69,21 @@ class DefaultController extends Controller
     */
     public function generateCsv2Action($name)
     {
+        
+        //Connexion à la base de données avec le service database_connection
+        $conn = $this->get('database_connection');
+
+        //Requête Portefeuille
+        $results = $conn->query('SELECT Port.Reference_Portefeuille, Port.Nom, PortA.Valeur AS Annee, PortEnv.Nom AS Enveloppe, PortStatut.Nom AS Statut FROM Portefeuille Port INNER JOIN Portefeuille_annee PortA ON Port.portefeuille_annee_id = PortA.id INNER JOIN Portefeuille_Enveloppe PortEnv ON Port.portefeuille_enveloppe_id = PortEnv.id INNER JOIN Portefeuille_Statut PortStatut ON Port.portefeuille_statut_id = PortStatut.id');
+        
+        //Requête Demande
+        $results2 = $conn->query('SELECT Dem.Reference_Demande, Dem.Nom, Demande_Priorite.Nom AS Priorite, Dem.Type_Enveloppe, Dem.Commentaires, Dem.Date_MEP, Dem.TTD_Souhaite, Dem.TTD_Souhaite_Revise, Dem.TTD_Projets, Dem.TTD_Projets_Revises, Dem.Nb_Lots, Demande_Direction.Nom AS Direction, Demande_Entite_Metier.Nom AS EntiteMetier, Demande_Offres.Nom AS Offre, Demande_Type_Projet.Nom AS TypeProjet, Demande_Statut.Nom AS Statut, Demande_Porteur_Metier.Nom AS PorteurMetier, Demande_Interlocuteur_MOA.Nom AS InterlocuteurMOA, Demande_SDM.Nom AS SDM, Dem.REX, Dem.Date_Cloture FROM Demande Dem INNER JOIN Demande_Priorite ON Dem.demande_priorite_id = Demande_Priorite.id INNER JOIN Demande_Direction ON Dem.demande_direction_id = Demande_Direction.id INNER JOIN Demande_Entite_Metier ON Dem.demande_entite_metier_id = Demande_Entite_Metier.id INNER JOIN Demande_Offres ON Dem.demande_offres_id = Demande_Offres.id INNER JOIN Demande_Type_Projet ON Dem.demande_type_projet_id = Demande_Type_Projet.id INNER JOIN Demande_Statut ON Dem.demande_statut_id = Demande_Statut.id INNER JOIN Demande_Porteur_Metier ON Dem.demande_porteur_metier_id = Demande_Porteur_Metier.id INNER JOIN Demande_Interlocuteur_MOA ON Dem.demande_interlocuteur_MOA_id = Demande_Interlocuteur_MOA.id INNER JOIN Demande_SDM ON Dem.demande_SDM_id = Demande_SDM.id');
+
+        //Requête Projet
+        $results3 = $conn->query('SELECT Pro.Reference_Projet, Pro.titre, Pro.titreLot, Pro.codeOGP, Pro.enveloppe, Pro.priorite, Pro.direction, Pro.entiteMetier, Pro.offres, Pro.typeProjet, Pro.divers, Pro.interlocuteurMOA, Pro.porteurMetier, Pro.SDM, Pro.devSI, Pro.devRZO, Pro.indicateur, Pro.phaseProjet, Pro.annuler, Pro.suspendre, Pro.commentaires, Pro.alerte, Pro.escalade, Pro.lotissement, Pro.phaseProjetEnCours, Pro.BudgetEnCours, Pro.dateMEP FROM Projet Pro');
+                  
+        /*********************************/
+        
         // ask the service for a Excel5
         $phpExcelObject = $this->get('phpexcel')->createPHPExcelObject();
 
@@ -77,23 +92,161 @@ class DefaultController extends Controller
            ->setTitle("Export Data NIPA")
            ->setSubject("Export Data NIPA ALL")
            ->setDescription("Data of Portefeuille, Demande and Projet.");
-        $phpExcelObject->setActiveSheetIndex(0)
-           ->setCellValue('A1', 'Hello')
-           ->setCellValue('B2', 'world!');
         $phpExcelObject->getActiveSheet()->setTitle('Portefeuille');
+
+        // EN-TETE
+        $phpExcelObject->setActiveSheetIndex(0)
+           ->setCellValue('A1', 'Reference')
+           ->setCellValue('B1', 'Nom')        
+           ->setCellValue('C1', 'Enveloppe')    
+           ->setCellValue('D1', 'Annee') 
+           ->setCellValue('E1', 'Statut');    
+           
+        $F = $phpExcelObject->setActiveSheetIndex(0);
+        $Line=2;        
+        
+        //while($row = $result->fetch_assoc()){//extract each record
+        while($row = $results->fetch()) { 
+            //\Doctrine\Common\Util\Debug::dump($row);
+            $F->setCellValue('A'.$Line, $row['Reference_Portefeuille']);
+            $F->setCellValue('B'.$Line, $row['Nom']);
+            $F->setCellValue('C'.$Line, $row['Enveloppe']);
+            $F->setCellValue('D'.$Line, $row['Annee']);
+            $F->setCellValue('E'.$Line, $row['Statut']); //write in the sheet
+            ++$Line;
+        }
+        
+        
         // Add new sheet Demande
         $objWorkSheet = $phpExcelObject->createSheet(1); //Setting index when creating   
         $objWorkSheet->setTitle('Demande');
+        
+       // EN-TETE
         $phpExcelObject->setActiveSheetIndex(1)
-           ->setCellValue('A1', 'Hello')
-           ->setCellValue('B2', 'mama!');
+           ->setCellValue('A1', 'Reference')
+           ->setCellValue('B1', 'Nom')        
+           ->setCellValue('C1', 'Priorite')    
+           ->setCellValue('D1', 'Type_Enveloppe') 
+           ->setCellValue('E1', 'Commentaires') 
+           ->setCellValue('F1', 'Date_MEP') 
+           ->setCellValue('G1', 'TTD_Souhaite') 
+           ->setCellValue('H1', 'TTD_Souhaite_Revise') 
+           ->setCellValue('I1', 'TTD_Projets') 
+           ->setCellValue('J1', 'TTD_Projets_Revises') 
+           ->setCellValue('K1', 'Nb_Lots') 
+           ->setCellValue('L1', 'Direction') 
+           ->setCellValue('M1', 'Entite_Metier') 
+           ->setCellValue('N1', 'Offres') 
+           ->setCellValue('O1', 'Type_Projet') 
+           ->setCellValue('P1', 'Statut')   
+           ->setCellValue('Q1', 'Porteur_Metier')  
+           ->setCellValue('R1', 'Interlocuteur_MOA')   
+           ->setCellValue('S1', 'SDM')   
+           ->setCellValue('T1', 'REX')
+           ->setCellValue('U1', 'Date_Cloture');   
+        
+        $F = $phpExcelObject->setActiveSheetIndex(1);
+        $Line=2;     
+        
+        //while($row = $result->fetch_assoc()){//extract each record
+        while($row = $results2->fetch()) { 
+            $F->setCellValue('A'.$Line, $row['Reference_Demande']);
+            $F->setCellValue('B'.$Line, $row['Nom']);
+            $F->setCellValue('C'.$Line, $row['Priorite']);
+            $F->setCellValue('D'.$Line, $row['Type_Enveloppe']);
+            $F->setCellValue('E'.$Line, $row['Commentaires']); 
+            $F->setCellValue('F'.$Line, $row['Date_MEP']); 
+            $F->setCellValue('G'.$Line, $row['TTD_Souhaite']); 
+            $F->setCellValue('H'.$Line, $row['TTD_Souhaite_Revise']); 
+            $F->setCellValue('I'.$Line, $row['TTD_Projets']); 
+            $F->setCellValue('J'.$Line, $row['TTD_Projets_Revises']); 
+            $F->setCellValue('K'.$Line, $row['Nb_Lots']); 
+            $F->setCellValue('L'.$Line, $row['Direction']); 
+            $F->setCellValue('M'.$Line, $row['EntiteMetier']); 
+            $F->setCellValue('N'.$Line, $row['Offre']); 
+            $F->setCellValue('O'.$Line, $row['TypeProjet']); 
+            $F->setCellValue('P'.$Line, $row['Statut']); 
+            $F->setCellValue('Q'.$Line, $row['PorteurMetier']); 
+            $F->setCellValue('R'.$Line, $row['InterlocuteurMOA']); 
+            $F->setCellValue('S'.$Line, $row['SDM']); 
+            $F->setCellValue('T'.$Line, $row['REX']); 
+            $F->setCellValue('U'.$Line, $row['Date_Cloture']); 
+
+            ++$Line;
+        }        
+        
         
         // Add new sheet Projet
         $objWorkSheet2 = $phpExcelObject->createSheet(2); //Setting index when creating   
         $objWorkSheet2->setTitle('Projet');
+        
+       // EN-TETE
         $phpExcelObject->setActiveSheetIndex(2)
-           ->setCellValue('A1', 'TOTO')
-           ->setCellValue('B2', 'TITI!');        
+           ->setCellValue('A1', 'Reference_Projet')
+           ->setCellValue('B1', 'Titre')        
+           ->setCellValue('C1', 'Titre_Lot')    
+           ->setCellValue('D1', 'Code_OGP') 
+           ->setCellValue('E1', 'Enveloppe') 
+           ->setCellValue('F1', 'Priorite') 
+           ->setCellValue('G1', 'Direction') 
+           ->setCellValue('H1', 'Entite_Metier') 
+           ->setCellValue('I1', 'Offres') 
+           ->setCellValue('J1', 'Type_Projet') 
+           ->setCellValue('K1', 'Divers') 
+           ->setCellValue('L1', 'Interlocuteur_MOA') 
+           ->setCellValue('M1', 'Porteur_Metier') 
+           ->setCellValue('N1', 'SDM') 
+           ->setCellValue('O1', 'Dev_SI') 
+           ->setCellValue('P1', 'Dev_RZO')   
+           ->setCellValue('Q1', 'Indicateur')  
+           ->setCellValue('R1', 'Phase_Projet')   
+           ->setCellValue('S1', 'Annuler')   
+           ->setCellValue('T1', 'Suspendre')
+           ->setCellValue('U1', 'Commentaires')
+           ->setCellValue('V1', 'Alerte')
+           ->setCellValue('W1', 'Escalade')
+           ->setCellValue('X1', 'Lotissement')
+           ->setCellValue('Y1', 'Phase_Projet_En_Cours')
+           ->setCellValue('Z1', 'Budget_En_Cours')
+           ->setCellValue('AA1', 'Date_MEP')
+                ;   
+        
+        $F = $phpExcelObject->setActiveSheetIndex(2);
+        $Line=2;     
+        
+        //while($row = $result->fetch_assoc()){//extract each record
+        while($row = $results3->fetch()) { 
+            $F->setCellValue('A'.$Line, $row['Reference_Projet']);
+            $F->setCellValue('B'.$Line, $row['titre']);
+            $F->setCellValue('C'.$Line, $row['titreLot']);
+            $F->setCellValue('D'.$Line, $row['codeOGP']);
+            $F->setCellValue('E'.$Line, $row['enveloppe']); 
+            $F->setCellValue('F'.$Line, $row['priorite']); 
+            $F->setCellValue('G'.$Line, $row['direction']); 
+            $F->setCellValue('H'.$Line, $row['entiteMetier']); 
+            $F->setCellValue('I'.$Line, $row['offres']); 
+            $F->setCellValue('J'.$Line, $row['typeProjet']); 
+            $F->setCellValue('K'.$Line, $row['divers']); 
+            $F->setCellValue('L'.$Line, $row['interlocuteurMOA']); 
+            $F->setCellValue('M'.$Line, $row['porteurMetier']); 
+            $F->setCellValue('N'.$Line, $row['SDM']); 
+            $F->setCellValue('O'.$Line, $row['devSI']); 
+            $F->setCellValue('P'.$Line, $row['devRZO']); 
+            $F->setCellValue('Q'.$Line, $row['indicateur']); 
+            $F->setCellValue('R'.$Line, $row['phaseProjet']); 
+            $F->setCellValue('S'.$Line, $row['annuler']); 
+            $F->setCellValue('T'.$Line, $row['suspendre']); 
+            $F->setCellValue('U'.$Line, $row['commentaires']); 
+            $F->setCellValue('V'.$Line, $row['alerte']); 
+            $F->setCellValue('W'.$Line, $row['escalade']); 
+            $F->setCellValue('X'.$Line, $row['lotissement']); 
+            $F->setCellValue('Y'.$Line, $row['phaseProjetEnCours']); 
+            $F->setCellValue('Z'.$Line, $row['BudgetEnCours']); 
+            $F->setCellValue('AA'.$Line, $row['dateMEP']); 
+            
+            ++$Line;
+        }        
+        
         
         // Set active sheet index to the first sheet, so Excel opens this as the first sheet
         $phpExcelObject->setActiveSheetIndex(0);
