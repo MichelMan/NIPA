@@ -22,14 +22,14 @@ class ProjetListeJalonDate
     private $id;
 
     /**
-     * @var \DateTime
+     * @var date
      *
      * @ORM\Column(name="DatePrev", type="date", nullable=true)
      */
     private $datePrev;
 
     /**
-     * @var \DateTime
+     * @var date
      *
      * @ORM\Column(name="DateRev", type="date", nullable=true)
      */

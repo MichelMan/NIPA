@@ -80,8 +80,9 @@ class DefaultController extends Controller
         $results2 = $conn->query('SELECT Dem.Reference_Demande, Dem.Nom, Demande_Priorite.Nom AS Priorite, Dem.Type_Enveloppe, Dem.Commentaires, Dem.Date_MEP, Dem.TTD_Souhaite, Dem.TTD_Souhaite_Revise, Dem.TTD_Projets, Dem.TTD_Projets_Revises, Dem.Nb_Lots, Demande_Direction.Nom AS Direction, Demande_Entite_Metier.Nom AS EntiteMetier, Demande_Offres.Nom AS Offre, Demande_Type_Projet.Nom AS TypeProjet, Demande_Statut.Nom AS Statut, Demande_Porteur_Metier.Nom AS PorteurMetier, Demande_Interlocuteur_MOA.Nom AS InterlocuteurMOA, Demande_SDM.Nom AS SDM, Dem.REX, Dem.Date_Cloture FROM Demande Dem INNER JOIN Demande_Priorite ON Dem.demande_priorite_id = Demande_Priorite.id INNER JOIN Demande_Direction ON Dem.demande_direction_id = Demande_Direction.id INNER JOIN Demande_Entite_Metier ON Dem.demande_entite_metier_id = Demande_Entite_Metier.id INNER JOIN Demande_Offres ON Dem.demande_offres_id = Demande_Offres.id INNER JOIN Demande_Type_Projet ON Dem.demande_type_projet_id = Demande_Type_Projet.id INNER JOIN Demande_Statut ON Dem.demande_statut_id = Demande_Statut.id INNER JOIN Demande_Porteur_Metier ON Dem.demande_porteur_metier_id = Demande_Porteur_Metier.id INNER JOIN Demande_Interlocuteur_MOA ON Dem.demande_interlocuteur_MOA_id = Demande_Interlocuteur_MOA.id INNER JOIN Demande_SDM ON Dem.demande_SDM_id = Demande_SDM.id');
 
         //Requête Projet
-        $results3 = $conn->query('SELECT Pro.Reference_Projet, Pro.titre, Pro.titreLot, Pro.codeOGP, Pro.enveloppe, Pro.priorite, Pro.direction, Pro.entiteMetier, Pro.offres, Pro.typeProjet, Pro.divers, Pro.interlocuteurMOA, Pro.porteurMetier, Pro.SDM, Pro.devSI, Pro.devRZO, Pro.indicateur, Pro.phaseProjet, Pro.annuler, Pro.suspendre, Pro.commentaires, Pro.alerte, Pro.escalade, Pro.lotissement, Pro.phaseProjetEnCours, Pro.BudgetEnCours, Pro.dateMEP FROM Projet Pro');
-                  
+        $results3 = $conn->query('SELECT Pro.Reference_Projet, Pro.titre, Pro.titreLot, Pro.codeOGP, Pro.enveloppe, Pro.priorite, Pro.direction, Pro.entiteMetier, Pro.offres, Pro.typeProjet, Pro.divers, Pro.interlocuteurMOA, Pro.porteurMetier, Pro.SDM, Pro.devSI, Pro.devRZO, Pro.indicateur, Pro.phaseProjet, Pro.annuler, Pro.suspendre, Pro.commentaires, Pro.alerte, Pro.escalade, Pro.lotissement, Pro.phaseProjetEnCours, Pro.BudgetEnCours, Pro.dateMEP FROM Projet Pro');        
+        
+        
         /*********************************/
         
         // ask the service for a Excel5
@@ -216,6 +217,77 @@ class DefaultController extends Controller
         
         //while($row = $result->fetch_assoc()){//extract each record
         while($row = $results3->fetch()) { 
+            
+            $projet = $this->get('nipa_projet.projet_manager')->loadProjet($row['Reference_Projet']);            
+            
+            //return array() List Etapes ALL
+            $repository = $this->getDoctrine()->getManager()->getRepository('NIPAProjetBundle:ProjetPhase');
+            $listProjetPhases = $repository->findAll();     
+            //On trie la liste
+            usort($listProjetPhases, function ($a, $b) {
+                return strnatcmp($a->getReference(), $b->getReference());
+            });
+        
+            //return array() List Livrables
+            $repository = $this->getDoctrine()->getManager()->getRepository('NIPAProjetBundle:ProjetLivrable');
+            $listProjetLivrable = $repository->findAll();  
+            //On trie la liste 
+            usort($listProjetLivrable, function ($a, $b) {
+                return strnatcmp($a->getReference(), $b->getReference());
+            });
+
+            //return array() List Jalons Date
+            $repository = $this->getDoctrine()->getManager()->getRepository('NIPAProjetBundle:ProjetJalonDate');
+            $listProjetJalonDate = $repository->findAll();  
+            //On trie la liste 
+            usort($listProjetJalonDate, function ($a, $b) {
+                return strnatcmp($a->getReference(), $b->getReference());
+            });
+
+            //return array() List Instances
+            $repository = $this->getDoctrine()->getManager()->getRepository('NIPAProjetBundle:DemandeInstance');
+            $listProjetInstance = $repository->findByType("Projet");  
+            //On trie la liste 
+            usort($listProjetInstance, function ($a, $b) {
+                return strnatcmp($a->getReference(), $b->getReference());
+            }); 
+
+            /**********************/            
+            
+            //return array() List ListeInstance
+            $repository = $this->getDoctrine()->getManager()->getRepository('NIPAProjetBundle:ProjetListeInstance');
+            $listProjetListeInstance = $repository->findByProjet($projet);  
+            //On trie la liste 
+            usort($listProjetListeInstance, function($a, $b) {
+              return ($a->getDatePrev() > $b->getDatePrev()) ? -1 : 1;
+            });     
+            
+            //return array() List ListeJalonDate En Cadrage
+            $repository = $this->getDoctrine()->getManager()->getRepository('NIPAProjetBundle:ProjetListeJalonDate');
+            $listProjetListeJalonDateEnCadrage = $repository->getJalonDateProjetEnCadrage($projet);     
+
+            //return array() List ListeJalonDate En Conception
+            $repository = $this->getDoctrine()->getManager()->getRepository('NIPAProjetBundle:ProjetListeJalonDate');
+            $listProjetListeJalonDateEnConception = $repository->getJalonDateProjetEnConception($projet);    
+
+            //return array() List ListeJalonDate En Realisation
+            $repository = $this->getDoctrine()->getManager()->getRepository('NIPAProjetBundle:ProjetListeJalonDate');
+            $listProjetListeJalonDateEnRealisation = $repository->getJalonDateProjetEnRealisation($projet);    
+
+            //return array() List ListeLivrable En Cadrage
+            $repository = $this->getDoctrine()->getManager()->getRepository('NIPAProjetBundle:ProjetListeLivrable');
+            $listProjetListeLivrableEnCadrage = $repository->getLivrableProjetEnCadrage($projet);     
+
+            //return array() List ListeLivrable En Conception
+            $repository = $this->getDoctrine()->getManager()->getRepository('NIPAProjetBundle:ProjetListeLivrable');
+            $listProjetListeLivrableEnConception = $repository->getLivrableProjetEnConception($projet); 
+
+            //return array() List ListeLivrable En Realisation
+            $repository = $this->getDoctrine()->getManager()->getRepository('NIPAProjetBundle:ProjetListeLivrable');
+            $listProjetListeLivrableEnRealisation = $repository->getLivrableProjetEnRealisation($projet);            
+
+            /****/
+            
             $F->setCellValue('A'.$Line, $row['Reference_Projet']);
             $F->setCellValue('B'.$Line, $row['titre']);
             $F->setCellValue('C'.$Line, $row['titreLot']);
@@ -242,7 +314,168 @@ class DefaultController extends Controller
             $F->setCellValue('X'.$Line, $row['lotissement']); 
             $F->setCellValue('Y'.$Line, $row['phaseProjetEnCours']); 
             $F->setCellValue('Z'.$Line, $row['BudgetEnCours']); 
-            $F->setCellValue('AA'.$Line, $row['dateMEP']); 
+            
+            if($row['dateMEP'] != "")
+            {
+                $format = date('d-m-Y', strtotime($row['dateMEP'])); 
+                $date = str_replace('-', '/', $format);
+                $F->setCellValue('AA'.$Line, $date); 
+            }
+            
+
+            $Col=28;
+            foreach ($listProjetPhases as $phase)
+            {
+                foreach($listProjetJalonDate as $jalonDate)
+                {
+                    if($jalonDate->getRefPhase()->getNom() == $phase->getNom())
+                    {
+                        $jd = $jalonDate->getNom();
+                        $F->setCellValueByColumnAndRow($Col++, 1, "DatePrev ".$jd);
+                        $F->setCellValueByColumnAndRow($Col++, 1, "DateRev ".$jd);
+                        $F->setCellValueByColumnAndRow($Col++, 1, "Validation ".$jd);
+                        $F->setCellValueByColumnAndRow($Col++, 1, "Remarques ".$jd);
+                    }
+                }
+                
+                foreach($listProjetLivrable as $livrable)
+                {
+                    if($livrable->getRefPhase()->getNom() == $phase->getNom())
+                    {
+                        $jd = $livrable->getNom();
+                        $F->setCellValueByColumnAndRow($Col++, 1, "DatePrev ".$jd);
+                        $F->setCellValueByColumnAndRow($Col++, 1, "DateRev ".$jd);
+                        $F->setCellValueByColumnAndRow($Col++, 1, "Validation ".$jd);
+                        $F->setCellValueByColumnAndRow($Col++, 1, "Remarques ".$jd);
+                    }
+                }
+                
+                foreach($listProjetInstance as $instance)
+                {
+                    if($instance->getRefPhase()->getNom() == $phase->getNom())
+                    {
+                        $jd = $instance->getNom();
+                        $F->setCellValueByColumnAndRow($Col++, 1, "Date ".$jd);
+                        $F->setCellValueByColumnAndRow($Col++, 1, "Validation ".$jd);
+                        $F->setCellValueByColumnAndRow($Col++, 1, "Remarques ".$jd);
+                    }
+                }
+
+            }
+            
+            //$F->setCellValueByColumnAndRow(28, $Line, $projet->getReferenceProjet()); 
+            /*\Doctrine\Common\Util\Debug::dump($listProjetListeJalonDateEnCadrage);
+            \Doctrine\Common\Util\Debug::dump($listProjetListeJalonDateEnConception);
+            \Doctrine\Common\Util\Debug::dump($listProjetListeJalonDateEnRealisation);
+            \Doctrine\Common\Util\Debug::dump($listProjetListeInstance);
+            \Doctrine\Common\Util\Debug::dump($listProjetListeLivrableEnCadrage);
+            \Doctrine\Common\Util\Debug::dump($listProjetListeLivrableEnConception);
+            \Doctrine\Common\Util\Debug::dump($listtoto);*/
+            /****/
+            /*
+            $Col=29;
+            foreach ($listProjetListeJalonDateEnCadrage as $JalonDateEnCadrage)
+            {
+                $jalonDate = $JalonDateEnCadrage->getJalonDate()->getNom();
+                $F->setCellValueByColumnAndRow($Col, 1, "DatePrev ".$jalonDate);
+                $F->setCellValueByColumnAndRow($Col+1, 1, "DateRev ".$jalonDate);
+                $F->setCellValueByColumnAndRow($Col+2, 1, "Validation ".$jalonDate);
+                $F->setCellValueByColumnAndRow($Col+3, 1, "Remarques ".$jalonDate);
+                
+                if($JalonDateEnCadrage->getDatePrev() != "")
+                {
+                    $result = $JalonDateEnCadrage->getDatePrev()->format('Y-m-d');
+                    $format = date('d-m-Y', strtotime($result)); 
+                    $date = str_replace('-', '/', $format);
+                    $F->setCellValueByColumnAndRow($Col, $Line, $date);
+                }  
+                else
+                {
+                    $F->setCellValueByColumnAndRow($Col, $Line, "");
+                } 
+                if($JalonDateEnCadrage->getDateRev() != "")
+                {
+                    $result = $JalonDateEnCadrage->getDateRev()->format('Y-m-d');
+                    $format = date('d-m-Y', strtotime($result)); 
+                    $date = str_replace('-', '/', $format);
+                    $F->setCellValueByColumnAndRow($Col+1, $Line, $date);
+                }  
+                else
+                {
+                    $F->setCellValueByColumnAndRow($Col+1, $Line, "");
+                } 
+                $F->setCellValueByColumnAndRow($Col+2, $Line, $JalonDateEnCadrage->getValidationEffective());
+                $F->setCellValueByColumnAndRow($Col+3, $Line, $JalonDateEnCadrage->getRemarques());   
+                $Col++;
+            }
+            foreach ($listProjetListeJalonDateEnConception as $JalonDateEnConception)
+            {
+                $jalonDate = $JalonDateEnConception->getJalonDate()->getNom();
+                $F->setCellValueByColumnAndRow($Col, 1, "DatePrev ".$jalonDate);
+                $F->setCellValueByColumnAndRow($Col+1, 1, "DateRev ".$jalonDate);
+                $F->setCellValueByColumnAndRow($Col+2, 1, "Validation ".$jalonDate);
+                $F->setCellValueByColumnAndRow($Col+3, 1, "Remarques ".$jalonDate);  
+                
+                if($JalonDateEnConception->getDatePrev() != "")
+                {
+                    $result = $JalonDateEnConception->getDatePrev()->format('Y-m-d');
+                    $format = date('d-m-Y', strtotime($result)); 
+                    $date = str_replace('-', '/', $format);
+                    $F->setCellValueByColumnAndRow($Col, $Line, $date);
+                }  
+                else
+                {
+                    $F->setCellValueByColumnAndRow($Col, $Line, "");
+                } 
+                if($JalonDateEnConception->getDateRev() != "")
+                {
+                    $result = $JalonDateEnConception->getDateRev()->format('Y-m-d');
+                    $format = date('d-m-Y', strtotime($result)); 
+                    $date = str_replace('-', '/', $format);
+                    $F->setCellValueByColumnAndRow($Col+1, $Line, $date);
+                }  
+                else
+                {
+                    $F->setCellValueByColumnAndRow($Col+1, $Line, "");
+                }                 
+                $F->setCellValueByColumnAndRow($Col+2, $Line, $JalonDateEnConception->getValidationEffective());
+                $F->setCellValueByColumnAndRow($Col+3, $Line, $JalonDateEnConception->getRemarques());   
+                $Col++;
+            }            
+            foreach ($listProjetListeJalonDateEnRealisation as $JalonDateEnRealisation)
+            {
+                $jalonDate = $JalonDateEnRealisation->getJalonDate()->getNom();
+                $F->setCellValueByColumnAndRow($Col, 1, "DatePrev ".$jalonDate);
+                $F->setCellValueByColumnAndRow($Col+1, 1, "DateRev ".$jalonDate);
+                $F->setCellValueByColumnAndRow($Col+2, 1, "Validation ".$jalonDate);
+                $F->setCellValueByColumnAndRow($Col+3, 1, "Remarques ".$jalonDate);  
+                
+                if($JalonDateEnRealisation->getDatePrev() != "")
+                {
+                    $result = $JalonDateEnRealisation->getDatePrev()->format('Y-m-d');
+                    $format = date('d-m-Y', strtotime($result)); 
+                    $date = str_replace('-', '/', $format);
+                    $F->setCellValueByColumnAndRow($Col, $Line, $date);
+                }  
+                else
+                {
+                    $F->setCellValueByColumnAndRow($Col, $Line, "");
+                }
+                if($JalonDateEnRealisation->getDateRev() != "")
+                {
+                    $result = $JalonDateEnRealisation->getDateRev()->format('Y-m-d');
+                    $format = date('d-m-Y', strtotime($result));
+                    $date = str_replace('-', '/', $format);
+                    $F->setCellValueByColumnAndRow($Col+1, $Line, $date);
+                }
+                else
+                {
+                    $F->setCellValueByColumnAndRow($Col+1, $Line, "");
+                }
+                $F->setCellValueByColumnAndRow($Col+2, $Line, $JalonDateEnRealisation->getValidationEffective());
+                $F->setCellValueByColumnAndRow($Col+3, $Line, $JalonDateEnRealisation->getRemarques());   
+                $Col++;
+            }  */
             
             ++$Line;
         }        
