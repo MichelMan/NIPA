@@ -17,7 +17,7 @@ class ProjetListeLivrableRepository extends \Doctrine\ORM\EntityRepository
         $query->setParameter('projet', $projet);
         $query->setParameter('etape', "En Cadrage");
 
-        // Utilisation de getSingleResult car la requête ne doit retourner qu'un seul résultat
+        // Utilisation de getSingleResult SI ON retourne qu'un seul résultat
         return $query->getResult();
     }    
     
@@ -27,18 +27,27 @@ class ProjetListeLivrableRepository extends \Doctrine\ORM\EntityRepository
         $query->setParameter('projet', $projet);
         $query->setParameter('etape', "En Conception");
 
-        // Utilisation de getSingleResult car la requête ne doit retourner qu'un seul résultat
+        // Utilisation de getSingleResult SI ON retourne qu'un seul résultat
         return $query->getResult();
     }  
     
-        public function getLivrableProjetEnRealisation($projet)
+    public function getLivrableProjetEnRealisation($projet)
     {
         $query = $this->_em->createQuery('SELECT a FROM NIPAProjetBundle:ProjetListeLivrable a JOIN a.livrable l JOIN l.refPhase r JOIN r.refEtape e WHERE a.projet = :projet AND e.nom = :etape');
         $query->setParameter('projet', $projet);
         $query->setParameter('etape', "En Réalisation");
 
-        // Utilisation de getSingleResult car la requête ne doit retourner qu'un seul résultat
+        // Utilisation de getSingleResult SI ON retourne qu'un seul résultat
         return $query->getResult();
-    }  
+    } 
+    
+    public function getLivrableProjetALL($projet)
+    {
+        $query = $this->_em->createQuery('SELECT a FROM NIPAProjetBundle:ProjetListeLivrable a JOIN a.livrable l JOIN l.refPhase r JOIN r.refEtape e WHERE a.projet = :projet');
+        $query->setParameter('projet', $projet);
+
+        // Utilisation de getSingleResult SI ON retourne qu'un seul résultat
+        return $query->getResult();
+    }      
     
 }

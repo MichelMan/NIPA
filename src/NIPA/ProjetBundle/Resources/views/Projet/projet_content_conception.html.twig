@@ -27,8 +27,11 @@
                     {% for phase in listProjetPhaseEtapeConception %}
                         {# SI PHASE NON MASQUEE#}
                         {% if phase.hidden == 0 %}
-						
                             <div class="panel panel-info" id="GDP">
+                        {% else %}
+                            <div class="panel panel-info" id="GDP" style="visibility: hidden">
+                        {% endif %}
+						
                                 <div class="panel-heading" id="GDP">
                                     <h5 class="panel-title"> Informations liées à la phase <strong> {{ phase.getNom()}} </strong>
                                     
@@ -995,7 +998,6 @@
                                 
                             </script>    
 							
-						{% endif %}
                     {% endfor %}
                     
                         </div>

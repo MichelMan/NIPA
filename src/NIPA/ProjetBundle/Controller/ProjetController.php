@@ -1806,6 +1806,8 @@ class ProjetController extends Controller
                     }   
                 }
                 
+                
+                
                 /***********/               
                 
                 $this->get('session')->getFlashBag()->add('success','Mise à jour des données');  

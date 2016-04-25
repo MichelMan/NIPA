@@ -63,7 +63,7 @@
             {% endif %}    
         {% endif %}
     {% endfor %}     
-    
+        
     {% if projet.referenceProjet %}                
         <div class="pull-left"><h4 class=""><span class='glyphicon glyphicon-edit'></span> {{ 'Mise à jour Projet'|trans }}: {{ projet.titre }} </h4></div>   
         <div class="pull-right">
@@ -149,7 +149,7 @@
                             
     {#########################################################}
     
-                                {# VALIDATION PHASE PAR ETAPE  #}
+                            {# VALIDATION PHASE PAR ETAPE  #}
                             {% set break = false %}
                             {% set phaseEnCours = null %}
                             {# En Cadrage #}
@@ -297,8 +297,8 @@
         </div>   
     {% else %}
         <div class="pull-left"><h4 class=""><span class='glyphicon glyphicon-plus-sign'></span> {{ 'Nouveau Projet'|trans }} </h4></div>   
-    {% endif %}      
-    
+    {% endif %}       
+
     <div class="loader" id="loader" style="display: none"></div>
     
     <br><br><br>
@@ -564,7 +564,29 @@
       });
     });
     
+    // Requete AJAX de sauvegarde des CALCULS
+    window.onload = function (){ 
+        
+        $.ajax({
+            type: 'post',
+            url: "{% if projet.referenceProjet %}{{ path('by_pass_projet_phase',{'reference': projet.referenceProjet, 'phase': "ttt" }) }}{% endif %}",
+            data: {valeur: "1"},
+            success: function()
+            {
+                alert("ByPass OK (TEST)");
+                var url = document.location.href;
+                $(location).attr('href',url+"#cadrage");                 
+                location.reload();        
+            },
+            error: function(e) {
+               console.log(e);
+             }      
+        }); 
+
+        alert("Page is loaded");
+    
+    };
+
 </script>
 
-</script>    
 {% endblock %}            

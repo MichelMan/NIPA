@@ -31,12 +31,14 @@
                                         {% set break = true %}
                                     {% endif %}
                                 {% endfor %} 
-                                <strong>{{ etape.getNom() }}</strong> <span class="glyphicon glyphicon-arrow-right"></span> {{ counter|number_format(2, ',', ' ') }} k€ /
                                 {% if counter != 0 %}
+                                    <strong>{{ etape.getNom() }}</strong> <span class="glyphicon glyphicon-arrow-right"></span> {{ counter|number_format(2, ',', ' ') }} k€ /
                                     {% set total = counter %}
+                                {% else %}
+                                    <strong>{{ etape.getNom() }}</strong> <span class="glyphicon glyphicon-arrow-right"></span> X /
                                 {% endif %}
                             {% endfor %}
-                            <strong>Total </strong> <span class="glyphicon glyphicon-arrow-right"></span> {{ total|number_format(2, ',', ' ') }} k€ /
+                            <strong>Max </strong> <span class="glyphicon glyphicon-arrow-right"></span> {{ total|number_format(2, ',', ' ') }} k€ /
                         {% endif %}        
                     </h3>
                     <div class="pull-right">  

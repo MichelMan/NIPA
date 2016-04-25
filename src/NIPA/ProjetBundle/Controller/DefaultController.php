@@ -262,29 +262,13 @@ class DefaultController extends Controller
               return ($a->getDatePrev() > $b->getDatePrev()) ? -1 : 1;
             });     
             
-            //return array() List ListeJalonDate En Cadrage
+            //return array() List ListeJalonDate ALL
             $repository = $this->getDoctrine()->getManager()->getRepository('NIPAProjetBundle:ProjetListeJalonDate');
-            $listProjetListeJalonDateEnCadrage = $repository->getJalonDateProjetEnCadrage($projet);     
+            $listProjetListeJalonDateALL = $repository->getJalonDateProjetALL($projet);    
 
-            //return array() List ListeJalonDate En Conception
-            $repository = $this->getDoctrine()->getManager()->getRepository('NIPAProjetBundle:ProjetListeJalonDate');
-            $listProjetListeJalonDateEnConception = $repository->getJalonDateProjetEnConception($projet);    
-
-            //return array() List ListeJalonDate En Realisation
-            $repository = $this->getDoctrine()->getManager()->getRepository('NIPAProjetBundle:ProjetListeJalonDate');
-            $listProjetListeJalonDateEnRealisation = $repository->getJalonDateProjetEnRealisation($projet);    
-
-            //return array() List ListeLivrable En Cadrage
+            //return array() List ListeLivrable ALL
             $repository = $this->getDoctrine()->getManager()->getRepository('NIPAProjetBundle:ProjetListeLivrable');
-            $listProjetListeLivrableEnCadrage = $repository->getLivrableProjetEnCadrage($projet);     
-
-            //return array() List ListeLivrable En Conception
-            $repository = $this->getDoctrine()->getManager()->getRepository('NIPAProjetBundle:ProjetListeLivrable');
-            $listProjetListeLivrableEnConception = $repository->getLivrableProjetEnConception($projet); 
-
-            //return array() List ListeLivrable En Realisation
-            $repository = $this->getDoctrine()->getManager()->getRepository('NIPAProjetBundle:ProjetListeLivrable');
-            $listProjetListeLivrableEnRealisation = $repository->getLivrableProjetEnRealisation($projet);            
+            $listProjetListeLivrableALL = $repository->getLivrableProjetALL($projet);            
 
             /****/
             
@@ -322,8 +306,9 @@ class DefaultController extends Controller
                 $F->setCellValue('AA'.$Line, $date); 
             }
             
-
-            $Col=28;
+            
+            /**************Liste En-tête*************/
+            $Col=27;
             foreach ($listProjetPhases as $phase)
             {
                 foreach($listProjetJalonDate as $jalonDate)
@@ -358,124 +343,153 @@ class DefaultController extends Controller
                         $F->setCellValueByColumnAndRow($Col++, 1, "Date ".$jd);
                         $F->setCellValueByColumnAndRow($Col++, 1, "Validation ".$jd);
                         $F->setCellValueByColumnAndRow($Col++, 1, "Remarques ".$jd);
+                        $F->setCellValueByColumnAndRow($Col++, 1, "Statut ".$jd);
                     }
                 }
 
             }
             
-            //$F->setCellValueByColumnAndRow(28, $Line, $projet->getReferenceProjet()); 
-            /*\Doctrine\Common\Util\Debug::dump($listProjetListeJalonDateEnCadrage);
-            \Doctrine\Common\Util\Debug::dump($listProjetListeJalonDateEnConception);
-            \Doctrine\Common\Util\Debug::dump($listProjetListeJalonDateEnRealisation);
-            \Doctrine\Common\Util\Debug::dump($listProjetListeInstance);
-            \Doctrine\Common\Util\Debug::dump($listProjetListeLivrableEnCadrage);
-            \Doctrine\Common\Util\Debug::dump($listProjetListeLivrableEnConception);
-            \Doctrine\Common\Util\Debug::dump($listtoto);*/
-            /****/
-            /*
-            $Col=29;
-            foreach ($listProjetListeJalonDateEnCadrage as $JalonDateEnCadrage)
+            //\Doctrine\Common\Util\Debug::dump($listProjetListeLivrableALL);
+
+            $taille = $Col;
+            
+            // JALONS DATA
+            $i = 27;
+            while($i != $taille)
             {
-                $jalonDate = $JalonDateEnCadrage->getJalonDate()->getNom();
-                $F->setCellValueByColumnAndRow($Col, 1, "DatePrev ".$jalonDate);
-                $F->setCellValueByColumnAndRow($Col+1, 1, "DateRev ".$jalonDate);
-                $F->setCellValueByColumnAndRow($Col+2, 1, "Validation ".$jalonDate);
-                $F->setCellValueByColumnAndRow($Col+3, 1, "Remarques ".$jalonDate);
-                
-                if($JalonDateEnCadrage->getDatePrev() != "")
+                $indice = $i;
+                foreach($listProjetListeJalonDateALL as $jalonDateData)
                 {
-                    $result = $JalonDateEnCadrage->getDatePrev()->format('Y-m-d');
-                    $format = date('d-m-Y', strtotime($result)); 
-                    $date = str_replace('-', '/', $format);
-                    $F->setCellValueByColumnAndRow($Col, $Line, $date);
-                }  
-                else
-                {
-                    $F->setCellValueByColumnAndRow($Col, $Line, "");
-                } 
-                if($JalonDateEnCadrage->getDateRev() != "")
-                {
-                    $result = $JalonDateEnCadrage->getDateRev()->format('Y-m-d');
-                    $format = date('d-m-Y', strtotime($result)); 
-                    $date = str_replace('-', '/', $format);
-                    $F->setCellValueByColumnAndRow($Col+1, $Line, $date);
-                }  
-                else
-                {
-                    $F->setCellValueByColumnAndRow($Col+1, $Line, "");
-                } 
-                $F->setCellValueByColumnAndRow($Col+2, $Line, $JalonDateEnCadrage->getValidationEffective());
-                $F->setCellValueByColumnAndRow($Col+3, $Line, $JalonDateEnCadrage->getRemarques());   
-                $Col++;
+                    $jdd = $jalonDateData->getJalonDate()->getNom();
+                    if("DatePrev ".$jdd == $F->getCellByColumnAndRow($indice, 1)->getValue())
+                    {
+                        if($jalonDateData->getDatePrev() != "")
+                        {
+                        $result = $jalonDateData->getDatePrev()->format('Y-m-d');
+                        $format = date('d-m-Y', strtotime($result)); 
+                        $date = str_replace('-', '/', $format);
+                        $F->setCellValueByColumnAndRow($indice, $Line, $date);
+                        }
+                        else
+                        {
+                            $F->setCellValueByColumnAndRow($indice, $Line, "");
+                        }                        
+                    }
+                    else if("DateRev ".$jdd == $F->getCellByColumnAndRow($indice, 1)->getValue())
+                    {
+                        if($jalonDateData->getDateRev() != "")
+                        {
+                        $result = $jalonDateData->getDateRev()->format('Y-m-d');
+                        $format = date('d-m-Y', strtotime($result)); 
+                        $date = str_replace('-', '/', $format);
+                        $F->setCellValueByColumnAndRow($indice, $Line, $date);
+                        }
+                        else
+                        {
+                            $F->setCellValueByColumnAndRow($indice, $Line, "");
+                        }                        
+                    }
+                    else if("Validation ".$jdd == $F->getCellByColumnAndRow($indice, 1)->getValue())
+                    {
+                        $F->setCellValueByColumnAndRow($indice, $Line, $jalonDateData->getValidationEffective());
+                    }
+                    else if("Remarques ".$jdd == $F->getCellByColumnAndRow($indice, 1)->getValue())
+                    {
+                        $F->setCellValueByColumnAndRow($indice, $Line, $jalonDateData->getRemarques());
+                    }
+                    $indice++;
+                }
+                $i++;
             }
-            foreach ($listProjetListeJalonDateEnConception as $JalonDateEnConception)
+
+            // LIVRABLES DATA
+            $i = 27;
+            while($i != $taille)
             {
-                $jalonDate = $JalonDateEnConception->getJalonDate()->getNom();
-                $F->setCellValueByColumnAndRow($Col, 1, "DatePrev ".$jalonDate);
-                $F->setCellValueByColumnAndRow($Col+1, 1, "DateRev ".$jalonDate);
-                $F->setCellValueByColumnAndRow($Col+2, 1, "Validation ".$jalonDate);
-                $F->setCellValueByColumnAndRow($Col+3, 1, "Remarques ".$jalonDate);  
-                
-                if($JalonDateEnConception->getDatePrev() != "")
+                $indice = $i;
+                foreach($listProjetListeLivrableALL as $jalonLivData)
                 {
-                    $result = $JalonDateEnConception->getDatePrev()->format('Y-m-d');
-                    $format = date('d-m-Y', strtotime($result)); 
-                    $date = str_replace('-', '/', $format);
-                    $F->setCellValueByColumnAndRow($Col, $Line, $date);
-                }  
-                else
-                {
-                    $F->setCellValueByColumnAndRow($Col, $Line, "");
-                } 
-                if($JalonDateEnConception->getDateRev() != "")
-                {
-                    $result = $JalonDateEnConception->getDateRev()->format('Y-m-d');
-                    $format = date('d-m-Y', strtotime($result)); 
-                    $date = str_replace('-', '/', $format);
-                    $F->setCellValueByColumnAndRow($Col+1, $Line, $date);
-                }  
-                else
-                {
-                    $F->setCellValueByColumnAndRow($Col+1, $Line, "");
-                }                 
-                $F->setCellValueByColumnAndRow($Col+2, $Line, $JalonDateEnConception->getValidationEffective());
-                $F->setCellValueByColumnAndRow($Col+3, $Line, $JalonDateEnConception->getRemarques());   
-                $Col++;
+                    $jdl = $jalonLivData->getLivrable()->getNom();
+                    if("DatePrev ".$jdl == $F->getCellByColumnAndRow($indice, 1)->getValue())
+                    {
+                        if($jalonLivData->getDatePrev() != "")
+                        {
+                        $result = $jalonLivData->getDatePrev()->format('Y-m-d');
+                        $format = date('d-m-Y', strtotime($result)); 
+                        $date = str_replace('-', '/', $format);
+                        $F->setCellValueByColumnAndRow($indice, $Line, $date);
+                        }
+                        else
+                        {
+                            $F->setCellValueByColumnAndRow($indice, $Line, "");
+                        }                        
+                    }
+                    else if("DateRev ".$jdl == $F->getCellByColumnAndRow($indice, 1)->getValue())
+                    {
+                        if($jalonLivData->getDateRev() != "")
+                        {
+                        $result = $jalonLivData->getDateRev()->format('Y-m-d');
+                        $format = date('d-m-Y', strtotime($result)); 
+                        $date = str_replace('-', '/', $format);
+                        $F->setCellValueByColumnAndRow($indice, $Line, $date);
+                        }
+                        else
+                        {
+                            $F->setCellValueByColumnAndRow($indice, $Line, "");
+                        }                        
+                    }
+                    else if("Validation ".$jdl == $F->getCellByColumnAndRow($indice, 1)->getValue())
+                    {
+                        $F->setCellValueByColumnAndRow($indice, $Line, $jalonLivData->getValidationEffective());
+                    }
+                    else if("Remarques ".$jdl == $F->getCellByColumnAndRow($indice, 1)->getValue())
+                    {
+                        $F->setCellValueByColumnAndRow($indice, $Line, $jalonLivData->getRemarques());
+                    }                  
+                    $indice++;
+                }                
+                $i++;
             }            
-            foreach ($listProjetListeJalonDateEnRealisation as $JalonDateEnRealisation)
+      
+            
+            // INSTANCE DATA
+            $i = 27;
+            while($i != $taille)
             {
-                $jalonDate = $JalonDateEnRealisation->getJalonDate()->getNom();
-                $F->setCellValueByColumnAndRow($Col, 1, "DatePrev ".$jalonDate);
-                $F->setCellValueByColumnAndRow($Col+1, 1, "DateRev ".$jalonDate);
-                $F->setCellValueByColumnAndRow($Col+2, 1, "Validation ".$jalonDate);
-                $F->setCellValueByColumnAndRow($Col+3, 1, "Remarques ".$jalonDate);  
-                
-                if($JalonDateEnRealisation->getDatePrev() != "")
+                $indice = $i;
+                foreach($listProjetListeInstance as $instanceData)
                 {
-                    $result = $JalonDateEnRealisation->getDatePrev()->format('Y-m-d');
-                    $format = date('d-m-Y', strtotime($result)); 
-                    $date = str_replace('-', '/', $format);
-                    $F->setCellValueByColumnAndRow($Col, $Line, $date);
-                }  
-                else
-                {
-                    $F->setCellValueByColumnAndRow($Col, $Line, "");
-                }
-                if($JalonDateEnRealisation->getDateRev() != "")
-                {
-                    $result = $JalonDateEnRealisation->getDateRev()->format('Y-m-d');
-                    $format = date('d-m-Y', strtotime($result));
-                    $date = str_replace('-', '/', $format);
-                    $F->setCellValueByColumnAndRow($Col+1, $Line, $date);
-                }
-                else
-                {
-                    $F->setCellValueByColumnAndRow($Col+1, $Line, "");
-                }
-                $F->setCellValueByColumnAndRow($Col+2, $Line, $JalonDateEnRealisation->getValidationEffective());
-                $F->setCellValueByColumnAndRow($Col+3, $Line, $JalonDateEnRealisation->getRemarques());   
-                $Col++;
-            }  */
+                    $intd = $instanceData->getInstance()->getNom();
+                    if("Date ".$intd == $F->getCellByColumnAndRow($indice, 1)->getValue())
+                    {
+                        if($instanceData->getDatePrev() != null)
+                        {
+                        $result = $instanceData->getDatePrev()->format('Y-m-d');
+                        $format = date('d-m-Y', strtotime($result)); 
+                        $date = str_replace('-', '/', $format);
+                        $F->setCellValueByColumnAndRow($indice, $Line, $date);
+                        }
+                        else
+                        {
+                            $F->setCellValueByColumnAndRow($indice, $Line, "");
+                        }                        
+                    }
+                    else if("Validation ".$intd == $F->getCellByColumnAndRow($indice, 1)->getValue())
+                    {
+                        $F->setCellValueByColumnAndRow($indice, $Line, $instanceData->getValidationEffective());
+                    }
+                    else if("Remarques ".$intd == $F->getCellByColumnAndRow($indice, 1)->getValue())
+                    {
+                        $F->setCellValueByColumnAndRow($indice, $Line, $instanceData->getRemarques());
+                    }
+                    else if("Statut ".$intd == $F->getCellByColumnAndRow($indice, 1)->getValue())
+                    {
+                        $F->setCellValueByColumnAndRow($indice, $Line, $instanceData->getStatutInstance());
+                    }  
+                    $indice++;
+                }                
+                $i++;
+            }             
             
             ++$Line;
         }        
