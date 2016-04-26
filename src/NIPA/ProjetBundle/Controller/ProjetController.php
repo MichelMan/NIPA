@@ -2019,6 +2019,47 @@ class ProjetController extends Controller
     }   
     
    /**
+    *  SAVE Champs calculé after a UPDATE
+    * 
+    */
+    public function saveProjetAfterUpdateAction($reference)    
+    {
+        $request = $this->get('request');
+
+        if ($request->isXmlHttpRequest()) {
+            
+            $data = $request->request->all();
+            //\Doctrine\Common\Util\Debug::dump($data);
+
+            $projet = $this->get('nipa_projet.projet_manager')->loadProjet($reference);                          
+
+            // On MAJ les champs calculé Projet
+
+                $projet->setBudgetEnCours($data["budget"]);
+                $projet->setPhaseProjetEnCours($data["phase"]);
+                
+                //Date (Date MEP)
+                $var = $data["MEP"];
+                $date = str_replace('/', '-', $var);
+                $format = date('Y-m-d', strtotime($date));     
+                $dateMEP = new \DateTime($format);
+                $projet->setDateMEP($dateMEP);
+                
+                $em = $this->getDoctrine()->getManager();
+                $em->persist($projet);
+                $em->flush();
+
+            //$this->get('session')->getFlashBag()->set('success', "MaJ ok!");            
+
+            return new JsonResponse(array('message' => 'Success!'), 200);
+
+            $response = new JsonResponse(array('message' => 'Error'), 400);
+
+            return $response; 
+        }
+    }         
+    
+   /**
     *  BYPASS Phase of a Projet
     * 
     */

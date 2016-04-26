@@ -147,7 +147,7 @@
                         <!-- PANEL DATE DE MEP et TTD -->          
                         <div class="panel panel-danger" id="GDD">
                             <div class="panel-heading">
-                                <h5 class="panel-title">Date de MEP: </h5>
+                                <h5 class="panel-title">Date de MEP: {% if dateMEPMax is defined %} <strong> {{ dateMEPMax|date('d/m/Y')}} </strong> {% endif %}</h5>
                                 <div class="pull-right">              
                                     <span data-toggle="collapse" data-target="#collapseMEP" class="clickable collapsed" title="Afficher détails" data-container="body">
                                         <i class="glyphicon glyphicon-plus-sign"></i>

@@ -44,7 +44,21 @@
         {% endif %}
     {% endfor %}     
     
-    {% if demande.referenceDemande %}                
+     
+    {% set total = null %}  
+    {% set lot = null %}    
+    {% if demande.referenceDemande %} 
+        
+        {# NB LOTS PROJETS (SANS LES SUSPENDUS ET ANNULES) #}
+        {% if listProjet is defined %}
+            {% set lot = 0 %}
+            {% for projet in listProjet %}
+                {% if projet.annuler == 0 and projet.suspendre == 0 %}
+                    {% set lot = lot + 1 %}
+                {% endif %}
+            {% endfor %}
+        {% endif %}        
+        
         <div class="pull-left"><h4 class=""><span class='glyphicon glyphicon-edit'></span> {{ 'Mise à jour Demande'|trans }}: {{ demande.referenceDemande }}</h4></div>            
         <div class="pull-right">
             <div class="col-md-12">
@@ -65,7 +79,7 @@
                             {% endfor %}
                             Budget: <strong> {{ total|number_format(2, ',', ' ') }} k€ </strong> / 
                             Phase: <strong> {{ demande.demandeStatut.getNom() }} </strong> / 
-                            Date de MEP: <strong> ? </strong>                                  
+                            Date de MEP: <strong> {{ dateMEPMax|date('d/m/Y')}} </strong>                                  
                         </center>       
                     </div>         
                 </div>
@@ -293,6 +307,38 @@
                 window.location.href = theHREF;
             });
         });
+
+
+    // Requete AJAX de sauvegarde des CALCULS
+    window.onload = function (){ 
+    
+    {% if demande.referenceDemande is defined %}
+        
+        var budget = "{{ total }}";
+        var phase = "{{ demande.demandeStatut.getNom() }}";
+        var MEP = "{{ dateMEPMax|date('d/m/Y') }}";
+        var lot = "{{ lot }}";
+        
+        $.ajax({
+            type: 'post',
+            url: "{% if demande.referenceDemande %}{{ path('save_demande_after_update',{'reference': demande.referenceDemande}) }}{% endif %}",
+            data: {budget: budget, phase: phase, MEP: MEP, lot:lot},
+            success: function()
+            {
+                alert("Page is loaded");
+                //var url = document.location.href;
+                //$(location).attr('href',url+"#cadrage");                 
+                //location.reload();        
+            },
+            error: function(e) {
+               console.log(e);
+             }      
+        }); 
+    
+    {% endif %}   
+    
+    };
+
 
 </script>    
 {% endblock %}            

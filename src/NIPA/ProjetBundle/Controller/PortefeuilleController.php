@@ -743,4 +743,40 @@ class PortefeuilleController extends Controller
        )));                     
     }    
     
+    
+   /**
+    *  SAVE Champs calculé after a UPDATE
+    * 
+    */
+    public function savePortefeuilleAfterUpdateAction($reference)    
+    {
+        $request = $this->get('request');
+
+        if ($request->isXmlHttpRequest()) {
+            
+            $data = $request->request->all();
+            //\Doctrine\Common\Util\Debug::dump($data);
+
+            $portefeuille = $this->get('nipa_portefeuille.portefeuille_manager')->loadPortefeuille($reference);                          
+
+            // On MAJ les champs calculé Demande
+
+                $portefeuille->setBudgetPrev($data["prev"]);
+                $portefeuille->setBudgetCons($data["cons"]);
+                $portefeuille->setTaux($data["taux"]);
+                
+                $em = $this->getDoctrine()->getManager();
+                $em->persist($portefeuille);
+                $em->flush();
+
+            //$this->get('session')->getFlashBag()->set('success', "MaJ ok!");            
+
+            return new JsonResponse(array('message' => 'Success!'), 200);
+
+            $response = new JsonResponse(array('message' => 'Error'), 400);
+
+            return $response; 
+        }
+    }       
+    
 }

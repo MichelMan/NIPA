@@ -444,7 +444,14 @@ class DemandeController extends Controller
         $repository = $this->getDoctrine()->getManager()->getRepository('NIPAProjetBundle:Projet');
         $listProjet = $repository->findBy(array('demande' => $demande)); // Critere
  
-        // On trie les budgets dans l'ordre CHRONO par date
+        // On trie en fct de la date de MEP
+        usort($listProjet, function($a, $b) {
+          return ($a->getDateMEP() > $b->getDateMEP()) ? -1 : 1;
+        });   
+        
+        $dateMEPMax = $listProjet[0]->getDateMEP();
+        
+        // On trie en fct de la référence
         usort($listProjet, function($a, $b) {
         return strnatcmp($a->getReferenceProjet(), $b->getReferenceProjet());
         });
@@ -510,7 +517,8 @@ class DemandeController extends Controller
             'listPortefeuilleEnveloppe' => $listPortefeuilleEnveloppe, 
             'listPortefeuilleAnnee' => $listPortefeuilleAnnee, 
             'listPortefeuilleStatut' => $listPortefeuilleStatut,
-            'listProjet' => $listProjet
+            'listProjet' => $listProjet,
+            'dateMEPMax' => $dateMEPMax
             )); 
     }      
     
@@ -1524,4 +1532,46 @@ class DemandeController extends Controller
             'listPortefeuilleAnnee' => $listPortefeuilleAnnee, 
             'listPortefeuilleStatut' => $listPortefeuilleStatut)); 
     }    
+    
+   /**
+    *  SAVE Champs calculé after a UPDATE
+    * 
+    */
+    public function saveDemandeAfterUpdateAction($reference)    
+    {
+        $request = $this->get('request');
+
+        if ($request->isXmlHttpRequest()) {
+            
+            $data = $request->request->all();
+            //\Doctrine\Common\Util\Debug::dump($data);
+
+            $demande = $this->get('nipa_demande.demande_manager')->loadDemande($reference);                          
+
+            // On MAJ les champs calculé Demande
+
+                $demande->setBudgetEnCours($data["budget"]);
+                $demande->setPhaseDemandeEnCours($data["phase"]);
+                $demande->setNbLots($data["lot"]);
+                //Date (Date MEP)
+                $var = $data["MEP"];
+                $date = str_replace('/', '-', $var);
+                $format = date('Y-m-d', strtotime($date));     
+                $dateMEP = new \DateTime($format);
+                $demande->setDateMEP($dateMEP);
+                
+                $em = $this->getDoctrine()->getManager();
+                $em->persist($demande);
+                $em->flush();
+
+            //$this->get('session')->getFlashBag()->set('success', "MaJ ok!");            
+
+            return new JsonResponse(array('message' => 'Success!'), 200);
+
+            $response = new JsonResponse(array('message' => 'Error'), 400);
+
+            return $response; 
+        }
+    }       
+    
 }

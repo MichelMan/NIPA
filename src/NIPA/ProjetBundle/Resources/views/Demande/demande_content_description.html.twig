@@ -15,7 +15,7 @@
             
 
     {% if demande.referenceDemande %}                
-        <div class="pull-left"><h4 class=""><i class="fa fa-pencil-square fa-fw"></i> {{ 'Description & Enjeux'|trans }}: {{ demande.referenceDemande }} </h4></div>            
+        <div class="pull-left"><h4 class=""><span class='glyphicon glyphicon-edit'></span> {{ 'Description & Enjeux'|trans }}: {{ demande.referenceDemande }}</h4></div>            
         <div class="pull-right">
             <div class="col-md-12">
                 <div class="panel panel-success">
@@ -35,7 +35,7 @@
                             {% endfor %}
                             Budget: <strong> {{ total|number_format(2, ',', ' ') }} k€ </strong> / 
                             Phase: <strong> {{ demande.demandeStatut.getNom() }} </strong> / 
-                            Date de MEP: <strong> ? </strong>                                  
+                            Date de MEP: <strong> {{ dateMEPMax|date('d/m/Y')}} </strong>                                  
                         </center>       
                     </div>         
                 </div>

@@ -122,6 +122,18 @@ delete_projet_budget:
     path: projet/delete/budget/{reference}
     defaults: { _controller: NIPAProjetBundle:Projet:deleteBudgetProjet }
 
+save_projet_after_update:
+    path: projet/save/update/{reference}
+    defaults: { _controller: NIPAProjetBundle:Projet:saveProjetAfterUpdate }
+
+save_demande_after_update:
+    path: demande/save/update/{reference}
+    defaults: { _controller: NIPAProjetBundle:Demande:saveDemandeAfterUpdate }
+
+save_portefeuille_after_update:
+    path: portefeuille/save/update/{reference}
+    defaults: { _controller: NIPAProjetBundle:Portefeuille:savePortefeuilleAfterUpdate }
+
 export_data_csv:
     path: projet/export/CSV
     defaults: { _controller: NIPAProjetBundle:Default:generateCsv }

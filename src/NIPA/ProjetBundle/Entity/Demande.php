@@ -61,9 +61,25 @@ class Demande
     /**
      * @var string
      *
-     * @ORM\Column(name="Date_MEP", type="string", length=25, nullable=true)
+     * @ORM\Column(name="phaseDemandeEnCours", type="string", length=25, nullable=true)
+     */
+    private $phaseProjetEnCours;
+    
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="BudgetEnCours", type="float", nullable=true)
+     */
+    private $BudgetEnCours;
+    
+    
+    /**
+     * @var date
+     *
+     * @ORM\Column(name="dateMEP", type="date", nullable=true)
      */
     private $dateMEP;
+    
     
     /**
      * @var string
@@ -352,6 +368,55 @@ class Demande
         return $this->commentaires;
     }
 
+   
+    /**
+     * Get phaseProjetEnCours
+     *
+     * @return string
+     */
+    public function getPhaseDemandeEnCours()
+    {
+        return $this->phaseProjetEnCours;
+    }
+
+    /**
+     * Set phaseProjetEnCours
+     *
+     * @param string $phaseProjetEnCours
+     *
+     * @return Demande
+     */
+    public function setPhaseDemandeEnCours($phaseProjetEnCours)
+    {
+        $this->phaseProjetEnCours = $phaseProjetEnCours;
+
+        return $this;
+    }
+    
+    /**
+     * Get BudgetEnCours
+     *
+     * @return float
+     */
+    public function getBudgetEnCours()
+    {
+        return $this->BudgetEnCours;
+    }
+
+    /**
+     * Set BudgetEnCours
+     *
+     * @param float $BudgetEnCours
+     *
+     * @return Demande
+     */
+    public function setBudgetEnCours($BudgetEnCours)
+    {
+        $this->BudgetEnCours = $BudgetEnCours;
+
+        return $this;
+    }    
+    
     
     /**
      * Set dateMEP

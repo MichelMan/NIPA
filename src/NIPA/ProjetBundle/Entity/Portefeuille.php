@@ -78,6 +78,30 @@ class Portefeuille
     private $demande;
     
     
+   /**
+     * @var string
+     *
+     * @ORM\Column(name="BudgetPrev", type="float", nullable=true)
+     */
+    private $BudgetPrev;  
+    
+    
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="BudgetCons", type="float", nullable=true)
+     */
+    private $BudgetCons;  
+   
+    
+     /**
+     * @var string
+     *
+     * @ORM\Column(name="Taux", type="float", nullable=true)
+     */
+    private $Taux;  
+    
+    
    public function __construct()
    {
        $this->demande = new ArrayCollection(); // Collection 
@@ -322,6 +346,80 @@ class Portefeuille
     {
         return $this->demande->toArray();                
     }
+ 
+    
+    /**
+     * Get BudgetPrev
+     *
+     * @return float
+     */
+    public function getBudgetPrev()
+    {
+        return $this->BudgetPrev;
+    }
+
+    /**
+     * Set BudgetPrev
+     *
+     * @param float $BudgetPrev
+     *
+     * @return Portefeuille
+     */
+    public function setBudgetPrev($BudgetPrev)
+    {
+        $this->BudgetPrev = $BudgetPrev;
+
+        return $this;
+    }    
+
+    /**
+     * Get BudgetCons
+     *
+     * @return float
+     */
+    public function getBudgetCons()
+    {
+        return $this->BudgetCons;
+    }
+
+    /**
+     * Set BudgetCons
+     *
+     * @param float $BudgetCons
+     *
+     * @return Portefeuille
+     */
+    public function setBudgetCons($BudgetCons)
+    {
+        $this->BudgetCons = $BudgetCons;
+
+        return $this;
+    }   
+ 
+ 
+    /**
+     * Get Taux
+     *
+     * @return float
+     */
+    public function getTaux()
+    {
+        return $this->Taux;
+    }
+
+    /**
+     * Set Taux
+     *
+     * @param float $Taux
+     *
+     * @return Portefeuille
+     */
+    public function setTaux($Taux)
+    {
+        $this->Taux = $Taux;
+
+        return $this;
+    }       
     
 }
 

@@ -51,16 +51,17 @@
     
     {# Calcul budget prev et cons #}
     {% set prev = 0 %}
-    {% if portefeuille.referencePortefeuille and listPortefeuilleEnveloppePrev|length > 0 %}  
-        {% set prev = listPortefeuilleEnveloppePrev[listPortefeuilleEnveloppePrev|length-1].montant %}
-    {% endif %}   
+    {% if portefeuille.referencePortefeuille and listTriEnveloppePrev|length > 0 %}  
+        {% set prev = listTriEnveloppePrev[0].montant %}
+    {% endif %} 
     {% set cons = 0 %}
     {% if portefeuille.referencePortefeuille %}  
         {% for consomme in listPortefeuilleEnveloppeCons %} 
             {% set cons = cons + consomme.montantMensuel %}
         {% endfor %}   
     {% endif %}     
-    
+    {% set taux = cons/prev*100 %}
+
     <form action="{% if portefeuille.referencePortefeuille %}{{ path('portefeuille_edit', {'reference': portefeuille.referencePortefeuille}) }}{% else %}{{ path('portefeuille_new') }}{% endif %}" method="post" {{ form_enctype(form) }}>
         {% if portefeuille.referencePortefeuille %}                
                 <div class="pull-left"><h4><span class='glyphicon glyphicon-list-alt'></span> {{ ' Portefeuille ' ~ portefeuille.referencePortefeuille  }} </h4></div>
@@ -74,7 +75,7 @@
                                     {% if prev == 0 %}
                                         Taux: <strong> {{ 0|number_format(2, ',', ' ') }}%  </strong>                                  
                                     {% else %}
-                                        Taux: <strong> {{ (cons/prev*100)|number_format(2, ',', ' ') }}% </strong>
+                                        Taux: <strong> {{ taux|number_format(2, ',', ' ') }}% </strong>
                                     {% endif %}
                                 </center>       
                             </div>         
@@ -241,6 +242,38 @@
                 window.location.href = theHREF;
             });
         });
+       
+    
+    // Requete AJAX de sauvegarde des CALCULS
+    window.onload = function (){ 
+    
+    {% if portefeuille.referencePortefeuille is defined %}
         
+        var prev = "{{ prev }}";
+        var cons = "{{ cons }}";
+        var taux = "{{ taux }}";
+        
+        $.ajax({
+            type: 'post',
+            url: "{% if portefeuille.referencePortefeuille %}{{ path('save_portefeuille_after_update',{'reference': portefeuille.referencePortefeuille}) }}{% endif %}",
+            data: {prev: prev, cons: cons, taux: taux},
+            success: function()
+            {
+                alert("Page is loaded");
+                //var url = document.location.href;
+                //$(location).attr('href',url+"#cadrage");                 
+                //location.reload();        
+            },
+            error: function(e) {
+               console.log(e);
+             }  
+        }); 
+        
+    {% endif %}      
+        
+    };
+    
+    
+    
 </script>    
 {% endblock %}
