@@ -60,7 +60,7 @@
             {% set cons = cons + consomme.montantMensuel %}
         {% endfor %}   
     {% endif %}     
-    {% set taux = cons/prev*100 %}
+    {% set taux = 0 %}
 
     <form action="{% if portefeuille.referencePortefeuille %}{{ path('portefeuille_edit', {'reference': portefeuille.referencePortefeuille}) }}{% else %}{{ path('portefeuille_new') }}{% endif %}" method="post" {{ form_enctype(form) }}>
         {% if portefeuille.referencePortefeuille %}                
@@ -72,6 +72,7 @@
                                 <center class="panel-title">
                                     Budget prévu: <strong> {{ prev|number_format(2, ',', ' ') }} k€ </strong> / 
                                     Budget consommé: <strong> {{ cons|number_format(2, ',', ' ') }} k€ </strong> / 
+                                    {% set taux = cons/prev*100 %}
                                     {% if prev == 0 %}
                                         Taux: <strong> {{ 0|number_format(2, ',', ' ') }}%  </strong>                                  
                                     {% else %}
@@ -247,7 +248,7 @@
     // Requete AJAX de sauvegarde des CALCULS
     window.onload = function (){ 
     
-    {% if portefeuille.referencePortefeuille is defined %}
+    {% if portefeuille.referencePortefeuille %}
         
         var prev = "{{ prev }}";
         var cons = "{{ cons }}";
@@ -255,7 +256,7 @@
         
         $.ajax({
             type: 'post',
-            url: "{% if portefeuille.referencePortefeuille %}{{ path('save_portefeuille_after_update',{'reference': portefeuille.referencePortefeuille}) }}{% endif %}",
+            url: "{{ path('save_portefeuille_after_update',{'reference': portefeuille.referencePortefeuille}) }}",
             data: {prev: prev, cons: cons, taux: taux},
             success: function()
             {

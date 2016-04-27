@@ -59,6 +59,19 @@
             {% endfor %}
         {% endif %}        
         
+        {% set etapeEnCours = "" %}
+        {% set max = 0 %}
+        {% for projet in listProjet %}
+            {% for phase in listProjetPhase %}
+                {% if phase.getNom() == projet.getPhaseProjetEnCours() %}
+                    {% if phase.getReference() > max %}
+                        {% set etapeEnCours = phase.getRefEtape().getNom() %}
+                        {% set max = phase.getReference() %}
+                    {% endif %}
+                {% endif %}
+            {% endfor %}        
+        {% endfor %}        
+        
         <div class="pull-left"><h4 class=""><span class='glyphicon glyphicon-edit'></span> {{ 'Mise à jour Demande'|trans }}: {{ demande.referenceDemande }}</h4></div>            
         <div class="pull-right">
             <div class="col-md-12">
@@ -129,13 +142,15 @@
                             <thead>
                                 <tr>
                                     <th class="text-center">Commentaires</th>
-                                    <th class="text-center">Statut Demande</th>
+                                    <th class="text-center">Statut calculé</th>
+                                    <th class="text-center"  title="Prise en compte du statut calculé si vide">Statut</th>
                                     <th class="text-center">Portefeuille</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 <tr>
                                     <td>{{ form_widget(form.commentaires, { 'attr': {'class': 'area'} }) }}</td>
+                                    <td class="col-md-3"><input type="text" class="form-control input-md textinput center" id="statutDemandeEnCoursMAJ" name="statutDemandeEnCoursMAJ" value="{% if demande.referenceDemande %}{{ etapeEnCours }}{% endif %}" readonly="true"></td>
                                     <td><center>{{ form_widget(form.demandeStatut) }}</center></td>
                                     <td>
                                         <center>
@@ -312,7 +327,7 @@
     // Requete AJAX de sauvegarde des CALCULS
     window.onload = function (){ 
     
-    {% if demande.referenceDemande is defined %}
+    {% if demande.referenceDemande %}
         
         var budget = "{{ total }}";
         var phase = "{{ demande.demandeStatut.getNom() }}";
@@ -321,7 +336,7 @@
         
         $.ajax({
             type: 'post',
-            url: "{% if demande.referenceDemande %}{{ path('save_demande_after_update',{'reference': demande.referenceDemande}) }}{% endif %}",
+            url: "{{ path('save_demande_after_update',{'reference': demande.referenceDemande}) }}",
             data: {budget: budget, phase: phase, MEP: MEP, lot:lot},
             success: function()
             {

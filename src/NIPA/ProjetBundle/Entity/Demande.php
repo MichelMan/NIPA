@@ -64,6 +64,13 @@ class Demande
      * @ORM\Column(name="phaseDemandeEnCours", type="string", length=25, nullable=true)
      */
     private $phaseProjetEnCours;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="phaseDemandeEnCoursMAJ", type="string", length=25, nullable=true)
+     */
+    private $phaseProjetEnCoursMAJ;    
     
     /**
      * @var string
@@ -370,7 +377,7 @@ class Demande
 
    
     /**
-     * Get phaseProjetEnCours
+     * Get phaseDemandeEnCours
      *
      * @return string
      */
@@ -392,6 +399,31 @@ class Demande
 
         return $this;
     }
+
+    /**
+     * Get phaseDemandeEnCoursMAJ
+     *
+     * @return string
+     */
+    public function getPhaseDemandeEnCoursMAJ()
+    {
+        return $this->phaseProjetEnCoursMAJ;
+    }
+
+    /**
+     * Set phaseProjetEnCoursMAJ
+     *
+     * @param string $phaseProjetEnCoursMAJ
+     *
+     * @return Demande
+     */
+    public function setPhaseDemandeEnCoursMAJ($phaseProjetEnCoursMAJ)
+    {
+        $this->phaseProjetEnCoursMAJ = $phaseProjetEnCoursMAJ;
+
+        return $this;
+    }    
+    
     
     /**
      * Get BudgetEnCours
@@ -421,7 +453,7 @@ class Demande
     /**
      * Set dateMEP
      *
-     * @param string $dateMEP
+     * @param date $dateMEP
      *
      * @return Demande
      */
@@ -435,7 +467,7 @@ class Demande
     /**
      * Get dateMEP
      *
-     * @return string
+     * @return date
      */
     public function getDateMEP()
     {

@@ -137,7 +137,3 @@ save_portefeuille_after_update:
 export_data_csv:
     path: projet/export/CSV
     defaults: { _controller: NIPAProjetBundle:Default:generateCsv }
-
-export_data_csv2:
-    path: projet/export/CSV/{name}
-    defaults: { _controller: NIPAProjetBundle:Default:generateCsv2 }

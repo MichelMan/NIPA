@@ -13,71 +13,21 @@ class DefaultController extends Controller
         return $this->render('NIPAProjetBundle:Default:index.html.twig', array('name' => $name));
     }
     
-    
     /**
     *  EXPORT DATA
     * 
     */
-    public function generateCsvAction(){
-
-        //Connexion à la base de données avec le service database_connection
-        $conn = $this->get('database_connection');
-
-        //Requête
-        $results = $conn->query('SELECT Port.Reference_Portefeuille, Port.Nom, PortA.Valeur, PortEnv.Nom, PortStatut.Nom FROM Portefeuille Port INNER JOIN Portefeuille_annee PortA ON Port.portefeuille_annee_id = PortA.id INNER JOIN Portefeuille_Enveloppe PortEnv ON Port.portefeuille_enveloppe_id = PortEnv.id INNER JOIN Portefeuille_Statut PortStatut ON Port.portefeuille_statut_id = PortStatut.id');
-
-        $response = new StreamedResponse();
-        $response->setCallback(function() use($results){
-
-            $handle = fopen('php://output', 'w+');
-            // Nom des colonnes du CSV 
-            fputcsv($handle, array('Reference_Portefeuille',
-                                   'Nom',
-                                   'Annee',
-                                   'Env',
-                                   'Statut',
-                  ),';');
-
-            //Champs
-            while($row = $results->fetch()) 
-             {
-
-                  fputcsv($handle,array($row['Reference_Portefeuille'],
-                                        $row['Nom'],
-                                        $row['Valeur'],
-                                        $row['Nom'],
-                                        $row['Nom'],
-                         ),';');
-
-             }
-
-          fclose($handle);
-        });
-    
-         $response->setStatusCode(200);
-         $response->headers->set('Content-Type', 'text/csv; charset=utf-8');
-         $response->headers->set('Content-Disposition','attachment; filename="export.csv"');
-
-         return $response;                             
-
-    }
-     
-    
-    /**
-    *  EXPORT DATA
-    * 
-    */
-    public function generateCsv2Action($name)
+    public function generateCsvAction()
     {
         
         //Connexion à la base de données avec le service database_connection
         $conn = $this->get('database_connection');
 
         //Requête Portefeuille
-        $results = $conn->query('SELECT Port.Reference_Portefeuille, Port.Nom, PortA.Valeur AS Annee, PortEnv.Nom AS Enveloppe, PortStatut.Nom AS Statut FROM Portefeuille Port INNER JOIN Portefeuille_annee PortA ON Port.portefeuille_annee_id = PortA.id INNER JOIN Portefeuille_Enveloppe PortEnv ON Port.portefeuille_enveloppe_id = PortEnv.id INNER JOIN Portefeuille_Statut PortStatut ON Port.portefeuille_statut_id = PortStatut.id');
+        $results = $conn->query('SELECT Port.Reference_Portefeuille, Port.Nom, PortA.Valeur AS Annee, PortEnv.Nom AS Enveloppe, PortStatut.Nom AS Statut, Port.BudgetPrev, Port.BudgetCons, Port.Taux FROM Portefeuille Port INNER JOIN Portefeuille_annee PortA ON Port.portefeuille_annee_id = PortA.id INNER JOIN Portefeuille_Enveloppe PortEnv ON Port.portefeuille_enveloppe_id = PortEnv.id INNER JOIN Portefeuille_Statut PortStatut ON Port.portefeuille_statut_id = PortStatut.id');
         
         //Requête Demande
-        $results2 = $conn->query('SELECT Dem.Reference_Demande, Dem.Nom, Demande_Priorite.Nom AS Priorite, Dem.Type_Enveloppe, Dem.Commentaires, Dem.Date_MEP, Dem.TTD_Souhaite, Dem.TTD_Souhaite_Revise, Dem.TTD_Projets, Dem.TTD_Projets_Revises, Dem.Nb_Lots, Demande_Direction.Nom AS Direction, Demande_Entite_Metier.Nom AS EntiteMetier, Demande_Offres.Nom AS Offre, Demande_Type_Projet.Nom AS TypeProjet, Demande_Statut.Nom AS Statut, Demande_Porteur_Metier.Nom AS PorteurMetier, Demande_Interlocuteur_MOA.Nom AS InterlocuteurMOA, Demande_SDM.Nom AS SDM, Dem.REX, Dem.Date_Cloture FROM Demande Dem INNER JOIN Demande_Priorite ON Dem.demande_priorite_id = Demande_Priorite.id INNER JOIN Demande_Direction ON Dem.demande_direction_id = Demande_Direction.id INNER JOIN Demande_Entite_Metier ON Dem.demande_entite_metier_id = Demande_Entite_Metier.id INNER JOIN Demande_Offres ON Dem.demande_offres_id = Demande_Offres.id INNER JOIN Demande_Type_Projet ON Dem.demande_type_projet_id = Demande_Type_Projet.id INNER JOIN Demande_Statut ON Dem.demande_statut_id = Demande_Statut.id INNER JOIN Demande_Porteur_Metier ON Dem.demande_porteur_metier_id = Demande_Porteur_Metier.id INNER JOIN Demande_Interlocuteur_MOA ON Dem.demande_interlocuteur_MOA_id = Demande_Interlocuteur_MOA.id INNER JOIN Demande_SDM ON Dem.demande_SDM_id = Demande_SDM.id');
+        $results2 = $conn->query('SELECT Dem.Reference_Demande, Dem.Nom, Demande_Priorite.Nom AS Priorite, Dem.Type_Enveloppe, Dem.Commentaires, Dem.phaseDemandeEnCours, Dem.BudgetEnCours, Dem.dateMEP, Dem.TTD_Souhaite, Dem.TTD_Souhaite_Revise, Dem.TTD_Projets, Dem.TTD_Projets_Revises, Dem.Nb_Lots, Demande_Direction.Nom AS Direction, Demande_Entite_Metier.Nom AS EntiteMetier, Demande_Offres.Nom AS Offre, Demande_Type_Projet.Nom AS TypeProjet, Demande_Statut.Nom AS Statut, Demande_Porteur_Metier.Nom AS PorteurMetier, Demande_Interlocuteur_MOA.Nom AS InterlocuteurMOA, Demande_SDM.Nom AS SDM, Dem.REX, Dem.Date_Cloture, Dem.Contexte, Dem.Enjeux, Dem.Remarques, Dem.Description, Dem.ROI FROM Demande Dem INNER JOIN Demande_Priorite ON Dem.demande_priorite_id = Demande_Priorite.id INNER JOIN Demande_Direction ON Dem.demande_direction_id = Demande_Direction.id INNER JOIN Demande_Entite_Metier ON Dem.demande_entite_metier_id = Demande_Entite_Metier.id INNER JOIN Demande_Offres ON Dem.demande_offres_id = Demande_Offres.id INNER JOIN Demande_Type_Projet ON Dem.demande_type_projet_id = Demande_Type_Projet.id INNER JOIN Demande_Statut ON Dem.demande_statut_id = Demande_Statut.id INNER JOIN Demande_Porteur_Metier ON Dem.demande_porteur_metier_id = Demande_Porteur_Metier.id INNER JOIN Demande_Interlocuteur_MOA ON Dem.demande_interlocuteur_MOA_id = Demande_Interlocuteur_MOA.id INNER JOIN Demande_SDM ON Dem.demande_SDM_id = Demande_SDM.id');
 
         //Requête Projet
         $results3 = $conn->query('SELECT Pro.Reference_Projet, Pro.titre, Pro.titreLot, Pro.codeOGP, Pro.enveloppe, Pro.priorite, Pro.direction, Pro.entiteMetier, Pro.offres, Pro.typeProjet, Pro.divers, Pro.interlocuteurMOA, Pro.porteurMetier, Pro.SDM, Pro.devSI, Pro.devRZO, Pro.indicateur, Pro.phaseProjet, Pro.annuler, Pro.suspendre, Pro.commentaires, Pro.alerte, Pro.escalade, Pro.lotissement, Pro.phaseProjetEnCours, Pro.BudgetEnCours, Pro.dateMEP FROM Projet Pro');        
@@ -101,8 +51,11 @@ class DefaultController extends Controller
            ->setCellValue('B1', 'Nom')        
            ->setCellValue('C1', 'Enveloppe')    
            ->setCellValue('D1', 'Annee') 
-           ->setCellValue('E1', 'Statut');    
-           
+           ->setCellValue('E1', 'Statut')    
+           ->setCellValue('F1', 'Budget_Prev')
+           ->setCellValue('G1', 'Budget_Cons')
+           ->setCellValue('H1', 'Taux');    
+        
         $F = $phpExcelObject->setActiveSheetIndex(0);
         $Line=2;        
         
@@ -113,7 +66,10 @@ class DefaultController extends Controller
             $F->setCellValue('B'.$Line, $row['Nom']);
             $F->setCellValue('C'.$Line, $row['Enveloppe']);
             $F->setCellValue('D'.$Line, $row['Annee']);
-            $F->setCellValue('E'.$Line, $row['Statut']); //write in the sheet
+            $F->setCellValue('E'.$Line, $row['Statut']);
+            $F->setCellValue('F'.$Line, $row['BudgetPrev']);
+            $F->setCellValue('G'.$Line, $row['BudgetCons']);
+            $F->setCellValue('H'.$Line, $row['Taux']); //write in the sheet
             ++$Line;
         }
         
@@ -125,15 +81,15 @@ class DefaultController extends Controller
        // EN-TETE
         $phpExcelObject->setActiveSheetIndex(1)
            ->setCellValue('A1', 'Reference')
-           ->setCellValue('B1', 'Nom')        
+           ->setCellValue('B1', 'Titre')        
            ->setCellValue('C1', 'Priorite')    
            ->setCellValue('D1', 'Type_Enveloppe') 
-           ->setCellValue('E1', 'Commentaires') 
-           ->setCellValue('F1', 'Date_MEP') 
-           ->setCellValue('G1', 'TTD_Souhaite') 
-           ->setCellValue('H1', 'TTD_Souhaite_Revise') 
-           ->setCellValue('I1', 'TTD_Projets') 
-           ->setCellValue('J1', 'TTD_Projets_Revises') 
+           ->setCellValue('E1', 'Commentaires')
+           ->setCellValue('F1', 'Description')
+           ->setCellValue('G1', 'Contexte')
+           ->setCellValue('H1', 'Enjeux')
+           ->setCellValue('I1', 'Remarques')
+           ->setCellValue('J1', 'ROI')
            ->setCellValue('K1', 'Nb_Lots') 
            ->setCellValue('L1', 'Direction') 
            ->setCellValue('M1', 'Entite_Metier') 
@@ -144,23 +100,35 @@ class DefaultController extends Controller
            ->setCellValue('R1', 'Interlocuteur_MOA')   
            ->setCellValue('S1', 'SDM')   
            ->setCellValue('T1', 'REX')
-           ->setCellValue('U1', 'Date_Cloture');   
+           ->setCellValue('U1', 'Date_Cloture')
+           ->setCellValue('V1', 'Phase')
+           ->setCellValue('W1', 'Phase_En_Cours') 
+           ->setCellValue('X1', 'Budget_En_Cours')
+           ->setCellValue('Y1', 'TTD_Souhaite') 
+           ->setCellValue('Z1', 'TTD_Souhaite_Revise') 
+           ->setCellValue('AA1', 'TTD_Projets') 
+           ->setCellValue('AB1', 'TTD_Projets_Revises') 
+           ->setCellValue('AC1', 'Date_MEP');   
         
         $F = $phpExcelObject->setActiveSheetIndex(1);
         $Line=2;     
         
         //while($row = $result->fetch_assoc()){//extract each record
         while($row = $results2->fetch()) { 
+            
+            $demande = $this->get('nipa_demande.demande_manager')->loadDemande($row['Reference_Demande']);            
+            
+            //\Doctrine\Common\Util\Debug::dump($row);
             $F->setCellValue('A'.$Line, $row['Reference_Demande']);
             $F->setCellValue('B'.$Line, $row['Nom']);
             $F->setCellValue('C'.$Line, $row['Priorite']);
             $F->setCellValue('D'.$Line, $row['Type_Enveloppe']);
             $F->setCellValue('E'.$Line, $row['Commentaires']); 
-            $F->setCellValue('F'.$Line, $row['Date_MEP']); 
-            $F->setCellValue('G'.$Line, $row['TTD_Souhaite']); 
-            $F->setCellValue('H'.$Line, $row['TTD_Souhaite_Revise']); 
-            $F->setCellValue('I'.$Line, $row['TTD_Projets']); 
-            $F->setCellValue('J'.$Line, $row['TTD_Projets_Revises']); 
+            $F->setCellValue('F'.$Line, $row['Description']);       
+            $F->setCellValue('G'.$Line, $row['Contexte']);       
+            $F->setCellValue('H'.$Line, $row['Enjeux']);       
+            $F->setCellValue('I'.$Line, $row['Remarques']); 
+            $F->setCellValue('J'.$Line, $row['ROI']);        
             $F->setCellValue('K'.$Line, $row['Nb_Lots']); 
             $F->setCellValue('L'.$Line, $row['Direction']); 
             $F->setCellValue('M'.$Line, $row['EntiteMetier']); 
@@ -172,7 +140,25 @@ class DefaultController extends Controller
             $F->setCellValue('S'.$Line, $row['SDM']); 
             $F->setCellValue('T'.$Line, $row['REX']); 
             $F->setCellValue('U'.$Line, $row['Date_Cloture']); 
-
+            $F->setCellValue('V'.$Line, $row['phaseDemandeEnCours']); 
+            $F->setCellValue('W'.$Line, $row['phaseDemandeEnCours']); 
+            $F->setCellValue('X'.$Line, $row['BudgetEnCours']); 
+            $F->setCellValue('Y'.$Line, $row['TTD_Souhaite']); 
+            $F->setCellValue('Z'.$Line, $row['TTD_Souhaite_Revise']); 
+            $F->setCellValue('AA'.$Line, $row['TTD_Projets']); 
+            $F->setCellValue('AB'.$Line, $row['TTD_Projets_Revises']);
+            if($demande->getDateMEP() != null)
+            {
+                $result = $demande->getDateMEP()->format('Y-m-d');
+                $format = date('d-m-Y', strtotime($result)); 
+                $date = str_replace('-', '/', $format);
+                $F->setCellValue('AC'.$Line, $date);
+            }
+            else
+            {
+                $F->setCellValue('AC'.$Line, "");
+            }   
+            
             ++$Line;
         }        
         
@@ -365,10 +351,10 @@ class DefaultController extends Controller
                     {
                         if($jalonDateData->getDatePrev() != "")
                         {
-                        $result = $jalonDateData->getDatePrev()->format('Y-m-d');
-                        $format = date('d-m-Y', strtotime($result)); 
-                        $date = str_replace('-', '/', $format);
-                        $F->setCellValueByColumnAndRow($indice, $Line, $date);
+                            $result = $jalonDateData->getDatePrev()->format('Y-m-d');
+                            $format = date('d-m-Y', strtotime($result)); 
+                            $date = str_replace('-', '/', $format);
+                            $F->setCellValueByColumnAndRow($indice, $Line, $date);
                         }
                         else
                         {
@@ -379,10 +365,10 @@ class DefaultController extends Controller
                     {
                         if($jalonDateData->getDateRev() != "")
                         {
-                        $result = $jalonDateData->getDateRev()->format('Y-m-d');
-                        $format = date('d-m-Y', strtotime($result)); 
-                        $date = str_replace('-', '/', $format);
-                        $F->setCellValueByColumnAndRow($indice, $Line, $date);
+                            $result = $jalonDateData->getDateRev()->format('Y-m-d');
+                            $format = date('d-m-Y', strtotime($result)); 
+                            $date = str_replace('-', '/', $format);
+                            $F->setCellValueByColumnAndRow($indice, $Line, $date);
                         }
                         else
                         {
@@ -414,10 +400,10 @@ class DefaultController extends Controller
                     {
                         if($jalonLivData->getDatePrev() != "")
                         {
-                        $result = $jalonLivData->getDatePrev()->format('Y-m-d');
-                        $format = date('d-m-Y', strtotime($result)); 
-                        $date = str_replace('-', '/', $format);
-                        $F->setCellValueByColumnAndRow($indice, $Line, $date);
+                            $result = $jalonLivData->getDatePrev()->format('Y-m-d');
+                            $format = date('d-m-Y', strtotime($result)); 
+                            $date = str_replace('-', '/', $format);
+                            $F->setCellValueByColumnAndRow($indice, $Line, $date);
                         }
                         else
                         {
@@ -428,10 +414,10 @@ class DefaultController extends Controller
                     {
                         if($jalonLivData->getDateRev() != "")
                         {
-                        $result = $jalonLivData->getDateRev()->format('Y-m-d');
-                        $format = date('d-m-Y', strtotime($result)); 
-                        $date = str_replace('-', '/', $format);
-                        $F->setCellValueByColumnAndRow($indice, $Line, $date);
+                            $result = $jalonLivData->getDateRev()->format('Y-m-d');
+                            $format = date('d-m-Y', strtotime($result)); 
+                            $date = str_replace('-', '/', $format);
+                            $F->setCellValueByColumnAndRow($indice, $Line, $date);
                         }
                         else
                         {
@@ -464,10 +450,10 @@ class DefaultController extends Controller
                     {
                         if($instanceData->getDatePrev() != null)
                         {
-                        $result = $instanceData->getDatePrev()->format('Y-m-d');
-                        $format = date('d-m-Y', strtotime($result)); 
-                        $date = str_replace('-', '/', $format);
-                        $F->setCellValueByColumnAndRow($indice, $Line, $date);
+                            $result = $instanceData->getDatePrev()->format('Y-m-d');
+                            $format = date('d-m-Y', strtotime($result)); 
+                            $date = str_replace('-', '/', $format);
+                            $F->setCellValueByColumnAndRow($indice, $Line, $date);
                         }
                         else
                         {
@@ -498,7 +484,10 @@ class DefaultController extends Controller
         // Set active sheet index to the first sheet, so Excel opens this as the first sheet
         $phpExcelObject->setActiveSheetIndex(0);
 
-        // create the writer
+        $date = date('d/m/Y');
+        $date2 = str_replace('/', '_', $date);
+        $name = 'Export'.$date2;
+        
         $writer = $this->get('phpexcel')->createWriter($phpExcelObject, 'Excel5');
         // create the response
         $response = $this->get('phpexcel')->createStreamedResponse($writer);

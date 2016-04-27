@@ -458,6 +458,16 @@ class DemandeController extends Controller
         
         /***************************************************************/
         
+         //return array() List 3 PHASES PROJETS
+        $repository = $this->getDoctrine()->getManager()->getRepository('NIPAProjetBundle:ProjetPhase');
+        $listProjetPhase = $repository->findAll();     
+        //On trie la liste
+        usort($listProjetPhase, function ($a, $b) {
+            return strnatcmp($a->getReference(), $b->getReference());
+        });          
+        
+        /***************************************************************/
+
         // DemandeInstance Form
         $DemandeListeInstance = new DemandeListeInstance();  
         $formInstance = $this->createForm(new DemandeListeInstanceFormType(), $DemandeListeInstance);
@@ -518,7 +528,8 @@ class DemandeController extends Controller
             'listPortefeuilleAnnee' => $listPortefeuilleAnnee, 
             'listPortefeuilleStatut' => $listPortefeuilleStatut,
             'listProjet' => $listProjet,
-            'dateMEPMax' => $dateMEPMax
+            'dateMEPMax' => $dateMEPMax,
+            'listProjetPhase' => $listProjetPhase
             )); 
     }      
     
