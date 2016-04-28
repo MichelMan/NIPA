@@ -2037,13 +2037,19 @@ class ProjetController extends Controller
 
                 $projet->setBudgetEnCours($data["budget"]);
                 $projet->setPhaseProjetEnCours($data["phase"]);
-                
                 //Date (Date MEP)
-                $var = $data["MEP"];
-                $date = str_replace('/', '-', $var);
-                $format = date('Y-m-d', strtotime($date));     
-                $dateMEP = new \DateTime($format);
-                $projet->setDateMEP($dateMEP);
+                if($data["MEP"] != "")
+                {
+                    $var = $data["MEP"];
+                    $date = str_replace('/', '-', $var);
+                    $format = date('Y-m-d', strtotime($date));     
+                    $dateMEP = new \DateTime($format);
+                    $projet->setDateMEP($dateMEP);
+                }
+                else
+                {
+                    $projet->setDateMEP(null);
+                }                
                 
                 $em = $this->getDoctrine()->getManager();
                 $em->persist($projet);

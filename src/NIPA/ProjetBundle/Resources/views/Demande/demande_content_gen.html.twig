@@ -91,8 +91,8 @@
                             {% set total = total + counter %}
                             {% endfor %}
                             Budget: <strong> {{ total|number_format(2, ',', ' ') }} k€ </strong> / 
-                            Phase: <strong> {{ demande.demandeStatut.getNom() }} </strong> / 
-                            Date de MEP: <strong> {{ dateMEPMax|date('d/m/Y')}} </strong>                                  
+                            Phase: <strong> {% if demande.getPhaseDemandeEnCours() != "" %}{{ demande.demandeStatut.getNom() }}{% else %}{{ etapeEnCours }}{% endif %} </strong> / 
+                            Date de MEP: <strong>{% if dateMEPMax != "" %} {{ dateMEPMax|date('d/m/Y') }} {% else %} ? {% endif %}</strong>                                  
                         </center>       
                     </div>         
                 </div>
@@ -151,7 +151,21 @@
                                 <tr>
                                     <td>{{ form_widget(form.commentaires, { 'attr': {'class': 'area'} }) }}</td>
                                     <td class="col-md-3"><input type="text" class="form-control input-md textinput center" id="statutDemandeEnCoursMAJ" name="statutDemandeEnCoursMAJ" value="{% if demande.referenceDemande %}{{ etapeEnCours }}{% endif %}" readonly="true"></td>
-                                    <td><center>{{ form_widget(form.demandeStatut) }}</center></td>
+                                    <td>
+                                        {{ form_widget(form.demandeStatut) }}
+                                        <center>
+                                            <select class="form-control" id="statutDemande" name="statutDemande">
+                                                <option value=""> </option>
+                                                {% for statut in listDemandeStatut %}
+                                                    {% if statut.getNom() == demande.getPhaseDemandeEnCours() %}
+                                                        <option value="{{ statut.getReference() }}" selected>{{ statut.getNom() }}</option>
+                                                    {% else %}
+                                                        <option value="{{ statut.getReference() }}">{{ statut.getNom() }}</option>
+                                                    {% endif %}
+                                                {% endfor %}
+                                            </select>
+                                        </center>
+                                    </td>
                                     <td>
                                         <center>
                                             <select class="form-control" id="referencePortefeuille" name="referencePortefeuille" {% if demande.referenceDemande %} READONLY {% endif %}>
@@ -330,8 +344,8 @@
     {% if demande.referenceDemande %}
         
         var budget = "{{ total }}";
-        var phase = "{{ demande.demandeStatut.getNom() }}";
-        var MEP = "{{ dateMEPMax|date('d/m/Y') }}";
+        var phase = "{% if demande.getPhaseDemandeEnCours() != "" %}{{ demande.demandeStatut.getNom() }}{% else %}{{ etapeEnCours }}{% endif %}";
+        var MEP = "{% if dateMEPMax != "" %}{{dateMEPMax|date('d/m/Y')}}{% endif %}";
         var lot = "{{ lot }}";
         
         $.ajax({

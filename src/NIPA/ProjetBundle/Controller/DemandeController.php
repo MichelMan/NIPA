@@ -205,6 +205,20 @@ class DemandeController extends Controller
           return ($a->getDate() > $b->getDate()) ? -1 : 1;
         });
         /***************************************************************/
+               
+         //return array() List 3 PHASES PROJET
+        $repository = $this->getDoctrine()->getManager()->getRepository('NIPAProjetBundle:ProjetPhase');
+        $listProjetPhase = $repository->findAll();     
+        //On trie la liste
+        usort($listProjetPhase, function ($a, $b) {
+            return strnatcmp($a->getReference(), $b->getReference());
+        });    
+        
+         //return array() List STATUTS DEMANDE
+        $repository = $this->getDoctrine()->getManager()->getRepository('NIPAProjetBundle:DemandeStatut');
+        $listDemandeStatut = $repository->findAll();            
+        
+        /***************************************************************/
         
         // DemandeInstance Form
         $DemandeListeInstance = new DemandeListeInstance();  
@@ -217,7 +231,8 @@ class DemandeController extends Controller
         // On trie les instances dans l'ordre CHRONO par date
         usort($listDemandeInstance, function($a, $b) {
           return ($a->getDatePrev() > $b->getDatePrev()) ? -1 : 1;
-        });        
+        });  
+        
         /***************************************************************/   
         
         
@@ -285,6 +300,25 @@ class DemandeController extends Controller
                 $reference = $refPortefeuille.'-'.$number_ref;
                 //\Doctrine\Common\Util\Debug::dump($reference);
 
+                /********MAJ LE STATUT DEMANDE (CALCULE)******/
+                $statutRef=$this->getRequest()->request->get('statutDemande');
+                if($statutRef != "")
+                {
+                    //On récupère liste des tuples instances de la Demande
+                    $repository = $this->getDoctrine()->getManager()->getRepository('NIPAProjetBundle:DemandeStatut');
+                    $statut = $repository->findOneByReference($statutRef); // Critere 
+                    $statutEnCours = $statut->getNom();
+                    $statutDemande = $statut;
+                    $demande->setDemandeStatut($statutDemande);
+                    $demande->setPhaseDemandeEnCours($statutEnCours);
+                }
+                else
+                {
+                    $statutEnCours = null;
+                    $demande->setPhaseDemandeEnCours($statutEnCours);
+                }
+                /********************************************/      
+
                 $demande->setReferenceDemande($reference);
                 /**************************************************************/
                 
@@ -331,7 +365,10 @@ class DemandeController extends Controller
             'listPortefeuille' => $listPortefeuille, 
             'listPortefeuilleEnveloppe' => $listPortefeuilleEnveloppe, 
             'listPortefeuilleAnnee' => $listPortefeuilleAnnee, 
-            'listPortefeuilleStatut' => $listPortefeuilleStatut)); 
+            'listPortefeuilleStatut' => $listPortefeuilleStatut,
+            'listProjetPhase' => $listProjetPhase,
+            'listDemandeStatut' => $listDemandeStatut
+            )); 
 
     }    
     
@@ -448,9 +485,16 @@ class DemandeController extends Controller
         usort($listProjet, function($a, $b) {
           return ($a->getDateMEP() > $b->getDateMEP()) ? -1 : 1;
         });   
-        
-        $dateMEPMax = $listProjet[0]->getDateMEP();
-        
+
+        if(sizeof($listProjet) > 0)
+        {
+            $dateMEPMax = $listProjet[0]->getDateMEP();
+        }
+        else
+        {
+            $dateMEPMax = "";
+        }
+
         // On trie en fct de la référence
         usort($listProjet, function($a, $b) {
         return strnatcmp($a->getReferenceProjet(), $b->getReferenceProjet());
@@ -458,14 +502,18 @@ class DemandeController extends Controller
         
         /***************************************************************/
         
-         //return array() List 3 PHASES PROJETS
+         //return array() List 3 PHASES PROJET
         $repository = $this->getDoctrine()->getManager()->getRepository('NIPAProjetBundle:ProjetPhase');
         $listProjetPhase = $repository->findAll();     
         //On trie la liste
         usort($listProjetPhase, function ($a, $b) {
             return strnatcmp($a->getReference(), $b->getReference());
-        });          
+        });    
         
+         //return array() List STATUTS DEMANDE
+        $repository = $this->getDoctrine()->getManager()->getRepository('NIPAProjetBundle:DemandeStatut');
+        $listDemandeStatut = $repository->findAll();     
+
         /***************************************************************/
 
         // DemandeInstance Form
@@ -489,13 +537,32 @@ class DemandeController extends Controller
             //$form->submit($request->request->get($form->getName()));                       
            
            //if ($form->isValid()) { // Si le formulaire est valide
-                
+                           
                 $demande->setReferenceDemande($reference);
                 $referencePortefeuille=$this->getRequest()->request->get('referencePortefeuille');
                 $portefeuille = $this->get('nipa_portefeuille.portefeuille_manager')->loadPortefeuille($referencePortefeuille);
                 // On met a jour le typeEnveloppe
                 $demande->setTypeEnveloppe($portefeuille->getPortefeuilleEnveloppe()->getNom());
-                    
+                   
+                /********MAJ LE STATUT DEMANDE (CALCULE)******/
+                $statutRef=$this->getRequest()->request->get('statutDemande');
+                if($statutRef != "")
+                {
+                    //On récupère liste des tuples instances de la Demande
+                    $repository = $this->getDoctrine()->getManager()->getRepository('NIPAProjetBundle:DemandeStatut');
+                    $statut = $repository->findOneByReference($statutRef); // Critere 
+                    $statutEnCours = $statut->getNom();
+                    $statutDemande = $statut;
+                    $demande->setDemandeStatut($statutDemande);
+                    $demande->setPhaseDemandeEnCours($statutEnCours);
+                }
+                else
+                {
+                    $statutEnCours = null;
+                    $demande->setPhaseDemandeEnCours($statutEnCours);
+                }
+                /********************************************/                
+                
                 $this->get('nipa_demande.demande_manager')->saveDemande($demande); // On utilise notre Manager pour gérer la sauvegarde de l'objet
                 
                 $this->get('session')->getFlashBag()->set('success',
@@ -529,7 +596,8 @@ class DemandeController extends Controller
             'listPortefeuilleStatut' => $listPortefeuilleStatut,
             'listProjet' => $listProjet,
             'dateMEPMax' => $dateMEPMax,
-            'listProjetPhase' => $listProjetPhase
+            'listProjetPhase' => $listProjetPhase,
+            'listDemandeStatut' => $listDemandeStatut
             )); 
     }      
     
@@ -1562,14 +1630,21 @@ class DemandeController extends Controller
             // On MAJ les champs calculé Demande
 
                 $demande->setBudgetEnCours($data["budget"]);
-                $demande->setPhaseDemandeEnCours($data["phase"]);
+                $demande->setPhaseDemandeEnCoursMAJ($data["phase"]);
                 $demande->setNbLots($data["lot"]);
                 //Date (Date MEP)
-                $var = $data["MEP"];
-                $date = str_replace('/', '-', $var);
-                $format = date('Y-m-d', strtotime($date));     
-                $dateMEP = new \DateTime($format);
-                $demande->setDateMEP($dateMEP);
+                if($data["MEP"] != "")
+                {
+                    $var = $data["MEP"];
+                    $date = str_replace('/', '-', $var);
+                    $format = date('Y-m-d', strtotime($date));     
+                    $dateMEP = new \DateTime($format);
+                    $demande->setDateMEP($dateMEP);
+                }
+                else
+                {
+                    $demande->setDateMEP(null);
+                }
                 
                 $em = $this->getDoctrine()->getManager();
                 $em->persist($demande);

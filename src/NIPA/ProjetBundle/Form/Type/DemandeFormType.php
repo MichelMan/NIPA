@@ -83,7 +83,9 @@ class DemandeFormType extends AbstractType
                         'required' => false)
         );
         $builder->add('demandeStatut', 'entity',
-                array ('label' => 'Statut Demande',
+                array (
+                    'attr'=>array('style'=>'display:none;'),
+                    'label' => 'Statut Demande',
                        'class' => 'NIPAProjetBundle:DemandeStatut',
                        'property' => 'nom')
         );
